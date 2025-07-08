@@ -16,8 +16,10 @@ defmodule HomeWareWeb.CoreComponents do
   """
   use Phoenix.Component
 
+  use Gettext, backend: HomeWareWeb.Gettext
+
   alias Phoenix.LiveView.JS
-  import HomeWareWeb.Gettext
+
 
   @doc """
   Renders a modal.
