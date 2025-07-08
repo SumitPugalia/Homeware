@@ -6,6 +6,7 @@ config :home_ware, HomeWare.Repo,
   password: "postgres",
   hostname: "localhost",
   database: "home_ware_dev",
+  port: 5433,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
