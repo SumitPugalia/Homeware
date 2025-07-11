@@ -13,7 +13,7 @@ defmodule HomeWare.OrdersTest do
       assert Orders.list_user_orders(user.id) == [order]
     end
 
-        test "get_user_order!/2 returns the order with given id for user" do
+    test "get_user_order!/2 returns the order with given id for user" do
       user = Factory.insert(:user)
       order = Factory.insert(:order, %{user_id: user.id})
       assert Orders.get_user_order!(user.id, order.id) == order

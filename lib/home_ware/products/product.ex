@@ -34,9 +34,26 @@ defmodule HomeWare.Products.Product do
   def changeset(product, attrs) do
     product
     |> cast(attrs, [
-      :name, :slug, :description, :short_description, :price, :compare_at_price, :sku, :brand, :model,
-      :weight, :dimensions, :specifications, :images, :featured_image, :inventory_quantity, :is_featured,
-      :is_active, :category_id, :average_rating, :review_count
+      :name,
+      :slug,
+      :description,
+      :short_description,
+      :price,
+      :compare_at_price,
+      :sku,
+      :brand,
+      :model,
+      :weight,
+      :dimensions,
+      :specifications,
+      :images,
+      :featured_image,
+      :inventory_quantity,
+      :is_featured,
+      :is_active,
+      :category_id,
+      :average_rating,
+      :review_count
     ])
     |> validate_required([:name, :slug, :price])
     |> unique_constraint(:slug)

@@ -2,22 +2,23 @@ defmodule HomeWare.Repo.Migrations.CreateAddresses do
   use Ecto.Migration
 
   def change do
-    create table(:addresses) do
-      add :type, :string, null: false
-      add :first_name, :string, null: false
-      add :last_name, :string, null: false
+    create table(:addresses, primary_key: false) do
+      add :id, :uuid, primary_key: true
+      add :type, :string
+      add :first_name, :string
+      add :last_name, :string
       add :company, :string
-      add :address_line_1, :string, null: false
+      add :address_line_1, :string
       add :address_line_2, :string
-      add :city, :string, null: false
-      add :state, :string, null: false
-      add :postal_code, :string, null: false
-      add :country, :string, null: false
+      add :city, :string
+      add :state, :string
+      add :postal_code, :string
+      add :country, :string
       add :phone, :string
-      add :is_default, :boolean, default: false, null: false
-      add :user_id, references(:users, on_delete: :delete_all), null: false
+      add :is_default, :boolean, default: false
+      add :user_id, references(:users, on_delete: :delete_all, type: :uuid)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create index(:addresses, [:user_id])

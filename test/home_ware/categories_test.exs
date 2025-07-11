@@ -38,7 +38,9 @@ defmodule HomeWare.CategoriesTest do
       category = Factory.insert(:category)
       update_attrs = %{name: "Updated Category", description: "Updated description"}
 
-      assert {:ok, %Category{} = updated_category} = Categories.update_category(category, update_attrs)
+      assert {:ok, %Category{} = updated_category} =
+               Categories.update_category(category, update_attrs)
+
       assert updated_category.name == "Updated Category"
       assert updated_category.description == "Updated description"
     end

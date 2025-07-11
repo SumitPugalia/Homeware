@@ -2,29 +2,30 @@ defmodule HomeWare.Repo.Migrations.CreateProducts do
   use Ecto.Migration
 
   def change do
-    create table(:products) do
-      add :name, :string, null: false
-      add :slug, :string, null: false
+    create table(:products, primary_key: false) do
+      add :id, :uuid, primary_key: true
+      add :name, :string
+      add :slug, :string
       add :description, :text
       add :short_description, :string
-      add :price, :decimal, precision: 10, scale: 2, null: false
-      add :compare_at_price, :decimal, precision: 10, scale: 2
+      add :price, :decimal
+      add :compare_at_price, :decimal
       add :sku, :string
       add :brand, :string
       add :model, :string
-      add :weight, :decimal, precision: 8, scale: 2
+      add :weight, :decimal
       add :dimensions, :jsonb
       add :specifications, :jsonb
       add :images, {:array, :string}, default: []
       add :featured_image, :string
-      add :inventory_quantity, :integer, default: 0, null: false
-      add :is_featured, :boolean, default: false, null: false
-      add :is_active, :boolean, default: true, null: false
-      add :category_id, references(:categories, on_delete: :restrict)
-      add :average_rating, :decimal, precision: 3, scale: 2, default: 0.0
-      add :review_count, :integer, default: 0
+      add :inventory_quantity, :integer, default: 0
+      add :is_featured, :boolean, default: false
+      add :is_active, :boolean, default: true
+      add :category_id, references(:categories, on_delete: :restrict, type: :uuid)
+      add :average_rating, :decimal
+      add :review_count, :integer
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create unique_index(:products, [:slug])

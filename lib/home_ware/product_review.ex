@@ -23,8 +23,16 @@ defmodule HomeWare.ProductReview do
   def changeset(product_review, attrs) do
     product_review
     |> cast(attrs, [
-      :rating, :title, :content, :status, :is_verified_purchase, :helpful_votes, :unhelpful_votes,
-      :user_id, :product_id, :order_id
+      :rating,
+      :title,
+      :content,
+      :status,
+      :is_verified_purchase,
+      :helpful_votes,
+      :unhelpful_votes,
+      :user_id,
+      :product_id,
+      :order_id
     ])
     |> validate_required([:rating, :title, :content, :user_id, :product_id])
     |> validate_number(:rating, greater_than: 0, less_than_or_equal_to: 5)

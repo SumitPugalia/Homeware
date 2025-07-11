@@ -11,7 +11,9 @@ defmodule HomeWareWeb.UserRegistrationController do
 
   def create(conn, %{"user" => _user_params}) do
     # &url(~p"/users/confirm/#{&1}")
-    {:ok, _user} = {:ok, nil} # placeholder for registration logic
+    # placeholder for registration logic
+    {:ok, _user} = {:ok, nil}
+
     conn
     |> put_flash(:info, "Registration successful!")
     |> redirect(to: "/users/log_in")

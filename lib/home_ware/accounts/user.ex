@@ -26,7 +26,16 @@ defmodule HomeWare.Accounts.User do
 
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :hashed_password, :confirmed_at, :first_name, :last_name, :phone, :role, :is_active])
+    |> cast(attrs, [
+      :email,
+      :hashed_password,
+      :confirmed_at,
+      :first_name,
+      :last_name,
+      :phone,
+      :role,
+      :is_active
+    ])
     |> validate_required([:email, :hashed_password, :role])
     |> unique_constraint(:email)
     |> validate_inclusion(:role, @roles)
@@ -51,7 +60,9 @@ defmodule HomeWare.Accounts.User do
     changeset
     |> validate_required([:password])
     |> validate_length(:password, min: 6, max: 80)
-    |> validate_format(:password, ~r/[a-z]/, message: "must include at least one lowercase letter")
+    |> validate_format(:password, ~r/[a-z]/,
+      message: "must include at least one lowercase letter"
+    )
     |> validate_format(:password, ~r/[0-9]/, message: "must include at least one number")
     |> maybe_hash_password(opts)
   end

@@ -10,7 +10,7 @@ defmodule HomeWare.ProductReviews do
   def list_product_reviews(product_id) do
     ProductReview
     |> where(product_id: ^product_id, status: :approved)
-    |> order_by([r], [desc: r.inserted_at])
+    |> order_by([r], desc: r.inserted_at)
     |> Repo.all()
   end
 

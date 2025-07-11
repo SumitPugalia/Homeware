@@ -32,9 +32,34 @@ defmodule HomeWare.Orders.Order do
   def changeset(order, attrs) do
     order
     |> cast(attrs, [
-      :order_number, :status, :subtotal, :tax_amount, :shipping_amount, :discount_amount, :total_amount, :currency, :notes, :tracking_number, :shipped_at, :delivered_at, :cancelled_at, :cancellation_reason, :user_id, :shipping_address_id, :billing_address_id
+      :order_number,
+      :status,
+      :subtotal,
+      :tax_amount,
+      :shipping_amount,
+      :discount_amount,
+      :total_amount,
+      :currency,
+      :notes,
+      :tracking_number,
+      :shipped_at,
+      :delivered_at,
+      :cancelled_at,
+      :cancellation_reason,
+      :user_id,
+      :shipping_address_id,
+      :billing_address_id
     ])
-    |> validate_required([:order_number, :status, :subtotal, :total_amount, :currency, :user_id, :shipping_address_id, :billing_address_id])
+    |> validate_required([
+      :order_number,
+      :status,
+      :subtotal,
+      :total_amount,
+      :currency,
+      :user_id,
+      :shipping_address_id,
+      :billing_address_id
+    ])
     |> unique_constraint(:order_number)
     |> validate_inclusion(:status, @statuses)
   end

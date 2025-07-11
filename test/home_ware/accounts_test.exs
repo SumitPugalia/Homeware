@@ -65,14 +65,20 @@ defmodule HomeWare.AccountsTest do
     test "authenticate_user/2 with valid credentials returns user" do
       user = Factory.insert(:user, %{email: "test@example.com"})
       # Set password for authentication
-      {:ok, user_with_password} = Accounts.update_user(user, %{hashed_password: Bcrypt.hash_pwd_salt("testpassword123")})
-      assert {:ok, authenticated_user} = Accounts.authenticate_user("test@example.com", "testpassword123")
+      {:ok, user_with_password} =
+        Accounts.update_user(user, %{hashed_password: Bcrypt.hash_pwd_salt("testpassword123")})
+
+      assert {:ok, authenticated_user} =
+               Accounts.authenticate_user("test@example.com", "testpassword123")
+
       assert authenticated_user.id == user.id
     end
 
     test "authenticate_user/2 with invalid credentials returns error" do
       Factory.insert(:user, %{email: "test@example.com"})
-      assert {:error, :invalid_credentials} = Accounts.authenticate_user("test@example.com", "wrongpassword")
+
+      assert {:error, :invalid_credentials} =
+               Accounts.authenticate_user("test@example.com", "wrongpassword")
     end
 
     test "deliver_user_confirmation_instructions/2 returns ok" do

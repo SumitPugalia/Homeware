@@ -2,7 +2,9 @@ defmodule HomeWareWeb.Router do
   use HomeWareWeb, :router
 
   def fetch_current_user(conn, opts), do: HomeWareWeb.UserAuth.fetch_current_user(conn, opts)
-  def require_authenticated_user(conn, opts), do: HomeWareWeb.UserAuth.require_authenticated_user(conn, opts)
+
+  def require_authenticated_user(conn, opts),
+    do: HomeWareWeb.UserAuth.require_authenticated_user(conn, opts)
 
   pipeline :browser do
     plug :accepts, ["html"]

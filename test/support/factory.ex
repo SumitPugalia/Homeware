@@ -141,18 +141,25 @@ defmodule HomeWare.Factory do
     case factory do
       :user ->
         HomeWare.Accounts.create_user(Map.from_struct(record))
+
       :category ->
         HomeWare.Categories.create_category(Map.from_struct(record))
+
       :product ->
         HomeWare.Products.create_product(Map.from_struct(record))
+
       :address ->
         HomeWare.Addresses.create_address(Map.from_struct(record))
+
       :order ->
         HomeWare.Orders.create_order(Map.from_struct(record))
+
       :order_item ->
         HomeWare.Orders.create_order_item(Map.from_struct(record))
+
       :product_review ->
         HomeWare.ProductReviews.create_product_review(Map.from_struct(record))
+
       :cart_item ->
         HomeWare.CartItems.create_cart_item(Map.from_struct(record))
     end

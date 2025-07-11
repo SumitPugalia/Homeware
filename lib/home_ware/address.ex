@@ -28,10 +28,31 @@ defmodule HomeWare.Address do
   def changeset(address, attrs) do
     address
     |> cast(attrs, [
-      :address_type, :first_name, :last_name, :company, :address_line_1, :address_line_2,
-      :city, :state, :postal_code, :country, :phone, :is_default, :user_id
+      :address_type,
+      :first_name,
+      :last_name,
+      :company,
+      :address_line_1,
+      :address_line_2,
+      :city,
+      :state,
+      :postal_code,
+      :country,
+      :phone,
+      :is_default,
+      :user_id
     ])
-    |> validate_required([:address_type, :first_name, :last_name, :address_line_1, :city, :state, :postal_code, :country, :user_id])
+    |> validate_required([
+      :address_type,
+      :first_name,
+      :last_name,
+      :address_line_1,
+      :city,
+      :state,
+      :postal_code,
+      :country,
+      :user_id
+    ])
     |> validate_inclusion(:address_type, @address_types)
   end
 end

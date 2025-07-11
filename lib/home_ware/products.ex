@@ -28,7 +28,7 @@ defmodule HomeWare.Products do
     |> where(is_active: true)
     |> apply_filters(filters)
     |> preload(:category)
-    |> order_by([p], [desc: p.inserted_at])
+    |> order_by([p], desc: p.inserted_at)
     |> Repo.paginate(page: page, page_size: per_page)
   end
 
@@ -106,18 +106,30 @@ defmodule HomeWare.Products do
   defp apply_filters(query, filters) do
     Enum.reduce(filters, query, fn {key, value}, acc ->
       case key do
-        :category -> acc |> where([p], p.category_id == ^value)
-        :brand -> acc |> where([p], p.brand == ^value)
-        :min_price -> acc |> where([p], p.price >= ^value)
-        :max_price -> acc |> where([p], p.price <= ^value)
-        :rating -> acc |> where([p], p.average_rating >= ^value)
+        :category ->
+          acc |> where([p], p.category_id == ^value)
+
+        :brand ->
+          acc |> where([p], p.brand == ^value)
+
+        :min_price ->
+          acc |> where([p], p.price >= ^value)
+
+        :max_price ->
+          acc |> where([p], p.price <= ^value)
+
+        :rating ->
+          acc |> where([p], p.average_rating >= ^value)
+
         :availability ->
           case value do
             "in_stock" -> acc |> where([p], p.inventory_quantity > 0)
             "out_of_stock" -> acc |> where([p], p.inventory_quantity == 0)
             _ -> acc
           end
-        _ -> acc
+
+        _ ->
+          acc
       end
     end)
   end
