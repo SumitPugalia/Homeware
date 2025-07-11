@@ -12,7 +12,6 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       Ecto.Adapters.SQL.Sandbox.mode(HomeWare.Repo, {:shared, self()})
     end
 
-    Ecto.Adapters.SQL.Sandbox.allow(HomeWare.Repo, self(), self())
     user = Factory.insert(:user, %{role: :admin})
     {:ok, token, _claims} = Guardian.encode_and_sign(user)
     %{user: user, token: token}
@@ -24,7 +23,7 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
     |> assign(:current_user, user)
   end
 
-  describe "index" do
+  describe "admin products live" do
     test "redirects to login when not authenticated", %{conn: conn} do
       assert {:error, {:redirect, %{to: "/users/log_in"}}} = live(conn, ~p"/admin/products")
     end
@@ -36,22 +35,17 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       assert {:error, {:redirect, %{to: "/"}}} = live(conn, ~p"/admin/products")
     end
 
-    test "renders products management when authenticated as admin", %{
-      conn: conn,
-      user: user,
-      token: token
-    } do
+    test "renders products management for admin", %{conn: conn, user: user, token: token} do
       conn = log_in_user(conn, user, token)
-      {:ok, _index_live, html} = live(conn, ~p"/admin/products")
+      {:ok, _live, html} = live(conn, ~p"/admin/products")
       assert html =~ "Product Management"
       assert html =~ "Add Product"
     end
 
     test "shows products table", %{conn: conn, user: user, token: token} do
       conn = log_in_user(conn, user, token)
-      {:ok, _index_live, html} = live(conn, ~p"/admin/products")
+      {:ok, _live, html} = live(conn, ~p"/admin/products")
       assert html =~ "Products"
-      assert html =~ "Product"
       assert html =~ "Category"
       assert html =~ "Price"
       assert html =~ "Inventory"
@@ -60,115 +54,98 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
     end
 
     test "shows add product form when button is clicked", %{conn: conn, user: user, token: token} do
+      category = Factory.insert(:category)
       conn = log_in_user(conn, user, token)
-      {:ok, index_live, _html} = live(conn, ~p"/admin/products")
-
-      assert index_live
-             |> element("button", "Add Product")
-             |> render_click() =~ "Add New Product"
+      {:ok, live, _html} = live(conn, ~p"/admin/products")
+      assert live |> element("button", "Add Product") |> render_click() =~ "Add New Product"
     end
 
     test "can create a new product", %{conn: conn, user: user, token: token} do
       category = Factory.insert(:category)
       conn = log_in_user(conn, user, token)
-      {:ok, index_live, _html} = live(conn, ~p"/admin/products")
+      {:ok, live, _html} = live(conn, ~p"/admin/products")
+      live |> element("button", "Add Product") |> render_click()
 
-      # Click add product button
-      index_live
-      |> element("button", "Add Product")
-      |> render_click()
-
-      # Fill in the form
-      index_live
+      live
       |> form("#product-form", %{
-        "product[name]" => "Test Product",
-        "product[slug]" => "test-product",
-        "product[price]" => "29.99",
+        "product[name]" => "UI Created Product",
+        "product[slug]" => "ui-created-product",
+        "product[price]" => "123.45",
         "product[category_id]" => category.id,
-        "product[description]" => "A test product",
-        "product[sku]" => "TEST-001",
-        "product[brand]" => "Test Brand",
-        "product[inventory_quantity]" => "10",
+        "product[description]" => "A product created via UI test",
+        "product[sku]" => "UI-001",
+        "product[brand]" => "UITestBrand",
+        "product[inventory_quantity]" => "7",
         "product[is_active]" => "true"
       })
       |> render_submit()
 
-      # Should show success message
-      assert has_element?(index_live, ".alert", "Product created successfully")
+      assert has_element?(live, ".alert", "Product created successfully")
+      assert render(live) =~ "UI Created Product"
     end
 
     test "can edit an existing product", %{conn: conn, user: user, token: token} do
       category = Factory.insert(:category)
       conn = log_in_user(conn, user, token)
-      {:ok, index_live, _html} = live(conn, ~p"/admin/products")
+      {:ok, live, _html} = live(conn, ~p"/admin/products")
+      # Create product via UI
+      live |> element("button", "Add Product") |> render_click()
 
-      # First create a product through the form
-      index_live
-      |> element("button", "Add Product")
-      |> render_click()
-
-      index_live
+      live
       |> form("#product-form", %{
-        "product[name]" => "Original Name",
-        "product[slug]" => "original-product",
-        "product[price]" => "29.99",
+        "product[name]" => "Editable Product",
+        "product[slug]" => "editable-product",
+        "product[price]" => "50.00",
         "product[category_id]" => category.id,
-        "product[description]" => "Original product",
-        "product[sku]" => "ORIG-001",
-        "product[brand]" => "Original Brand",
-        "product[inventory_quantity]" => "5",
-        "product[is_active]" => "true"
-      })
-      |> render_submit()
-
-      # Now edit the product
-      index_live
-      |> element("button[phx-click='edit_product']")
-      |> render_click()
-
-      # Update the form
-      index_live
-      |> form("#product-form", %{
-        "product[name]" => "Updated Name",
-        "product[price]" => "39.99"
-      })
-      |> render_submit()
-
-      # Should show success message
-      assert has_element?(index_live, ".alert", "Product updated successfully")
-    end
-
-    test "can delete a product", %{conn: conn, user: user, token: token} do
-      category = Factory.insert(:category)
-      conn = log_in_user(conn, user, token)
-      {:ok, index_live, _html} = live(conn, ~p"/admin/products")
-
-      # First create a product through the form
-      index_live
-      |> element("button", "Add Product")
-      |> render_click()
-
-      index_live
-      |> form("#product-form", %{
-        "product[name]" => "Product to Delete",
-        "product[slug]" => "product-to-delete",
-        "product[price]" => "19.99",
-        "product[category_id]" => category.id,
-        "product[description]" => "Product to be deleted",
-        "product[sku]" => "DELETE-001",
-        "product[brand]" => "Delete Brand",
+        "product[description]" => "To be edited",
+        "product[sku]" => "EDIT-001",
+        "product[brand]" => "EditBrand",
         "product[inventory_quantity]" => "3",
         "product[is_active]" => "true"
       })
       |> render_submit()
 
-      # Now delete the product
-      index_live
-      |> element("button[phx-click='delete_product']")
-      |> render_click()
+      assert has_element?(live, ".alert", "Product created successfully")
+      # Click edit on the first Edit button
+      live |> element("button", "Edit") |> render_click()
 
-      # Should show confirmation dialog
-      assert has_element?(index_live, "[data-confirm]")
+      live
+      |> form("#product-form", %{
+        "product[name]" => "Edited Product",
+        "product[price]" => "99.99"
+      })
+      |> render_submit()
+
+      assert has_element?(live, ".alert", "Product updated successfully")
+      assert render(live) =~ "Edited Product"
+    end
+
+    test "can delete a product", %{conn: conn, user: user, token: token} do
+      category = Factory.insert(:category)
+      conn = log_in_user(conn, user, token)
+      {:ok, live, _html} = live(conn, ~p"/admin/products")
+      # Create product via UI
+      live |> element("button", "Add Product") |> render_click()
+
+      live
+      |> form("#product-form", %{
+        "product[name]" => "Deletable Product",
+        "product[slug]" => "deletable-product",
+        "product[price]" => "10.00",
+        "product[category_id]" => category.id,
+        "product[description]" => "To be deleted",
+        "product[sku]" => "DEL-001",
+        "product[brand]" => "DelBrand",
+        "product[inventory_quantity]" => "1",
+        "product[is_active]" => "true"
+      })
+      |> render_submit()
+
+      assert has_element?(live, ".alert", "Product created successfully")
+      # Click delete on the first Delete button
+      live |> element("button", "Delete") |> render_click()
+      # Should show confirmation dialog (data-confirm)
+      assert has_element?(live, "[data-confirm]")
     end
   end
 end

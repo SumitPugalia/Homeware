@@ -44,7 +44,7 @@ defmodule HomeWareWeb.ProductCatalogLiveTest do
       {:ok, index_live, _html} = live(conn, ~p"/products")
 
       assert index_live
-             |> element("[data-product-id='#{product.id}']")
+             |> element("[data-product-id='#{product.id}'] button[phx-click='add_to_cart']")
              |> render_click()
     end
   end
