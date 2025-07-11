@@ -130,6 +130,9 @@ defmodule HomeWare.Factory do
   end
 
   def build(:product_review, attrs) do
+    user_id = Map.get(attrs, :user_id) || HomeWare.Factory.insert(:user).id
+    product_id = Map.get(attrs, :product_id) || HomeWare.Factory.insert(:product).id
+
     %HomeWare.ProductReview{
       id: Ecto.UUID.generate(),
       rating: 5,
@@ -138,7 +141,9 @@ defmodule HomeWare.Factory do
       status: :approved,
       is_verified_purchase: true,
       helpful_votes: 10,
-      unhelpful_votes: 2
+      unhelpful_votes: 2,
+      user_id: user_id,
+      product_id: product_id
     }
     |> Map.merge(attrs)
   end

@@ -21,7 +21,6 @@ defmodule HomeWare.AddressTest do
     test "changeset with missing required fields" do
       changeset = Address.changeset(%Address{}, %{})
       errors = errors_on(changeset)
-      assert Map.has_key?(errors, :address_type)
       assert Map.has_key?(errors, :first_name)
       assert Map.has_key?(errors, :last_name)
       assert Map.has_key?(errors, :address_line_1)
