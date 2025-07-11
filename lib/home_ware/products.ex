@@ -8,11 +8,24 @@ defmodule HomeWare.Products do
   alias HomeWare.Products.Product
   alias HomeWare.Categories.Category
 
-  def list_products do
-    Product
-    |> where(is_active: true)
-    |> preload(:category)
-    |> Repo.all()
+  def list_products(params \\ %{}) do
+    case params do
+      %{} when map_size(params) == 0 ->
+        Product
+        |> where(is_active: true)
+        |> preload(:category)
+        |> Repo.all()
+
+      _ ->
+        page = params["page"] || 1
+        per_page = params["per_page"] || 10
+
+        Product
+        |> where(is_active: true)
+        |> preload(:category)
+        |> order_by([p], desc: p.inserted_at)
+        |> Repo.paginate(%{page: page, per_page: per_page})
+    end
   end
 
   def list_featured_products do
@@ -101,6 +114,46 @@ defmodule HomeWare.Products do
       nil -> 1000
       max_price -> max_price
     end
+  end
+
+  def list_products_by_category(category_id) do
+    Product
+    |> where(category_id: ^category_id, is_active: true)
+    |> preload(:category)
+    |> Repo.all()
+  end
+
+  def list_related_products(product) do
+    Product
+    |> where(category_id: ^product.category_id, is_active: true)
+    |> where([p], p.id != ^product.id)
+    |> preload(:category)
+    |> limit(4)
+    |> Repo.all()
+  end
+
+  def search_products(query) do
+    search_term = "%#{query}%"
+
+    Product
+    |> where(is_active: true)
+    |> where([p], ilike(p.name, ^search_term) or ilike(p.description, ^search_term))
+    |> preload(:category)
+    |> Repo.all()
+  end
+
+  def list_product_reviews(_product_id) do
+    # This would need to be implemented when ProductReview is available
+    []
+  end
+
+  def list_brands_by_category(category_id) do
+    Product
+    |> where(category_id: ^category_id, is_active: true)
+    |> distinct([p], p.brand)
+    |> select([p], p.brand)
+    |> where([p], not is_nil(p.brand))
+    |> Repo.all()
   end
 
   defp apply_filters(query, filters) do

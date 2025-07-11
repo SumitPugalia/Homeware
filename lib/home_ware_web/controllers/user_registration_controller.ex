@@ -2,7 +2,6 @@ defmodule HomeWareWeb.UserRegistrationController do
   use HomeWareWeb, :controller
 
   alias HomeWare.Accounts
-  alias HomeWare.Accounts.User
 
   def new(conn, _params) do
     render(conn, :new)
@@ -10,7 +9,7 @@ defmodule HomeWareWeb.UserRegistrationController do
 
   def create(conn, %{"user" => user_params}) do
     case Accounts.register_user(user_params) do
-      {:ok, user} ->
+      {:ok, _user} ->
         conn
         |> put_flash(:info, "Registration successful! Please log in.")
         |> redirect(to: ~p"/users/log_in")

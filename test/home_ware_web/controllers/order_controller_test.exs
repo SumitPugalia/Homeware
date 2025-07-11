@@ -2,6 +2,7 @@ defmodule HomeWareWeb.OrderControllerTest do
   use HomeWareWeb.ConnCase
 
   alias HomeWare.Factory
+  alias HomeWare.Guardian
 
   setup %{conn: conn} do
     %{conn: conn}
@@ -15,8 +16,13 @@ defmodule HomeWareWeb.OrderControllerTest do
 
     test "GET /orders shows orders when authenticated", %{conn: conn} do
       user = Factory.insert(:user)
-      conn = log_in_user(conn, user)
-      conn = get(conn, ~p"/orders")
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> get(~p"/orders")
+
       assert html_response(conn, 200) =~ "Orders"
     end
   end
@@ -30,16 +36,14 @@ defmodule HomeWareWeb.OrderControllerTest do
     test "GET /orders/:id shows order when authenticated", %{conn: conn} do
       user = Factory.insert(:user)
       order = Factory.insert(:order, %{user_id: user.id})
-      conn = log_in_user(conn, user)
-      conn = get(conn, ~p"/orders/#{order.id}")
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> get(~p"/orders/#{order.id}")
+
       assert html_response(conn, 200) =~ "Order Details"
     end
-  end
-
-  defp log_in_user(conn, user) do
-    conn
-    |> post(~p"/users/log_in", %{
-      "user" => %{"email" => user.email, "password" => "password123"}
-    })
   end
 end

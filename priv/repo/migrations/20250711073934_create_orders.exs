@@ -14,9 +14,9 @@ defmodule HomeWare.Repo.Migrations.CreateOrders do
       add :currency, :string
       add :notes, :text
       add :tracking_number, :string
-      add :shipped_at, :naive_datetime
-      add :delivered_at, :naive_datetime
-      add :cancelled_at, :naive_datetime
+      add :shipped_at, :utc_datetime
+      add :delivered_at, :utc_datetime
+      add :cancelled_at, :utc_datetime
       add :cancellation_reason, :text
       add :user_id, references(:users, on_delete: :restrict, type: :uuid)
       add :shipping_address_id, references(:addresses, on_delete: :restrict, type: :uuid)

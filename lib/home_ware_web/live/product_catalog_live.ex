@@ -2,7 +2,6 @@ defmodule HomeWareWeb.ProductCatalogLive do
   alias HomeWare.Repo
   alias HomeWare.Products.Product
   alias HomeWare.Categories.Category
-  alias HomeWare.Brands.Brand
 
   use HomeWareWeb, :live_view
 

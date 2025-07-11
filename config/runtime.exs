@@ -65,6 +65,16 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  # Guardian configuration for production
+  guardian_secret_key =
+    System.get_env("GUARDIAN_SECRET_KEY") ||
+      raise """
+      environment variable GUARDIAN_SECRET_KEY is missing.
+      You can generate one by calling: mix phx.gen.secret
+      """
+
+  config :home_ware, HomeWare.Guardian, secret_key: guardian_secret_key
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key

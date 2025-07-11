@@ -1,10 +1,14 @@
 defmodule HomeWareWeb.Router do
   use HomeWareWeb, :router
 
-  def fetch_current_user(conn, opts), do: HomeWareWeb.UserAuth.fetch_current_user(conn, opts)
+  def fetch_current_user(conn, opts),
+    do: HomeWareWeb.UserAuthGuardian.fetch_current_user(conn, opts)
 
   def require_authenticated_user(conn, opts),
-    do: HomeWareWeb.UserAuth.require_authenticated_user(conn, opts)
+    do: HomeWareWeb.UserAuthGuardian.require_authenticated_user(conn, opts)
+
+  def require_admin_user(conn, opts),
+    do: HomeWareWeb.UserAuthGuardian.require_admin_user(conn, opts)
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -18,10 +22,16 @@ defmodule HomeWareWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_current_user
   end
 
   pipeline :require_auth do
     plug :require_authenticated_user
+  end
+
+  pipeline :require_admin do
+    plug :require_authenticated_user
+    plug :require_admin_user
   end
 
   scope "/", HomeWareWeb do
@@ -29,8 +39,24 @@ defmodule HomeWareWeb.Router do
 
     get "/", PageController, :home
 
-    # Product catalog
+    # Product pages
     live "/products", ProductCatalogLive, :index
+    live "/products/:id", ProductDetailLive, :show
+    live "/categories", CategoryIndexLive, :index
+    live "/categories/:id", CategoryShowLive, :show
+    live "/search", SearchLive, :index
+
+    # Cart and checkout
+    live "/cart", CartLive, :index
+    live "/checkout", CheckoutLive, :index
+
+    # Static pages
+    get "/about", PageController, :about
+    get "/contact", PageController, :contact
+    get "/shipping", PageController, :shipping
+    get "/returns", PageController, :returns
+    get "/privacy", PageController, :privacy
+    get "/terms", PageController, :terms
 
     # Authentication routes
     get "/users/register", UserRegistrationController, :new
@@ -47,14 +73,39 @@ defmodule HomeWareWeb.Router do
     get "/profile", UserController, :profile
     get "/orders", OrderController, :index
     get "/orders/:id", OrderController, :show
+    live "/wishlist", WishlistLive, :index
+    live "/account", AccountLive, :index
   end
 
   # Admin routes
   scope "/admin", HomeWareWeb do
-    pipe_through [:browser, :require_auth]
+    pipe_through [:browser, :require_admin]
 
     live "/dashboard", AdminDashboardLive, :index
     live "/products", AdminProductsLive, :index
+    live "/categories", AdminCategoriesLive, :index
+    live "/orders", AdminOrdersLive, :index
+    live "/users", AdminUsersLive, :index
+  end
+
+  # API routes with token authentication
+  scope "/api", HomeWareWeb do
+    pipe_through :api
+
+    # Public API endpoints
+    get "/products", Api.ProductController, :index
+    get "/products/:id", Api.ProductController, :show
+    get "/categories", Api.CategoryController, :index
+  end
+
+  scope "/api", HomeWareWeb do
+    pipe_through [:api, :require_auth]
+
+    # Protected API endpoints
+    get "/profile", Api.UserController, :profile
+    get "/orders", Api.OrderController, :index
+    post "/orders", Api.OrderController, :create
+    get "/orders/:id", Api.OrderController, :show
   end
 
   # Other scopes may use custom stacks.

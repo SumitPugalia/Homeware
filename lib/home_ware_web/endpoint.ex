@@ -52,10 +52,10 @@ defmodule HomeWareWeb.Endpoint do
   plug HomeWareWeb.Router
 
   def fetch_current_user(conn, _opts) do
-    HomeWareWeb.UserAuth.fetch_current_user(conn, [])
+    HomeWareWeb.UserAuthGuardian.fetch_current_user(conn, [])
   end
 
   def require_authenticated_user(conn, _opts) do
-    HomeWareWeb.UserAuth.require_authenticated_user(conn, [])
+    HomeWareWeb.UserAuthGuardian.require_authenticated_user(conn, [])
   end
 end

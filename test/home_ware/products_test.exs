@@ -28,6 +28,7 @@ defmodule HomeWare.ProductsTest do
     end
 
     test "create_product/1 with valid data creates a product" do
+      category = Factory.insert(:category)
       valid_attrs = %{
         name: "Test Product",
         slug: "test-product",
@@ -38,13 +39,14 @@ defmodule HomeWare.ProductsTest do
         is_featured: false,
         inventory_quantity: 10,
         average_rating: 4.5,
-        review_count: 5
+        review_count: 5,
+        category_id: category.id
       }
 
       assert {:ok, %Product{} = product} = Products.create_product(valid_attrs)
       assert product.name == "Test Product"
       assert product.slug == "test-product"
-      assert product.price == 100.0
+      assert Decimal.compare(product.price, Decimal.new("100.0")) == :eq
     end
 
     test "create_product/1 with invalid data returns error changeset" do
@@ -57,7 +59,7 @@ defmodule HomeWare.ProductsTest do
 
       assert {:ok, %Product{} = updated_product} = Products.update_product(product, update_attrs)
       assert updated_product.name == "Updated Product"
-      assert updated_product.price == 150.0
+      assert Decimal.compare(updated_product.price, Decimal.new("150.0")) == :eq
     end
 
     test "update_product/2 with invalid data returns error changeset" do
@@ -78,7 +80,6 @@ defmodule HomeWare.ProductsTest do
     end
 
     test "list_categories/0 returns all categories" do
-      # This will be implemented when Categories context is created
       assert Products.list_categories() == []
     end
 
@@ -106,7 +107,6 @@ defmodule HomeWare.ProductsTest do
     end
 
     test "paginated_products/3 returns paginated results" do
-      # Create multiple products
       for i <- 1..15 do
         Factory.insert(:product, %{name: "Product #{i}", price: Decimal.new("#{100.0 + i}")})
       end
@@ -120,12 +120,10 @@ defmodule HomeWare.ProductsTest do
       _product1 = Factory.insert(:product, %{brand: "Brand A", price: Decimal.new("50.0")})
       _product2 = Factory.insert(:product, %{brand: "Brand B", price: Decimal.new("100.0")})
 
-      # Filter by brand
       filtered_page = Products.paginated_products(1, 10, %{brand: "Brand A"})
       assert length(filtered_page.entries) == 1
       assert hd(filtered_page.entries).brand == "Brand A"
 
-      # Filter by price range
       price_filtered = Products.paginated_products(1, 10, %{min_price: "75.0"})
       assert length(price_filtered.entries) == 1
       assert Decimal.compare(hd(price_filtered.entries).price, Decimal.new("75.0")) != :lt

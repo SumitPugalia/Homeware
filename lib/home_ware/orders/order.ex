@@ -18,9 +18,9 @@ defmodule HomeWare.Orders.Order do
     field :currency, :string, default: "USD"
     field :notes, :string
     field :tracking_number, :string
-    field :shipped_at, :naive_datetime
-    field :delivered_at, :naive_datetime
-    field :cancelled_at, :naive_datetime
+    field :shipped_at, :utc_datetime
+    field :delivered_at, :utc_datetime
+    field :cancelled_at, :utc_datetime
     field :cancellation_reason, :string
 
     belongs_to :user, HomeWare.Accounts.User

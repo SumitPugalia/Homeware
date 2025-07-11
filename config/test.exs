@@ -36,3 +36,8 @@ config :phoenix, :plug_init_mode, :runtime
 config :phoenix_live_view,
   # Enable helpful, but potentially expensive runtime checks
   enable_expensive_runtime_checks: true
+
+# Guardian configuration for tests
+config :home_ware, HomeWare.Guardian,
+  issuer: "home_ware_test",
+  secret_key: "+ftxPuEyBowpC/YVD8GcLzDdcjqXLRRXV4bA50xR1rdT1YzmH5zXhP65U9HulmHh"

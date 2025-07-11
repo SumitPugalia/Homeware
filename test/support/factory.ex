@@ -15,7 +15,7 @@ defmodule HomeWare.Factory do
       phone: "+1-555-123-4567",
       role: :customer,
       is_active: true,
-      confirmed_at: NaiveDateTime.utc_now()
+      confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second)
     }
     |> Map.merge(attrs)
   end
@@ -33,6 +33,7 @@ defmodule HomeWare.Factory do
   end
 
   def build(:product, attrs) do
+    category_id = Map.get(attrs, :category_id) || HomeWare.Factory.insert(:category).id
     %HomeWare.Products.Product{
       id: Ecto.UUID.generate(),
       name: "Test Product",
@@ -53,7 +54,8 @@ defmodule HomeWare.Factory do
       is_featured: false,
       is_active: true,
       average_rating: Decimal.new("4.5"),
-      review_count: 5
+      review_count: 5,
+      category_id: category_id
     }
     |> Map.merge(attrs)
   end
@@ -130,7 +132,9 @@ defmodule HomeWare.Factory do
       quantity: 3,
       unit_price: Decimal.new("49.99"),
       total_price: Decimal.new("149.97"),
-      notes: "Gift for mom"
+      notes: "Gift for mom",
+      user_id: Ecto.UUID.generate(),
+      product_id: Ecto.UUID.generate()
     }
     |> Map.merge(attrs)
   end
@@ -138,5 +142,6 @@ defmodule HomeWare.Factory do
   # Helper function to create and insert records
   def insert(factory, attrs \\ %{}) do
     build(factory, attrs)
+    |> HomeWare.Repo.insert!()
   end
 end

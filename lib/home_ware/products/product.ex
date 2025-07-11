@@ -59,6 +59,10 @@ defmodule HomeWare.Products.Product do
       :review_count
     ])
     |> validate_required([:name, :slug, :price])
+    |> validate_number(:price, greater_than: 0)
+    |> validate_number(:inventory_quantity, greater_than_or_equal_to: 0)
+    |> validate_number(:average_rating, greater_than_or_equal_to: 0, less_than_or_equal_to: 5)
+    |> validate_number(:review_count, greater_than_or_equal_to: 0)
     |> unique_constraint(:slug)
     |> unique_constraint(:sku)
   end

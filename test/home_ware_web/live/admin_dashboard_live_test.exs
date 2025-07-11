@@ -3,22 +3,20 @@ defmodule HomeWareWeb.AdminDashboardLiveTest do
 
   import Phoenix.LiveViewTest
   alias HomeWare.Factory
-  alias HomeWareWeb.UserAuth
+  alias HomeWare.Guardian
 
   setup do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(HomeWare.Repo)
     Ecto.Adapters.SQL.Sandbox.mode(HomeWare.Repo, {:shared, self()})
     user = Factory.insert(:user, %{role: :admin})
-    %{user: user}
+    {:ok, token, _claims} = Guardian.encode_and_sign(user)
+    %{user: user, token: token}
   end
 
-  defp log_in_user(conn, user) do
-    token = Phoenix.Token.sign(HomeWareWeb.Endpoint, "user auth", user.id)
-
+  defp log_in_user(conn, user, token) do
     conn
-    |> Phoenix.ConnTest.init_test_session(%{})
-    |> Plug.Conn.put_session(:user_token, token)
-    |> Plug.Conn.assign(:current_user, user)
+    |> put_req_header("authorization", "Bearer #{token}")
+    |> assign(:current_user, user)
   end
 
   describe "index" do
@@ -28,26 +26,31 @@ defmodule HomeWareWeb.AdminDashboardLiveTest do
 
     test "redirects when user is not admin", %{conn: conn} do
       user = Factory.insert(:user, %{role: :customer})
-      conn = log_in_user(conn, user)
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+      conn = log_in_user(conn, user, token)
       assert {:error, {:redirect, %{to: "/"}}} = live(conn, ~p"/admin/dashboard")
     end
 
-    test "renders admin dashboard when authenticated as admin", %{conn: conn, user: user} do
-      conn = log_in_user(conn, user)
+    test "renders admin dashboard when authenticated as admin", %{
+      conn: conn,
+      user: user,
+      token: token
+    } do
+      conn = log_in_user(conn, user, token)
       {:ok, _index_live, html} = live(conn, ~p"/admin/dashboard")
       assert html =~ "Admin Dashboard"
     end
 
-    test "shows dashboard stats", %{conn: conn, user: user} do
-      conn = log_in_user(conn, user)
+    test "shows dashboard stats", %{conn: conn, user: user, token: token} do
+      conn = log_in_user(conn, user, token)
       {:ok, _index_live, html} = live(conn, ~p"/admin/dashboard")
       assert html =~ "Total Products"
       assert html =~ "Total Users"
       assert html =~ "Total Orders"
     end
 
-    test "refreshes stats", %{conn: conn, user: user} do
-      conn = log_in_user(conn, user)
+    test "refreshes stats", %{conn: conn, user: user, token: token} do
+      conn = log_in_user(conn, user, token)
       {:ok, index_live, _html} = live(conn, ~p"/admin/dashboard")
 
       assert index_live

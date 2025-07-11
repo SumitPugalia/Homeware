@@ -3,21 +3,20 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
 
   import Phoenix.LiveViewTest
   alias HomeWare.Factory
+  alias HomeWare.Guardian
 
   setup do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(HomeWare.Repo)
     Ecto.Adapters.SQL.Sandbox.mode(HomeWare.Repo, {:shared, self()})
     user = Factory.insert(:user, %{role: :admin})
-    %{user: user}
+    {:ok, token, _claims} = Guardian.encode_and_sign(user)
+    %{user: user, token: token}
   end
 
-  defp log_in_user(conn, user) do
-    token = Phoenix.Token.sign(HomeWareWeb.Endpoint, "user auth", user.id)
-
+  defp log_in_user(conn, user, token) do
     conn
-    |> Phoenix.ConnTest.init_test_session(%{})
-    |> Plug.Conn.put_session(:user_token, token)
-    |> Plug.Conn.assign(:current_user, user)
+    |> put_req_header("authorization", "Bearer #{token}")
+    |> assign(:current_user, user)
   end
 
   describe "index" do
@@ -27,19 +26,24 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
 
     test "redirects when user is not admin", %{conn: conn} do
       user = Factory.insert(:user, %{role: :customer})
-      conn = log_in_user(conn, user)
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+      conn = log_in_user(conn, user, token)
       assert {:error, {:redirect, %{to: "/"}}} = live(conn, ~p"/admin/products")
     end
 
-    test "renders products management when authenticated as admin", %{conn: conn, user: user} do
-      conn = log_in_user(conn, user)
+    test "renders products management when authenticated as admin", %{
+      conn: conn,
+      user: user,
+      token: token
+    } do
+      conn = log_in_user(conn, user, token)
       {:ok, _index_live, html} = live(conn, ~p"/admin/products")
       assert html =~ "Product Management"
       assert html =~ "Add Product"
     end
 
-    test "shows products table", %{conn: conn, user: user} do
-      conn = log_in_user(conn, user)
+    test "shows products table", %{conn: conn, user: user, token: token} do
+      conn = log_in_user(conn, user, token)
       {:ok, _index_live, html} = live(conn, ~p"/admin/products")
       assert html =~ "Products"
       assert html =~ "Product"
@@ -50,8 +54,8 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       assert html =~ "Actions"
     end
 
-    test "shows add product form when button is clicked", %{conn: conn, user: user} do
-      conn = log_in_user(conn, user)
+    test "shows add product form when button is clicked", %{conn: conn, user: user, token: token} do
+      conn = log_in_user(conn, user, token)
       {:ok, index_live, _html} = live(conn, ~p"/admin/products")
 
       assert index_live
@@ -59,9 +63,9 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
              |> render_click() =~ "Add New Product"
     end
 
-    test "can create a new product", %{conn: conn, user: user} do
+    test "can create a new product", %{conn: conn, user: user, token: token} do
       category = Factory.insert(:category)
-      conn = log_in_user(conn, user)
+      conn = log_in_user(conn, user, token)
       {:ok, index_live, _html} = live(conn, ~p"/admin/products")
 
       # Click add product button
@@ -88,10 +92,10 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       assert has_element?(index_live, ".alert", "Product created successfully")
     end
 
-    test "can edit an existing product", %{conn: conn, user: user} do
+    test "can edit an existing product", %{conn: conn, user: user, token: token} do
       product = Factory.insert(:product, %{name: "Original Name"})
       category = Factory.insert(:category)
-      conn = log_in_user(conn, user)
+      conn = log_in_user(conn, user, token)
       {:ok, index_live, _html} = live(conn, ~p"/admin/products")
 
       # Click edit button
@@ -111,9 +115,9 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       assert has_element?(index_live, ".alert", "Product updated successfully")
     end
 
-    test "can delete a product", %{conn: conn, user: user} do
+    test "can delete a product", %{conn: conn, user: user, token: token} do
       product = Factory.insert(:product, %{name: "Product to Delete"})
-      conn = log_in_user(conn, user)
+      conn = log_in_user(conn, user, token)
       {:ok, index_live, _html} = live(conn, ~p"/admin/products")
 
       # Click delete button

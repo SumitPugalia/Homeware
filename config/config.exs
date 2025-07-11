@@ -61,6 +61,11 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Guardian configuration
+config :home_ware, HomeWare.Guardian,
+  issuer: "home_ware",
+  secret_key: "+ftxPuEyBowpC/YVD8GcLzDdcjqXLRRXV4bA50xR1rdT1YzmH5zXhP65U9HulmHh"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

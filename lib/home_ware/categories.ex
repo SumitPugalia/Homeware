@@ -34,4 +34,18 @@ defmodule HomeWare.Categories do
   def change_category(%Category{} = category, attrs \\ %{}) do
     Category.changeset(category, attrs)
   end
+
+  def list_categories_with_products do
+    Category
+    |> where(is_active: true)
+    |> preload(:products)
+    |> Repo.all()
+  end
+
+  def create_or_update_category(category, attrs) do
+    case category do
+      nil -> create_category(attrs)
+      category -> update_category(category, attrs)
+    end
+  end
 end

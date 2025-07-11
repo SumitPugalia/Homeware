@@ -2,6 +2,7 @@ defmodule HomeWareWeb.UserControllerTest do
   use HomeWareWeb.ConnCase
 
   alias HomeWare.Factory
+  alias HomeWare.Guardian
 
   setup %{conn: conn} do
     %{conn: conn}
@@ -15,16 +16,14 @@ defmodule HomeWareWeb.UserControllerTest do
 
     test "GET /profile shows profile when authenticated", %{conn: conn} do
       user = Factory.insert(:user)
-      conn = log_in_user(conn, user)
-      conn = get(conn, ~p"/profile")
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> get(~p"/profile")
+
       assert html_response(conn, 200) =~ "Profile"
     end
-  end
-
-  defp log_in_user(conn, user) do
-    conn
-    |> post(~p"/users/log_in", %{
-      "user" => %{"email" => user.email, "password" => "password123"}
-    })
   end
 end
