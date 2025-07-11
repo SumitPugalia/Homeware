@@ -10,6 +10,7 @@ defmodule HomeWare.Repo.Migrations.CreateAddresses do
       add :company, :string
       add :address_line_1, :string
       add :address_line_2, :string
+      add :address_type, :string
       add :city, :string
       add :state, :string
       add :postal_code, :string

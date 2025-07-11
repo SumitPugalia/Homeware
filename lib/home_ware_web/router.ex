@@ -20,11 +20,6 @@ defmodule HomeWareWeb.Router do
     plug :fetch_current_user
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-    plug :fetch_current_user
-  end
-
   pipeline :require_auth do
     plug :require_authenticated_user
   end
@@ -86,26 +81,6 @@ defmodule HomeWareWeb.Router do
     live "/categories", AdminCategoriesLive, :index
     live "/orders", AdminOrdersLive, :index
     live "/users", AdminUsersLive, :index
-  end
-
-  # API routes with token authentication
-  scope "/api", HomeWareWeb do
-    pipe_through :api
-
-    # Public API endpoints
-    get "/products", Api.ProductController, :index
-    get "/products/:id", Api.ProductController, :show
-    get "/categories", Api.CategoryController, :index
-  end
-
-  scope "/api", HomeWareWeb do
-    pipe_through [:api, :require_auth]
-
-    # Protected API endpoints
-    get "/profile", Api.UserController, :profile
-    get "/orders", Api.OrderController, :index
-    post "/orders", Api.OrderController, :create
-    get "/orders/:id", Api.OrderController, :show
   end
 
   # Other scopes may use custom stacks.

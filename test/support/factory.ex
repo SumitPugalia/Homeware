@@ -21,10 +21,12 @@ defmodule HomeWare.Factory do
   end
 
   def build(:category, attrs) do
+    unique_id = System.unique_integer()
+
     %HomeWare.Categories.Category{
       id: Ecto.UUID.generate(),
-      name: "Test Category",
-      slug: "test-category",
+      name: "Test Category #{unique_id}",
+      slug: "test-category-#{unique_id}",
       description: "Test category description",
       image_url: "https://example.com/category.jpg",
       is_active: true
@@ -34,10 +36,12 @@ defmodule HomeWare.Factory do
 
   def build(:product, attrs) do
     category_id = Map.get(attrs, :category_id) || HomeWare.Factory.insert(:category).id
+    unique_id = System.unique_integer()
+
     %HomeWare.Products.Product{
       id: Ecto.UUID.generate(),
-      name: "Test Product",
-      slug: "test-product",
+      name: "Test Product #{unique_id}",
+      slug: "test-product-#{unique_id}",
       description: "Test product description",
       short_description: "Test short description",
       price: Decimal.new("99.99"),

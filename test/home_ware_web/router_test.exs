@@ -78,29 +78,4 @@ defmodule HomeWareWeb.RouterTest do
       assert html_response(conn, 200) =~ "Admin Dashboard"
     end
   end
-
-  describe "API routes" do
-    test "GET /api/products works without authentication", %{conn: conn} do
-      conn = get(conn, ~p"/api/products")
-      assert json_response(conn, 200)
-    end
-
-    test "GET /api/profile requires authentication", %{conn: conn} do
-      conn = get(conn, ~p"/api/profile")
-      assert json_response(conn, 401)
-    end
-
-    test "GET /api/profile works with valid token", %{conn: conn} do
-      user = Factory.insert(:user)
-      {:ok, token, _claims} = Guardian.encode_and_sign(user)
-
-      conn =
-        conn
-        |> put_req_header("authorization", "Bearer #{token}")
-        |> get(~p"/api/profile")
-
-      response = json_response(conn, 200)
-      assert response["user"]["id"] == user.id
-    end
-  end
 end

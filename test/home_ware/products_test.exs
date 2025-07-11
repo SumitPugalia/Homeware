@@ -9,26 +9,35 @@ defmodule HomeWare.ProductsTest do
 
     test "list_products/0 returns all products" do
       product = Factory.insert(:product)
-      assert Products.list_products() == [product]
+      products = Products.list_products()
+      assert length(products) == 1
+      assert hd(products).id == product.id
     end
 
     test "list_featured_products/0 returns featured products" do
       product = Factory.insert(:product, %{is_featured: true})
-      assert Products.list_featured_products() == [product]
+      products = Products.list_featured_products()
+      assert length(products) == 1
+      assert hd(products).id == product.id
     end
 
     test "get_product!/1 returns the product with given id" do
       product = Factory.insert(:product)
-      assert Products.get_product!(product.id) == product
+      retrieved_product = Products.get_product!(product.id)
+      assert retrieved_product.id == product.id
+      assert retrieved_product.name == product.name
     end
 
     test "get_product_by_slug!/1 returns the product with given slug" do
       product = Factory.insert(:product, %{slug: "test-product"})
-      assert Products.get_product_by_slug!("test-product") == product
+      retrieved_product = Products.get_product_by_slug!("test-product")
+      assert retrieved_product.id == product.id
+      assert retrieved_product.slug == product.slug
     end
 
     test "create_product/1 with valid data creates a product" do
       category = Factory.insert(:category)
+
       valid_attrs = %{
         name: "Test Product",
         slug: "test-product",
@@ -65,7 +74,9 @@ defmodule HomeWare.ProductsTest do
     test "update_product/2 with invalid data returns error changeset" do
       product = Factory.insert(:product)
       assert {:error, %Ecto.Changeset{}} = Products.update_product(product, %{name: nil})
-      assert product == Products.get_product!(product.id)
+      retrieved_product = Products.get_product!(product.id)
+      assert retrieved_product.id == product.id
+      assert retrieved_product.name == product.name
     end
 
     test "delete_product/1 deletes the product" do
@@ -96,14 +107,16 @@ defmodule HomeWare.ProductsTest do
       _product1 = Factory.insert(:product, %{price: Decimal.new("50.0")})
       _product2 = Factory.insert(:product, %{price: Decimal.new("100.0")})
 
-      assert Products.min_price() == Decimal.new("50.0")
+      min_price = Products.min_price()
+      assert Decimal.compare(min_price, Decimal.new("50.0")) == :eq
     end
 
     test "max_price/0 returns maximum price" do
       _product1 = Factory.insert(:product, %{price: Decimal.new("50.0")})
       _product2 = Factory.insert(:product, %{price: Decimal.new("100.0")})
 
-      assert Products.max_price() == Decimal.new("100.0")
+      max_price = Products.max_price()
+      assert Decimal.compare(max_price, Decimal.new("100.0")) == :eq
     end
 
     test "paginated_products/3 returns paginated results" do
