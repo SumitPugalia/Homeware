@@ -3,6 +3,9 @@ defmodule HomeWare.Accounts.User do
   import Ecto.Changeset
   import Bcrypt, only: [hash_pwd_salt: 1, verify_pass: 2]
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
+
   @roles ~w(customer admin)a
 
   schema "users" do

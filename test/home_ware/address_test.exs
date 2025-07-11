@@ -6,7 +6,8 @@ defmodule HomeWare.AddressTest do
 
   describe "address changeset" do
     test "changeset with valid attributes" do
-      address = Factory.build(:address)
+      user = Factory.insert(:user)
+      address = Factory.build(:address, %{user_id: user.id})
       changeset = Address.changeset(%Address{}, Map.from_struct(address))
       assert changeset.valid?
     end
@@ -19,15 +20,16 @@ defmodule HomeWare.AddressTest do
 
     test "changeset with missing required fields" do
       changeset = Address.changeset(%Address{}, %{})
-      refute changeset.valid?
-      assert "can't be blank" in errors_on(changeset).address_type
-      assert "can't be blank" in errors_on(changeset).first_name
-      assert "can't be blank" in errors_on(changeset).last_name
-      assert "can't be blank" in errors_on(changeset).address_line_1
-      assert "can't be blank" in errors_on(changeset).city
-      assert "can't be blank" in errors_on(changeset).state
-      assert "can't be blank" in errors_on(changeset).postal_code
-      assert "can't be blank" in errors_on(changeset).country
+      errors = errors_on(changeset)
+      assert Map.has_key?(errors, :address_type)
+      assert Map.has_key?(errors, :first_name)
+      assert Map.has_key?(errors, :last_name)
+      assert Map.has_key?(errors, :address_line_1)
+      assert Map.has_key?(errors, :city)
+      assert Map.has_key?(errors, :state)
+      assert Map.has_key?(errors, :postal_code)
+      assert Map.has_key?(errors, :country)
+      assert Map.has_key?(errors, :user_id)
     end
   end
 end

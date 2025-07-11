@@ -16,12 +16,12 @@ defmodule HomeWareWeb.RouterTest do
 
     test "GET /users/register", %{conn: conn} do
       conn = get(conn, ~p"/users/register")
-      assert html_response(conn, 200) =~ "Register"
+      assert html_response(conn, 200) =~ "Create your account"
     end
 
     test "GET /users/log_in", %{conn: conn} do
       conn = get(conn, ~p"/users/log_in")
-      assert html_response(conn, 200) =~ "Log in"
+      assert html_response(conn, 200) =~ "Sign in to your account"
     end
   end
 
@@ -43,30 +43,26 @@ defmodule HomeWareWeb.RouterTest do
 
     test "GET /profile works when authenticated", %{conn: conn} do
       user = Factory.insert(:user)
-      conn = log_in_user(conn, user)
+      user_token = Phoenix.Token.sign(HomeWareWeb.Endpoint, "user auth", user.id)
+      conn = init_test_session(conn, user_token: user_token)
       conn = get(conn, ~p"/profile")
       assert html_response(conn, 200) =~ "Profile"
     end
 
     test "GET /orders works when authenticated", %{conn: conn} do
       user = Factory.insert(:user)
-      conn = log_in_user(conn, user)
+      user_token = Phoenix.Token.sign(HomeWareWeb.Endpoint, "user auth", user.id)
+      conn = init_test_session(conn, user_token: user_token)
       conn = get(conn, ~p"/orders")
       assert html_response(conn, 200) =~ "Orders"
     end
 
     test "GET /admin/dashboard works when authenticated as admin", %{conn: conn} do
       user = Factory.insert(:user, %{role: :admin})
-      conn = log_in_user(conn, user)
+      user_token = Phoenix.Token.sign(HomeWareWeb.Endpoint, "user auth", user.id)
+      conn = init_test_session(conn, user_token: user_token)
       conn = get(conn, ~p"/admin/dashboard")
       assert html_response(conn, 200) =~ "Admin Dashboard"
     end
-  end
-
-  defp log_in_user(conn, user) do
-    conn
-    |> post(~p"/users/log_in", %{
-      "user" => %{"email" => user.email, "password" => "password123"}
-    })
   end
 end

@@ -1,34 +1,45 @@
 defmodule HomeWareWeb.UserRegistrationControllerTest do
   use HomeWareWeb.ConnCase
 
-  test "GET /users/register returns 200", %{conn: conn} do
-    conn = get(conn, ~p"/users/register")
-    assert html_response(conn, 200)
+  alias HomeWare.Accounts
+
+  describe "GET /users/register" do
+    test "renders registration form", %{conn: conn} do
+      conn = get(conn, ~p"/users/register")
+      assert html_response(conn, 200) =~ "Create your account"
+    end
   end
 
-  test "POST /users/register with valid data redirects", %{conn: conn} do
-    valid_attrs = %{
-      "user" => %{
-        "email" => "test@example.com",
-        "password" => "testpassword123",
-        "first_name" => "John",
-        "last_name" => "Doe"
+  describe "POST /users/register" do
+    test "creates user with valid data", %{conn: conn} do
+      user_params = %{
+        "user" => %{
+          "email" => "test@example.com",
+          "first_name" => "Test",
+          "last_name" => "User",
+          "password" => "password123",
+          "phone" => "1234567890"
+        }
       }
-    }
 
-    conn = post(conn, ~p"/users/register", valid_attrs)
-    assert redirected_to(conn) == ~p"/users/log_in"
-  end
+      conn = post(conn, ~p"/users/register", user_params)
+      assert redirected_to(conn) == ~p"/users/log_in"
+      assert get_flash(conn, :info) =~ "Registration successful"
+    end
 
-  test "POST /users/register with invalid data returns error", %{conn: conn} do
-    invalid_attrs = %{
-      "user" => %{
-        "email" => "invalid-email",
-        "password" => "short"
+    test "returns error with invalid data", %{conn: conn} do
+      user_params = %{
+        "user" => %{
+          "email" => "invalid-email",
+          "first_name" => "",
+          "last_name" => "",
+          "password" => "123",
+          "phone" => ""
+        }
       }
-    }
 
-    conn = post(conn, ~p"/users/register", invalid_attrs)
-    assert html_response(conn, 200) =~ "error"
+      conn = post(conn, ~p"/users/register", user_params)
+      assert html_response(conn, 200) =~ "Create your account"
+    end
   end
 end

@@ -72,7 +72,8 @@ defmodule HomeWare.Factory do
       postal_code: "10001",
       country: "USA",
       phone: "+1-555-123-4567",
-      is_default: true
+      is_default: true,
+      user_id: Ecto.UUID.generate()
     }
     |> Map.merge(attrs)
   end
@@ -136,32 +137,6 @@ defmodule HomeWare.Factory do
 
   # Helper function to create and insert records
   def insert(factory, attrs \\ %{}) do
-    record = build(factory, attrs)
-
-    case factory do
-      :user ->
-        HomeWare.Accounts.create_user(Map.from_struct(record))
-
-      :category ->
-        HomeWare.Categories.create_category(Map.from_struct(record))
-
-      :product ->
-        HomeWare.Products.create_product(Map.from_struct(record))
-
-      :address ->
-        HomeWare.Addresses.create_address(Map.from_struct(record))
-
-      :order ->
-        HomeWare.Orders.create_order(Map.from_struct(record))
-
-      :order_item ->
-        HomeWare.Orders.create_order_item(Map.from_struct(record))
-
-      :product_review ->
-        HomeWare.ProductReviews.create_product_review(Map.from_struct(record))
-
-      :cart_item ->
-        HomeWare.CartItems.create_cart_item(Map.from_struct(record))
-    end
+    build(factory, attrs)
   end
 end

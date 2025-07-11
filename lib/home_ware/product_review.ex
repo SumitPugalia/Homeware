@@ -2,6 +2,9 @@ defmodule HomeWare.ProductReview do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
+
   @review_statuses ~w(pending approved rejected)a
 
   schema "product_reviews" do

@@ -3,10 +3,21 @@ defmodule HomeWareWeb.AdminDashboardLiveTest do
 
   import Phoenix.LiveViewTest
   alias HomeWare.Factory
+  alias HomeWareWeb.UserAuth
 
   setup do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(HomeWare.Repo)
+    Ecto.Adapters.SQL.Sandbox.mode(HomeWare.Repo, {:shared, self()})
     user = Factory.insert(:user, %{role: :admin})
     %{user: user}
+  end
+
+  defp log_in_user(conn, user) do
+    token = Phoenix.Token.sign(HomeWareWeb.Endpoint, "user auth", user.id)
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:user_token, token)
+    |> Plug.Conn.assign(:current_user, user)
   end
 
   describe "index" do
@@ -42,12 +53,5 @@ defmodule HomeWareWeb.AdminDashboardLiveTest do
              |> element("button", "Refresh Stats")
              |> render_click()
     end
-  end
-
-  defp log_in_user(conn, user) do
-    conn
-    |> post(~p"/users/log_in", %{
-      "user" => %{"email" => user.email, "password" => "password123"}
-    })
   end
 end

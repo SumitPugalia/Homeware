@@ -2,6 +2,9 @@ defmodule HomeWare.Categories.Category do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
+
   schema "categories" do
     field :name, :string
     field :slug, :string

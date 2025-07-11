@@ -5,17 +5,18 @@ defmodule HomeWareWeb.UserRegistrationController do
   alias HomeWare.Accounts.User
 
   def new(conn, _params) do
-    changeset = Accounts.change_user_registration(%User{})
-    render(conn, :new, changeset: changeset)
+    render(conn, :new)
   end
 
-  def create(conn, %{"user" => _user_params}) do
-    # &url(~p"/users/confirm/#{&1}")
-    # placeholder for registration logic
-    {:ok, _user} = {:ok, nil}
+  def create(conn, %{"user" => user_params}) do
+    case Accounts.register_user(user_params) do
+      {:ok, user} ->
+        conn
+        |> put_flash(:info, "Registration successful! Please log in.")
+        |> redirect(to: ~p"/users/log_in")
 
-    conn
-    |> put_flash(:info, "Registration successful!")
-    |> redirect(to: "/users/log_in")
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, :new, changeset: changeset)
+    end
   end
 end

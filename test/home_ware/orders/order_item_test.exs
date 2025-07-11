@@ -6,7 +6,16 @@ defmodule HomeWare.Orders.OrderItemTest do
 
   describe "order_item changeset" do
     test "changeset with valid attributes" do
-      order_item = Factory.build(:order_item)
+      category = Factory.build(:category)
+      {:ok, category} = Repo.insert(category)
+
+      product = Factory.build(:product, %{category_id: category.id})
+      {:ok, product} = Repo.insert(product)
+
+      order = Factory.build(:order)
+      {:ok, order} = Repo.insert(order)
+
+      order_item = Factory.build(:order_item, %{order_id: order.id, product_id: product.id})
       changeset = OrderItem.changeset(%OrderItem{}, Map.from_struct(order_item))
       assert changeset.valid?
     end

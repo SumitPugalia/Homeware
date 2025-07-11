@@ -2,6 +2,9 @@ defmodule HomeWare.Address do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
+
   @address_types ~w(shipping billing)a
 
   schema "addresses" do
