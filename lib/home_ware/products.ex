@@ -28,6 +28,13 @@ defmodule HomeWare.Products do
     end
   end
 
+  def list_all_products do
+    Product
+    |> preload(:category)
+    |> order_by([p], desc: p.inserted_at)
+    |> Repo.all()
+  end
+
   def list_featured_products do
     Product
     |> where(is_active: true, is_featured: true)

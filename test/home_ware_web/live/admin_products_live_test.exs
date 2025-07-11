@@ -5,9 +5,14 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
   alias HomeWare.Factory
   alias HomeWare.Guardian
 
-  setup do
+  setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(HomeWare.Repo)
-    Ecto.Adapters.SQL.Sandbox.mode(HomeWare.Repo, {:shared, self()})
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(HomeWare.Repo, {:shared, self()})
+    end
+
+    Ecto.Adapters.SQL.Sandbox.allow(HomeWare.Repo, self(), self())
     user = Factory.insert(:user, %{role: :admin})
     {:ok, token, _claims} = Guardian.encode_and_sign(user)
     %{user: user, token: token}
@@ -93,14 +98,32 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
     end
 
     test "can edit an existing product", %{conn: conn, user: user, token: token} do
-      product = Factory.insert(:product, %{name: "Original Name"})
       category = Factory.insert(:category)
       conn = log_in_user(conn, user, token)
       {:ok, index_live, _html} = live(conn, ~p"/admin/products")
 
-      # Click edit button
+      # First create a product through the form
       index_live
-      |> element("button", "Edit")
+      |> element("button", "Add Product")
+      |> render_click()
+
+      index_live
+      |> form("#product-form", %{
+        "product[name]" => "Original Name",
+        "product[slug]" => "original-product",
+        "product[price]" => "29.99",
+        "product[category_id]" => category.id,
+        "product[description]" => "Original product",
+        "product[sku]" => "ORIG-001",
+        "product[brand]" => "Original Brand",
+        "product[inventory_quantity]" => "5",
+        "product[is_active]" => "true"
+      })
+      |> render_submit()
+
+      # Now edit the product
+      index_live
+      |> element("button[phx-click='edit_product']")
       |> render_click()
 
       # Update the form
@@ -116,13 +139,32 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
     end
 
     test "can delete a product", %{conn: conn, user: user, token: token} do
-      product = Factory.insert(:product, %{name: "Product to Delete"})
+      category = Factory.insert(:category)
       conn = log_in_user(conn, user, token)
       {:ok, index_live, _html} = live(conn, ~p"/admin/products")
 
-      # Click delete button
+      # First create a product through the form
       index_live
-      |> element("button", "Delete")
+      |> element("button", "Add Product")
+      |> render_click()
+
+      index_live
+      |> form("#product-form", %{
+        "product[name]" => "Product to Delete",
+        "product[slug]" => "product-to-delete",
+        "product[price]" => "19.99",
+        "product[category_id]" => category.id,
+        "product[description]" => "Product to be deleted",
+        "product[sku]" => "DELETE-001",
+        "product[brand]" => "Delete Brand",
+        "product[inventory_quantity]" => "3",
+        "product[is_active]" => "true"
+      })
+      |> render_submit()
+
+      # Now delete the product
+      index_live
+      |> element("button[phx-click='delete_product']")
       |> render_click()
 
       # Should show confirmation dialog

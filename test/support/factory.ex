@@ -85,6 +85,16 @@ defmodule HomeWare.Factory do
   end
 
   def build(:order, attrs) do
+    user_id = Map.get(attrs, :user_id) || HomeWare.Factory.insert(:user).id
+
+    shipping_address_id =
+      Map.get(attrs, :shipping_address_id) ||
+        HomeWare.Factory.insert(:address, %{user_id: user_id}).id
+
+    billing_address_id =
+      Map.get(attrs, :billing_address_id) ||
+        HomeWare.Factory.insert(:address, %{user_id: user_id, address_type: :billing}).id
+
     %HomeWare.Orders.Order{
       id: Ecto.UUID.generate(),
       order_number: "ORD-#{System.unique_integer()}",
@@ -100,7 +110,10 @@ defmodule HomeWare.Factory do
       shipped_at: nil,
       delivered_at: nil,
       cancelled_at: nil,
-      cancellation_reason: nil
+      cancellation_reason: nil,
+      user_id: user_id,
+      shipping_address_id: shipping_address_id,
+      billing_address_id: billing_address_id
     }
     |> Map.merge(attrs)
   end

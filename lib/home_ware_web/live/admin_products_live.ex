@@ -7,10 +7,12 @@ defmodule HomeWareWeb.AdminProductsLive do
 
   @impl true
   def mount(_params, _session, socket) do
+    categories = Categories.list_categories()
+
     {:ok,
      assign(socket,
        products: [],
-       categories: [],
+       categories: categories,
        page: 1,
        per_page: 20,
        total_pages: 0,
@@ -392,18 +394,8 @@ defmodule HomeWareWeb.AdminProductsLive do
   end
 
   defp load_products(socket, page) do
-    case Products.paginated_products(page, socket.assigns.per_page, %{}) do
-      %{entries: products, total_entries: total_entries, total_pages: total_pages} ->
-        {:noreply,
-         assign(socket,
-           products: products,
-           page: page,
-           total_entries: total_entries,
-           total_pages: total_pages
-         )}
-
-      _ ->
-        {:noreply, assign(socket, products: [], page: page, total_entries: 0, total_pages: 0)}
-    end
+    # For admin, show all products (including inactive ones)
+    products = Products.list_all_products()
+    {:noreply, assign(socket, products: products, page: page)}
   end
 end

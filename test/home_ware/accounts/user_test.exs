@@ -7,7 +7,7 @@ defmodule HomeWare.Accounts.UserTest do
     test "changeset with valid attributes" do
       valid_attrs = %{
         email: "test@example.com",
-        password: "testpassword123",
+        hashed_password: "hashed_password_123",
         first_name: "John",
         last_name: "Doe",
         role: :customer
@@ -18,9 +18,14 @@ defmodule HomeWare.Accounts.UserTest do
     end
 
     test "changeset with invalid email" do
-      changeset = User.changeset(%User{}, %{email: "invalid-email", hashed_password: "hashed"})
+      changeset =
+        User.registration_changeset(%User{}, %{
+          email: "invalid-email",
+          password: "testpassword123"
+        })
+
       refute changeset.valid?
-      assert "has invalid format" in errors_on(changeset).email
+      assert "must have the @ sign and no spaces" in errors_on(changeset).email
     end
 
     test "changeset with short password" do

@@ -27,16 +27,66 @@ defmodule HomeWareWeb.ProductCatalogLive do
     ~H"""
     <div class="container mx-auto px-4 py-8">
       <h1 class="text-3xl font-bold text-gray-900 mb-8">Product Catalog</h1>
+      <!-- Filter Form -->
+      <form phx-submit="filter" id="filter-form" class="mb-8 bg-white p-4 rounded-lg shadow">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Category</label>
+            <select name="category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+              <option value="">All Categories</option>
+              <%= for category <- @categories do %>
+                <option value={category.id}><%= category.name %></option>
+              <% end %>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Brand</label>
+            <input
+              type="text"
+              name="brand"
+              placeholder="Filter by brand"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Min Price</label>
+            <input
+              type="number"
+              name="min_price"
+              placeholder="Min price"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Max Price</label>
+            <input
+              type="number"
+              name="max_price"
+              placeholder="Max price"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+            />
+          </div>
+        </div>
+        <div class="mt-4">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Apply Filters
+          </button>
+        </div>
+      </form>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <%= for product <- @products do %>
-          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="bg-white rounded-lg shadow-md overflow-hidden" data-product-id={product.id}>
             <div class="p-4">
               <h3 class="text-lg font-semibold text-gray-900"><%= product.name %></h3>
               <p class="text-gray-600 mt-2"><%= product.short_description %></p>
               <div class="mt-4 flex justify-between items-center">
                 <span class="text-xl font-bold text-gray-900">$<%= product.price %></span>
-                <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                <button
+                  phx-click="add_to_cart"
+                  phx-value-product-id={product.id}
+                  class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
                   Add to Cart
                 </button>
               </div>
