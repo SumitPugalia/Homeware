@@ -17,7 +17,23 @@ defmodule HomeWareWeb.AdminDashboardLive do
   def render(assigns) do
     ~H"""
     <div class="container mx-auto px-4 py-8">
-      <h1 class="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+        <div class="flex space-x-4">
+          <a
+            href={~p"/admin/products"}
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Manage Products
+          </a>
+          <button
+            phx-click="refresh_stats"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Refresh Stats
+          </button>
+        </div>
+      </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-white rounded-lg shadow p-6">
@@ -68,12 +84,6 @@ defmodule HomeWareWeb.AdminDashboardLive do
             </div>
           <% end %>
         </div>
-      </div>
-
-      <div class="mt-8">
-        <button phx-click="refresh_stats" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-          Refresh Stats
-        </button>
       </div>
     </div>
     """

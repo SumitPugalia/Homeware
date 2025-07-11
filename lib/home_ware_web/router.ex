@@ -54,6 +54,7 @@ defmodule HomeWareWeb.Router do
     pipe_through [:browser, :require_auth]
 
     live "/dashboard", AdminDashboardLive, :index
+    live "/products", AdminProductsLive, :index
   end
 
   # Other scopes may use custom stacks.

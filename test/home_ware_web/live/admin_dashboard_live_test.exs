@@ -14,6 +14,7 @@ defmodule HomeWareWeb.AdminDashboardLiveTest do
 
   defp log_in_user(conn, user) do
     token = Phoenix.Token.sign(HomeWareWeb.Endpoint, "user auth", user.id)
+
     conn
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:user_token, token)

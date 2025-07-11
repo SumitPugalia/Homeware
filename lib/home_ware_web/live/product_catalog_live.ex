@@ -1,16 +1,24 @@
 defmodule HomeWareWeb.ProductCatalogLive do
+  alias HomeWare.Repo
+  alias HomeWare.Products.Product
+  alias HomeWare.Categories.Category
+  alias HomeWare.Brands.Brand
+
   use HomeWareWeb, :live_view
 
   @impl true
   def mount(_params, _session, socket) do
+    products = Repo.all(Product)
+    categories = Repo.all(Category)
+
     {:ok,
      assign(socket,
        page: 1,
        per_page: 9,
        filters: %{},
-       products: [],
+       products: products,
        total_count: 0,
-       categories: [],
+       categories: categories,
        brands: []
      )}
   end
