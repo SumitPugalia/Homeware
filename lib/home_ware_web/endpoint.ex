@@ -50,4 +50,12 @@ defmodule HomeWareWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug HomeWareWeb.Router
+
+  def fetch_current_user(conn, _opts) do
+    HomeWareWeb.UserAuth.fetch_current_user(conn, [])
+  end
+
+  def require_authenticated_user(conn, _opts) do
+    HomeWareWeb.UserAuth.require_authenticated_user(conn, [])
+  end
 end
