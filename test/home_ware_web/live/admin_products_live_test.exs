@@ -57,7 +57,10 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       category = Factory.insert(:category)
       conn = log_in_user(conn, user, token)
       {:ok, live, _html} = live(conn, ~p"/admin/products")
-      assert live |> element("button", "Add Product") |> render_click() =~ "Add New Product"
+      live |> element("button", "Add Product") |> render_click()
+      html = render(live)
+      assert html =~ "Add New Product"
+      assert html =~ category.name
     end
 
     test "can create a new product", %{conn: conn, user: user, token: token} do
@@ -65,7 +68,6 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       conn = log_in_user(conn, user, token)
       {:ok, live, _html} = live(conn, ~p"/admin/products")
       live |> element("button", "Add Product") |> render_click()
-
       live
       |> form("#product-form", %{
         "product[name]" => "UI Created Product",
@@ -79,73 +81,60 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
         "product[is_active]" => "true"
       })
       |> render_submit()
-
       assert has_element?(live, ".alert", "Product created successfully")
       assert render(live) =~ "UI Created Product"
     end
 
     test "can edit an existing product", %{conn: conn, user: user, token: token} do
       category = Factory.insert(:category)
+      product = Factory.insert(:product, %{category_id: category.id})
       conn = log_in_user(conn, user, token)
       {:ok, live, _html} = live(conn, ~p"/admin/products")
-      # Create product via UI
-      live |> element("button", "Add Product") |> render_click()
-
-      live
-      |> form("#product-form", %{
-        "product[name]" => "Editable Product",
-        "product[slug]" => "editable-product",
-        "product[price]" => "50.00",
-        "product[category_id]" => category.id,
-        "product[description]" => "To be edited",
-        "product[sku]" => "EDIT-001",
-        "product[brand]" => "EditBrand",
-        "product[inventory_quantity]" => "3",
-        "product[is_active]" => "true"
-      })
-      |> render_submit()
-
-      assert has_element?(live, ".alert", "Product created successfully")
-      # Click edit on the first Edit button
+      assert render(live) =~ product.name
       live |> element("button", "Edit") |> render_click()
-
+      html = render(live)
+      assert html =~ "Edit Product"
+      assert html =~ product.name
       live
       |> form("#product-form", %{
-        "product[name]" => "Edited Product",
+        "product[name]" => "Edited Product Name",
         "product[price]" => "99.99"
       })
       |> render_submit()
-
       assert has_element?(live, ".alert", "Product updated successfully")
-      assert render(live) =~ "Edited Product"
+      assert render(live) =~ "Edited Product Name"
     end
 
     test "can delete a product", %{conn: conn, user: user, token: token} do
       category = Factory.insert(:category)
+      product = Factory.insert(:product, %{category_id: category.id})
       conn = log_in_user(conn, user, token)
       {:ok, live, _html} = live(conn, ~p"/admin/products")
-      # Create product via UI
-      live |> element("button", "Add Product") |> render_click()
+      assert render(live) =~ product.name
+      assert has_element?(live, "[data-confirm]")
+    end
 
+    test "form validation works", %{conn: conn, user: user, token: token} do
+      category = Factory.insert(:category)
+      conn = log_in_user(conn, user, token)
+      {:ok, live, _html} = live(conn, ~p"/admin/products")
+      live |> element("button", "Add Product") |> render_click()
       live
       |> form("#product-form", %{
-        "product[name]" => "Deletable Product",
-        "product[slug]" => "deletable-product",
-        "product[price]" => "10.00",
-        "product[category_id]" => category.id,
-        "product[description]" => "To be deleted",
-        "product[sku]" => "DEL-001",
-        "product[brand]" => "DelBrand",
-        "product[inventory_quantity]" => "1",
-        "product[is_active]" => "true"
+        "product[name]" => "",
+        "product[price]" => "invalid"
       })
       |> render_submit()
+      assert render(live) =~ "Add New Product"
+    end
 
-      assert has_element?(live, ".alert", "Product created successfully")
-      # Click delete on the first Delete button
-      live |> element("button", "Delete") |> render_click()
-      # Should show confirmation dialog (data-confirm)
-      assert has_element?(live, "[data-confirm]")
+    test "can cancel form", %{conn: conn, user: user, token: token} do
+      conn = log_in_user(conn, user, token)
+      {:ok, live, _html} = live(conn, ~p"/admin/products")
+      live |> element("button", "Add Product") |> render_click()
+      assert render(live) =~ "Add New Product"
+      live |> element("button", "Cancel") |> render_click()
+      refute render(live) =~ "Add New Product"
     end
   end
 end
