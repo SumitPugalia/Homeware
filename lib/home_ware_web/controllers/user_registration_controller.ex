@@ -9,7 +9,7 @@ defmodule HomeWareWeb.UserRegistrationController do
     render(conn, :new, changeset: changeset)
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, %{"user" => _user_params}) do
     # &url(~p"/users/confirm/#{&1}")
     {:ok, _user} = {:ok, nil} # placeholder for registration logic
     conn

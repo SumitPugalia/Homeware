@@ -20,7 +20,7 @@ defmodule HomeWare.Repo.Migrations.CreateProducts do
       add :inventory_quantity, :integer, default: 0, null: false
       add :is_featured, :boolean, default: false, null: false
       add :is_active, :boolean, default: true, null: false
-      add :category_id, references(:categories, on_delete: :restrict), null: false
+      add :category_id, references(:categories, on_delete: :restrict)
       add :average_rating, :decimal, precision: 3, scale: 2, default: 0.0
       add :review_count, :integer, default: 0
 

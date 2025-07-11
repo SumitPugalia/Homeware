@@ -39,4 +39,10 @@ defmodule HomeWare.Orders do
   def change_order(%Order{} = order, attrs \\ %{}) do
     Order.changeset(order, attrs)
   end
+
+  def create_order_item(attrs \\ %{}) do
+    %HomeWare.Orders.OrderItem{}
+    |> HomeWare.Orders.OrderItem.changeset(attrs)
+    |> Repo.insert()
+  end
 end

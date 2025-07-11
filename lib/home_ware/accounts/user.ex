@@ -21,7 +21,7 @@ defmodule HomeWare.Accounts.User do
     has_many :product_reviews, HomeWare.ProductReview
     has_many :cart_items, HomeWare.CartItem
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   def changeset(user, attrs) do

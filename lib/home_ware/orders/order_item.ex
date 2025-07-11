@@ -6,18 +6,20 @@ defmodule HomeWare.Orders.OrderItem do
     field :quantity, :integer
     field :unit_price, :decimal
     field :total_price, :decimal
-    field :product_name, :string
-    field :product_sku, :string
+    field :notes, :string
 
     belongs_to :order, HomeWare.Orders.Order
     belongs_to :product, HomeWare.Products.Product
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   def changeset(order_item, attrs) do
     order_item
-    |> cast(attrs, [:quantity, :unit_price, :total_price, :product_name, :product_sku, :order_id, :product_id])
-    |> validate_required([:quantity, :unit_price, :total_price, :product_name, :order_id, :product_id])
+    |> cast(attrs, [:quantity, :unit_price, :total_price, :notes, :order_id, :product_id])
+    |> validate_required([:quantity, :unit_price, :total_price, :order_id, :product_id])
+    |> validate_number(:quantity, greater_than: 0)
+    |> validate_number(:unit_price, greater_than: 0)
+    |> validate_number(:total_price, greater_than: 0)
   end
 end

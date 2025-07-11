@@ -13,7 +13,7 @@ defmodule HomeWare.Categories.Category do
     has_many :children, __MODULE__, foreign_key: :parent_id
     has_many :products, HomeWare.Products.Product
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   def changeset(category, attrs) do

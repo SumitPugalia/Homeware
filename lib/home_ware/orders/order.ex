@@ -26,7 +26,7 @@ defmodule HomeWare.Orders.Order do
     has_many :order_items, HomeWare.Orders.OrderItem
     has_many :product_reviews, HomeWare.ProductReview
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   def changeset(order, attrs) do

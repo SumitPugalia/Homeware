@@ -25,6 +25,11 @@ defmodule HomeWare.Accounts do
     if User.valid_password?(user, password), do: user
   end
 
+  def authenticate_user(email, password) when is_binary(email) and is_binary(password) do
+    user = get_user_by_email_and_password(email, password)
+    if user, do: {:ok, user}, else: {:error, :invalid_credentials}
+  end
+
   def get_user_by_session_token(token) do
     case Phoenix.Token.verify(HomeWareWeb.Endpoint, "user auth", token, max_age: 2_592_000) do
       {:ok, user_id} -> get_user!(user_id)

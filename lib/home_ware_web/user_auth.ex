@@ -24,11 +24,9 @@ defmodule HomeWareWeb.UserAuth do
 
   def fetch_current_user(conn, _opts) do
     user_token = get_session(conn, :user_token)
-    user_token && get_user_by_session_token(user_token)
-    |> case do
-      nil -> assign(conn, :current_user, nil)
-      user -> assign(conn, :current_user, user)
-    end
+    user = user_token && get_user_by_session_token(user_token)
+
+    assign(conn, :current_user, user)
   end
 
   def require_authenticated_user(conn, _opts) do

@@ -28,7 +28,7 @@ defmodule HomeWare.Products.Product do
     has_many :product_reviews, HomeWare.ProductReview
     has_many :cart_items, HomeWare.CartItem
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   def changeset(product, attrs) do
@@ -38,7 +38,7 @@ defmodule HomeWare.Products.Product do
       :weight, :dimensions, :specifications, :images, :featured_image, :inventory_quantity, :is_featured,
       :is_active, :category_id, :average_rating, :review_count
     ])
-    |> validate_required([:name, :slug, :price, :category_id])
+    |> validate_required([:name, :slug, :price])
     |> unique_constraint(:slug)
     |> unique_constraint(:sku)
   end
