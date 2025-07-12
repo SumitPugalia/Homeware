@@ -202,7 +202,6 @@ defmodule HomeWareWeb.ProductDetailLive do
           </div>
         </div>
       </main>
-      <.footer />
     </div>
     """
   end
