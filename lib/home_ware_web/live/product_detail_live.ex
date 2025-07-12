@@ -23,295 +23,146 @@ defmodule HomeWareWeb.ProductDetailLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="min-h-screen bg-gray-50">
-      <!-- Navigation -->
-      <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between h-16">
-            <div class="flex">
-              <div class="flex-shrink-0 flex items-center">
-                <a href="/" class="text-xl font-bold text-gray-900">HomeWare</a>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <a href="/cart" class="relative p-2 text-gray-400 hover:text-gray-500">
-                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m6 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
-                    />
-                  </svg>
-                </a>
-              </div>
-              <div class="ml-4 flex items-center md:ml-6">
-                <%= if @current_user do %>
-                  <div class="ml-3 relative">
-                    <div class="flex items-center">
-                      <span class="text-sm text-gray-700 mr-4">
-                        Welcome, <%= @current_user.first_name %>
-                      </span>
-                      <a href="/profile" class="text-sm text-gray-700 hover:text-gray-900 mr-4">
-                        Profile
-                      </a>
-                      <a href="/orders" class="text-sm text-gray-700 hover:text-gray-900 mr-4">
-                        Orders
-                      </a>
-                      <form action="/users/log_out" method="post" class="inline">
-                        <button type="submit" class="text-sm text-gray-700 hover:text-gray-900">
-                          Logout
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                <% else %>
-                  <div class="flex items-center space-x-4">
-                    <a href="/users/log_in" class="text-sm text-gray-700 hover:text-gray-900">
-                      Sign in
-                    </a>
-                    <a
-                      href="/users/register"
-                      class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700"
-                    >
-                      Sign up
-                    </a>
-                  </div>
-                <% end %>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-      <!-- Product Detail -->
-      <div class="bg-white">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
-          <!-- Breadcrumb -->
-          <nav class="flex mb-8" aria-label="Breadcrumb">
-            <ol class="flex items-center space-x-4">
-              <li>
-                <a href="/" class="text-gray-400 hover:text-gray-500">Home</a>
-              </li>
-              <li>
-                <div class="flex items-center">
-                  <svg
-                    class="flex-shrink-0 h-5 w-5 text-gray-300"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                  <a href="/products" class="ml-4 text-gray-400 hover:text-gray-500">Products</a>
-                </div>
-              </li>
-              <li>
-                <div class="flex items-center">
-                  <svg
-                    class="flex-shrink-0 h-5 w-5 text-gray-300"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                  <span class="ml-4 text-gray-500"><%= @product.name %></span>
-                </div>
-              </li>
-            </ol>
-          </nav>
-
-          <div class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-8">
-            <!-- Product Images -->
-            <div class="lg:col-span-1">
-              <div class="aspect-w-1 aspect-h-1 w-full">
-                <img
-                  src="https://via.placeholder.com/600x600"
-                  alt={@product.name}
-                  class="w-full h-full object-center object-cover rounded-lg"
-                />
-              </div>
-              <!-- Thumbnail Images -->
-              <div class="mt-4 grid grid-cols-4 gap-4">
-                <%= for _i <- 0..3 do %>
-                  <button class="aspect-w-1 aspect-h-1 w-full">
-                    <img
-                      src="https://via.placeholder.com/150x150"
-                      alt="Product thumbnail"
-                      class="w-full h-full object-center object-cover rounded-lg border-2 border-gray-200 hover:border-indigo-500"
-                    />
-                  </button>
-                <% end %>
-              </div>
-            </div>
-            <!-- Product Info -->
-            <div class="lg:col-span-1 lg:pl-8">
-              <h1 class="text-3xl font-extrabold text-gray-900"><%= @product.name %></h1>
-              <p class="mt-2 text-lg text-gray-500"><%= @product.brand %></p>
-              <!-- Price -->
-              <div class="mt-4">
-                <span class="text-3xl font-bold text-gray-900">$<%= @product.price %></span>
-                <%= if @product.original_price && @product.original_price > @product.price do %>
-                  <span class="ml-2 text-lg text-gray-500 line-through">
-                    $<%= @product.original_price %>
-                  </span>
-                <% end %>
-              </div>
-              <!-- Rating -->
-              <div class="mt-4 flex items-center">
-                <div class="flex items-center">
-                  <%= for _ <- 1..5 do %>
-                    <svg class="text-yellow-400 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  <% end %>
-                </div>
-                <span class="ml-2 text-sm text-gray-500">(4.5 out of 5)</span>
-                <span class="ml-2 text-sm text-gray-500">• 128 reviews</span>
-              </div>
-              <!-- Description -->
-              <div class="mt-6">
-                <h3 class="text-lg font-medium text-gray-900">Description</h3>
-                <p class="mt-2 text-gray-600"><%= @product.description %></p>
-              </div>
-              <!-- Features -->
-              <div class="mt-6">
-                <h3 class="text-lg font-medium text-gray-900">Key Features</h3>
-                <ul class="mt-2 text-gray-600 space-y-2">
-                  <li>• Energy efficient design</li>
-                  <li>• Quiet operation</li>
-                  <li>• Easy to clean</li>
-                  <li>• 2-year warranty</li>
-                </ul>
-              </div>
-              <!-- Add to Cart -->
-              <div class="mt-8">
-                <div class="flex items-center space-x-4">
-                  <div class="flex items-center border border-gray-300 rounded-md">
-                    <button
-                      phx-click="decrease_quantity"
-                      class="px-3 py-2 text-gray-600 hover:text-gray-900"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="number"
-                      value={@quantity}
-                      min="1"
-                      class="w-16 text-center border-0 focus:ring-0"
-                      readonly
-                    />
-                    <button
-                      phx-click="increase_quantity"
-                      class="px-3 py-2 text-gray-600 hover:text-gray-900"
-                    >
-                      +
-                    </button>
-                  </div>
-                  <button
-                    phx-click="add_to_cart"
-                    class="flex-1 bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700 transition-colors"
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-              <!-- Stock Status -->
-              <div class="mt-4">
-                <%= if @product.inventory_quantity > 0 do %>
-                  <span class="text-green-600 text-sm">
-                    ✓ In Stock (<%= @product.inventory_quantity %> available)
-                  </span>
-                <% else %>
-                  <span class="text-red-600 text-sm">✗ Out of Stock</span>
-                <% end %>
-              </div>
-            </div>
-          </div>
-          <!-- Product Tabs -->
-          <div class="mt-16">
-            <div class="border-b border-gray-200">
-              <nav class="-mb-px flex space-x-8">
-                <button class="border-indigo-500 text-indigo-600 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
-                  Specifications
+    <div class="min-h-screen flex flex-col bg-white">
+      <main class="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-8">
+        <!-- Breadcrumb -->
+        <nav class="text-sm text-gray-400 mb-6" aria-label="Breadcrumb">
+          <ol class="list-reset flex">
+            <li><a href="/" class="hover:text-black">Account</a></li>
+            <li><span class="mx-2">/</span></li>
+            <li><a href="/products" class="hover:text-black">Gaming</a></li>
+            <li><span class="mx-2">/</span></li>
+            <li class="text-black"><%= @product.name %></li>
+          </ol>
+        </nav>
+        <!-- Product Detail Section -->
+        <div class="flex flex-col lg:flex-row gap-12 mb-12">
+          <!-- Left: Image Gallery -->
+          <div class="flex flex-col lg:w-1/2">
+            <div class="flex flex-row lg:flex-col gap-4 mb-4 lg:mb-0 lg:mr-4">
+              <%= for i <- 0..3 do %>
+                <button class="border-2 border-gray-200 rounded-lg p-1 hover:border-red-500">
+                  <img src="https://via.placeholder.com/80x80" alt="Product thumbnail" class="w-16 h-16 object-cover rounded" />
                 </button>
-                <button class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
-                  Reviews
-                </button>
-                <button class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
-                  Shipping
-                </button>
-              </nav>
-            </div>
-            <!-- Tab Content -->
-            <div class="mt-8">
-              <div class="prose prose-lg max-w-none">
-                <h3>Product Specifications</h3>
-                <table class="w-full">
-                  <tbody class="divide-y divide-gray-200">
-                    <tr>
-                      <td class="py-2 font-medium text-gray-900">Brand</td>
-                      <td class="py-2 text-gray-600"><%= @product.brand %></td>
-                    </tr>
-                    <tr>
-                      <td class="py-2 font-medium text-gray-900">Model</td>
-                      <td class="py-2 text-gray-600"><%= @product.model %></td>
-                    </tr>
-                    <tr>
-                      <td class="py-2 font-medium text-gray-900">Dimensions</td>
-                      <td class="py-2 text-gray-600">24" W x 24" D x 36" H</td>
-                    </tr>
-                    <tr>
-                      <td class="py-2 font-medium text-gray-900">Weight</td>
-                      <td class="py-2 text-gray-600">45 lbs</td>
-                    </tr>
-                    <tr>
-                      <td class="py-2 font-medium text-gray-900">Warranty</td>
-                      <td class="py-2 text-gray-600">2 years</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <!-- Related Products -->
-          <div class="mt-16">
-            <h2 class="text-2xl font-bold text-gray-900 mb-8">Related Products</h2>
-            <div class="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-              <%= for product <- @related_products do %>
-                <div class="group relative">
-                  <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none">
-                    <img
-                      src="https://via.placeholder.com/300x300"
-                      alt={product.name}
-                      class="w-full h-full object-center object-cover lg:w-full lg:h-full"
-                    />
-                  </div>
-                  <div class="mt-4 flex justify-between">
-                    <div>
-                      <h3 class="text-sm text-gray-700">
-                        <a href={~p"/products/#{product.id}"}>
-                          <span aria-hidden="true" class="absolute inset-0"></span>
-                          <%= product.name %>
-                        </a>
-                      </h3>
-                      <p class="mt-1 text-sm text-gray-500"><%= product.brand %></p>
-                    </div>
-                    <p class="text-sm font-medium text-gray-900">$<%= product.price %></p>
-                  </div>
-                </div>
               <% end %>
             </div>
+            <div class="flex-1 flex items-center justify-center">
+              <img src="https://via.placeholder.com/400x400" alt={@product.name} class="rounded-xl w-full max-w-md object-cover shadow-lg" />
+            </div>
+          </div>
+          <!-- Right: Product Info -->
+          <div class="flex-1 flex flex-col">
+            <h1 class="text-2xl font-bold mb-2"><%= @product.name %></h1>
+            <div class="flex items-center mb-2">
+              <span class="text-yellow-400 mr-1">★★★★★</span>
+              <span class="text-gray-500 text-sm">(150 Reviews)</span>
+              <span class="ml-2 text-green-600 text-sm font-semibold">In Stock</span>
+            </div>
+            <div class="text-2xl font-bold mb-2">$<%= @product.price %></div>
+            <div class="mb-4 text-gray-600"><%= @product.description %></div>
+            <!-- Colours -->
+            <div class="mb-4">
+              <div class="font-semibold mb-1">Colours:</div>
+              <div class="flex space-x-2">
+                <span class="w-6 h-6 rounded-full bg-red-700 border-2 border-gray-300 inline-block"></span>
+                <span class="w-6 h-6 rounded-full bg-gray-700 border-2 border-gray-300 inline-block"></span>
+              </div>
+            </div>
+            <!-- Sizes -->
+            <div class="mb-4">
+              <div class="font-semibold mb-1">Size:</div>
+              <div class="flex space-x-2">
+                <%= for size <- ["XS", "S", "M", "L", "XL"] do %>
+                  <button class="px-3 py-1 border rounded hover:bg-red-500 hover:text-white"><%= size %></button>
+                <% end %>
+              </div>
+            </div>
+            <!-- Quantity and Buy Now -->
+            <div class="flex items-center space-x-4 mb-4">
+              <div class="flex items-center border border-gray-300 rounded-md">
+                <button phx-click="decrease_quantity" class="px-3 py-2 text-gray-600 hover:text-gray-900">-</button>
+                <input type="number" value={@quantity} min="1" class="w-12 text-center border-0 focus:ring-0" readonly />
+                <button phx-click="increase_quantity" class="px-3 py-2 text-gray-600 hover:text-gray-900">+</button>
+              </div>
+              <button phx-click="add_to_cart" class="bg-red-500 text-white px-8 py-3 rounded-md font-semibold hover:bg-red-600 transition">Buy Now</button>
+              <button class="border border-gray-300 rounded-full p-2 hover:bg-gray-100"><svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 0 1 6.364 0L12 7.636l1.318-1.318a4.5 4.5 0 1 1 6.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 0 1 0-6.364z"/></svg></button>
+            </div>
+            <!-- Delivery & Return -->
+            <div class="flex flex-col md:flex-row gap-4 mb-4">
+              <div class="flex-1 flex items-center border rounded-lg p-4">
+                <svg class="w-8 h-8 text-black mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h1l2 7h13l2-7h1"/></svg>
+                <div>
+                  <div class="font-semibold">Free Delivery</div>
+                  <div class="text-xs text-gray-500">Enter your postal code for Delivery Availability</div>
+                </div>
+              </div>
+              <div class="flex-1 flex items-center border rounded-lg p-4">
+                <svg class="w-8 h-8 text-black mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <div>
+                  <div class="font-semibold">Return Delivery</div>
+                  <div class="text-xs text-gray-500">Free 30 Days Delivery Returns. <a href="#" class="underline">Details</a></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+        <!-- Related Items -->
+        <div class="mt-16">
+          <div class="mb-4 flex items-center">
+            <span class="text-red-500 font-bold mr-2">Related Item</span>
+          </div>
+          <div class="flex space-x-6 overflow-x-auto pb-4">
+            <%= for product <- @related_products do %>
+              <div class="min-w-[220px] bg-white rounded-lg shadow p-4 flex flex-col items-center border">
+                <img src="https://via.placeholder.com/150" class="w-32 h-32 object-cover mb-2" />
+                <div class="text-center">
+                  <div class="font-bold text-sm mb-1"><%= product.name %></div>
+                  <div class="text-xs text-gray-500 mb-1">$<%= product.price %></div>
+                  <button class="bg-black text-white px-3 py-1 rounded text-xs mt-2">Add To Cart</button>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </main>
+      <!-- Footer -->
+      <footer class="bg-black text-white mt-12">
+        <div class="max-w-7xl mx-auto py-12 px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <div class="font-bold text-2xl mb-2">Exclusive</div>
+            <div class="text-xs">Get 10% off your first order</div>
+          </div>
+          <div>
+            <div class="font-bold mb-2">Support</div>
+            <div class="text-xs">111 Bijoy sarani, Dhaka, DH 1515, Bangladesh</div>
+            <div class="text-xs">exclusive@gmail.com</div>
+            <div class="text-xs">+88015-88888-9999</div>
+          </div>
+          <div>
+            <div class="font-bold mb-2">Quick Link</div>
+            <div class="text-xs"><a href="/account">My Account</a></div>
+            <div class="text-xs"><a href="/login">Login / Register</a></div>
+            <div class="text-xs"><a href="/cart">Cart</a></div>
+            <div class="text-xs"><a href="/wishlist">Wishlist</a></div>
+            <div class="text-xs"><a href="/products">Shop</a></div>
+          </div>
+          <div>
+            <div class="font-bold mb-2">Download App</div>
+            <div class="flex space-x-2 mb-2">
+              <div class="w-16 h-16 bg-white rounded flex items-center justify-center">
+                <span class="text-black">QR</span>
+              </div>
+            </div>
+            <div class="flex space-x-2">
+              <div class="w-8 h-8 bg-white rounded flex items-center justify-center"><span class="text-black">F</span></div>
+              <div class="w-8 h-8 bg-white rounded flex items-center justify-center"><span class="text-black">T</span></div>
+              <div class="w-8 h-8 bg-white rounded flex items-center justify-center"><span class="text-black">I</span></div>
+              <div class="w-8 h-8 bg-white rounded flex items-center justify-center"><span class="text-black">L</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center text-xs py-4 border-t border-gray-800">&copy; Copyright HomeWare 2024. All rights reserved.</div>
+      </footer>
     </div>
     """
   end
