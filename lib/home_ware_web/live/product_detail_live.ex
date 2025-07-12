@@ -42,12 +42,20 @@ defmodule HomeWareWeb.ProductDetailLive do
             <div class="flex flex-row lg:flex-col gap-4 mb-4 lg:mb-0 lg:mr-4">
               <%= for i <- 0..3 do %>
                 <button class="border-2 border-gray-200 rounded-lg p-1 hover:border-red-500">
-                  <img src="https://via.placeholder.com/80x80" alt="Product thumbnail" class="w-16 h-16 object-cover rounded" />
+                  <img
+                    src="https://via.placeholder.com/80x80"
+                    alt="Product thumbnail"
+                    class="w-16 h-16 object-cover rounded"
+                  />
                 </button>
               <% end %>
             </div>
             <div class="flex-1 flex items-center justify-center">
-              <img src="https://via.placeholder.com/400x400" alt={@product.name} class="rounded-xl w-full max-w-md object-cover shadow-lg" />
+              <img
+                src="https://via.placeholder.com/400x400"
+                alt={@product.name}
+                class="rounded-xl w-full max-w-md object-cover shadow-lg"
+              />
             </div>
           </div>
           <!-- Right: Product Info -->
@@ -64,8 +72,10 @@ defmodule HomeWareWeb.ProductDetailLive do
             <div class="mb-4">
               <div class="font-semibold mb-1">Colours:</div>
               <div class="flex space-x-2">
-                <span class="w-6 h-6 rounded-full bg-red-700 border-2 border-gray-300 inline-block"></span>
-                <span class="w-6 h-6 rounded-full bg-gray-700 border-2 border-gray-300 inline-block"></span>
+                <span class="w-6 h-6 rounded-full bg-red-700 border-2 border-gray-300 inline-block">
+                </span>
+                <span class="w-6 h-6 rounded-full bg-gray-700 border-2 border-gray-300 inline-block">
+                </span>
               </div>
             </div>
             <!-- Sizes -->
@@ -73,34 +83,99 @@ defmodule HomeWareWeb.ProductDetailLive do
               <div class="font-semibold mb-1">Size:</div>
               <div class="flex space-x-2">
                 <%= for size <- ["XS", "S", "M", "L", "XL"] do %>
-                  <button class="px-3 py-1 border rounded hover:bg-red-500 hover:text-white"><%= size %></button>
+                  <button class="px-3 py-1 border rounded hover:bg-red-500 hover:text-white">
+                    <%= size %>
+                  </button>
                 <% end %>
               </div>
             </div>
             <!-- Quantity and Buy Now -->
             <div class="flex items-center space-x-4 mb-4">
               <div class="flex items-center border border-gray-300 rounded-md">
-                <button phx-click="decrease_quantity" class="px-3 py-2 text-gray-600 hover:text-gray-900">-</button>
-                <input type="number" value={@quantity} min="1" class="w-12 text-center border-0 focus:ring-0" readonly />
-                <button phx-click="increase_quantity" class="px-3 py-2 text-gray-600 hover:text-gray-900">+</button>
+                <button
+                  phx-click="decrease_quantity"
+                  class="px-3 py-2 text-gray-600 hover:text-gray-900"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  value={@quantity}
+                  min="1"
+                  class="w-12 text-center border-0 focus:ring-0"
+                  readonly
+                />
+                <button
+                  phx-click="increase_quantity"
+                  class="px-3 py-2 text-gray-600 hover:text-gray-900"
+                >
+                  +
+                </button>
               </div>
-              <button phx-click="add_to_cart" class="bg-red-500 text-white px-8 py-3 rounded-md font-semibold hover:bg-red-600 transition">Buy Now</button>
-              <button class="border border-gray-300 rounded-full p-2 hover:bg-gray-100"><svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 0 1 6.364 0L12 7.636l1.318-1.318a4.5 4.5 0 1 1 6.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 0 1 0-6.364z"/></svg></button>
+              <button
+                phx-click="add_to_cart"
+                class="bg-red-500 text-white px-8 py-3 rounded-md font-semibold hover:bg-red-600 transition"
+              >
+                Buy Now
+              </button>
+              <button class="border border-gray-300 rounded-full p-2 hover:bg-gray-100">
+                <svg
+                  class="w-6 h-6 text-gray-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4.318 6.318a4.5 4.5 0 0 1 6.364 0L12 7.636l1.318-1.318a4.5 4.5 0 1 1 6.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 0 1 0-6.364z"
+                  />
+                </svg>
+              </button>
             </div>
             <!-- Delivery & Return -->
             <div class="flex flex-col md:flex-row gap-4 mb-4">
               <div class="flex-1 flex items-center border rounded-lg p-4">
-                <svg class="w-8 h-8 text-black mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h1l2 7h13l2-7h1"/></svg>
+                <svg
+                  class="w-8 h-8 text-black mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 10h1l2 7h13l2-7h1"
+                  />
+                </svg>
                 <div>
                   <div class="font-semibold">Free Delivery</div>
-                  <div class="text-xs text-gray-500">Enter your postal code for Delivery Availability</div>
+                  <div class="text-xs text-gray-500">
+                    Enter your postal code for Delivery Availability
+                  </div>
                 </div>
               </div>
               <div class="flex-1 flex items-center border rounded-lg p-4">
-                <svg class="w-8 h-8 text-black mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <svg
+                  class="w-8 h-8 text-black mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
                 <div>
                   <div class="font-semibold">Return Delivery</div>
-                  <div class="text-xs text-gray-500">Free 30 Days Delivery Returns. <a href="#" class="underline">Details</a></div>
+                  <div class="text-xs text-gray-500">
+                    Free 30 Days Delivery Returns. <a href="#" class="underline">Details</a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -118,51 +193,16 @@ defmodule HomeWareWeb.ProductDetailLive do
                 <div class="text-center">
                   <div class="font-bold text-sm mb-1"><%= product.name %></div>
                   <div class="text-xs text-gray-500 mb-1">$<%= product.price %></div>
-                  <button class="bg-black text-white px-3 py-1 rounded text-xs mt-2">Add To Cart</button>
+                  <button class="bg-black text-white px-3 py-1 rounded text-xs mt-2">
+                    Add To Cart
+                  </button>
                 </div>
               </div>
             <% end %>
           </div>
         </div>
       </main>
-      <!-- Footer -->
-      <footer class="bg-black text-white mt-12">
-        <div class="max-w-7xl mx-auto py-12 px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <div class="font-bold text-2xl mb-2">Exclusive</div>
-            <div class="text-xs">Get 10% off your first order</div>
-          </div>
-          <div>
-            <div class="font-bold mb-2">Support</div>
-            <div class="text-xs">111 Bijoy sarani, Dhaka, DH 1515, Bangladesh</div>
-            <div class="text-xs">exclusive@gmail.com</div>
-            <div class="text-xs">+88015-88888-9999</div>
-          </div>
-          <div>
-            <div class="font-bold mb-2">Quick Link</div>
-            <div class="text-xs"><a href="/account">My Account</a></div>
-            <div class="text-xs"><a href="/login">Login / Register</a></div>
-            <div class="text-xs"><a href="/cart">Cart</a></div>
-            <div class="text-xs"><a href="/wishlist">Wishlist</a></div>
-            <div class="text-xs"><a href="/products">Shop</a></div>
-          </div>
-          <div>
-            <div class="font-bold mb-2">Download App</div>
-            <div class="flex space-x-2 mb-2">
-              <div class="w-16 h-16 bg-white rounded flex items-center justify-center">
-                <span class="text-black">QR</span>
-              </div>
-            </div>
-            <div class="flex space-x-2">
-              <div class="w-8 h-8 bg-white rounded flex items-center justify-center"><span class="text-black">F</span></div>
-              <div class="w-8 h-8 bg-white rounded flex items-center justify-center"><span class="text-black">T</span></div>
-              <div class="w-8 h-8 bg-white rounded flex items-center justify-center"><span class="text-black">I</span></div>
-              <div class="w-8 h-8 bg-white rounded flex items-center justify-center"><span class="text-black">L</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="text-center text-xs py-4 border-t border-gray-800">&copy; Copyright HomeWare 2024. All rights reserved.</div>
-      </footer>
+      <.footer />
     </div>
     """
   end
