@@ -1,231 +1,268 @@
-<div class="min-h-screen bg-gray-50">
-  <!-- Navigation -->
-  <nav class="bg-white shadow">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16">
-        <div class="flex">
-          <div class="flex-shrink-0 flex items-center">
-            <h1 class="text-xl font-bold text-gray-900">HomeWare</h1>
-          </div>
+<div class="min-h-screen bg-white flex flex-col">
+  <main class="flex-1 flex flex-row max-w-7xl mx-auto w-full">
+    <!-- Sidebar -->
+    <aside class="w-56 pt-8 pr-4 hidden lg:block">
+      <nav class="space-y-4">
+        <div class="font-bold text-lg mb-2">Exclusive</div>
+        <%= for category <- @categories do %>
+          <a
+            href={"/categories/#{category.id}"}
+            class="block text-gray-700 hover:text-red-500 py-1"
+          >
+            <%= category.name %>
+          </a>
+        <% end %>
+      </nav>
+    </aside>
+    <section class="flex-1">
+      <!-- Hero Carousel -->
+      <div class="w-full mt-8">
+        <div class="relative bg-gray-100 rounded-lg overflow-hidden h-64 flex items-center justify-center">
+          <span class="text-3xl font-bold text-purple-700">Up to 10% off Voucher</span>
+          <!-- Carousel dots and arrows can be added here -->
         </div>
-        <div class="flex items-center">
-          <div class="flex-shrink-0">
-            <a href="/cart" class="relative p-2 text-gray-400 hover:text-gray-500">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m6 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
-                />
-              </svg>
-              <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 ring-2 ring-white">
-              </span>
+      </div>
+      <!-- Flash Sales -->
+      <div class="mt-12">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-2">
+            <span class="text-red-500 font-bold">Today's</span>
+            <span class="text-lg font-bold">Flash Sales</span>
+            <span class="ml-4 text-xs text-gray-500">
+              Ends in <span class="font-mono bg-gray-200 px-2 py-1 rounded">03:23:19:56</span>
+            </span>
+          </div>
+          <a href="/products" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+            View All Products
+          </a>
+        </div>
+        <div class="flex space-x-6 overflow-x-auto pb-4">
+          <%= for product <- @featured_products do %>
+            <div class="min-w-[220px] bg-white rounded-lg shadow p-4 flex flex-col items-center">
+              <img src="https://via.placeholder.com/150" class="w-32 h-32 object-cover mb-2" />
+              <div class="text-center">
+                <div class="font-bold text-sm mb-1"><%= product.name %></div>
+                <div class="text-xs text-gray-500 mb-1">$<%= product.price %></div>
+                <button class="bg-black text-white px-3 py-1 rounded text-xs mt-2">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <!-- Browse By Category -->
+      <div class="mt-12">
+        <div class="flex items-center mb-4">
+          <span class="text-red-500 font-bold mr-2">Categories</span>
+          <span class="text-lg font-bold">Browse By Category</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+          <%= for category <- @categories do %>
+            <div class="flex flex-col items-center bg-gray-100 rounded-lg p-4 hover:bg-red-100 cursor-pointer">
+              <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2 border border-gray-200">
+                <!-- Placeholder for icon -->
+                <svg
+                  class="w-6 h-6 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                </svg>
+              </div>
+              <span class="text-xs font-semibold"><%= category.name %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <!-- Best Selling Products -->
+      <div class="mt-12">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-2">
+            <span class="text-red-500 font-bold">This Month</span>
+            <span class="text-lg font-bold">Best Selling Products</span>
+          </div>
+          <a href="/products" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+            View All
+          </a>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          <%= for product <- @featured_products do %>
+            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+              <img src="https://via.placeholder.com/150" class="w-32 h-32 object-cover mb-2" />
+              <div class="text-center">
+                <div class="font-bold text-sm mb-1"><%= product.name %></div>
+                <div class="text-xs text-gray-500 mb-1">$<%= product.price %></div>
+                <button class="bg-black text-white px-3 py-1 rounded text-xs mt-2">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <!-- Promotional Banner -->
+      <div class="mt-12">
+        <div class="bg-black text-white rounded-lg flex flex-col md:flex-row items-center justify-between p-8">
+          <div>
+            <div class="text-green-400 font-bold mb-2">Categories</div>
+            <div class="text-2xl font-bold mb-2">Enhance Your Music Experience</div>
+            <div class="mb-4">Best audio quality, wireless, and more. Shop now!</div>
+            <a
+              href="/products"
+              class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            >
+              Buy Now
             </a>
           </div>
-          <div class="ml-4 flex items-center md:ml-6">
-            <%= if @current_user do %>
-              <div class="ml-3 relative">
-                <div class="flex items-center">
-                  <span class="text-sm text-gray-700 mr-4">
-                    Welcome, <%= @current_user.first_name %>
-                  </span>
-                  <a href="/profile" class="text-sm text-gray-700 hover:text-gray-900 mr-4">
-                    Profile
-                  </a>
-                  <a href="/orders" class="text-sm text-gray-700 hover:text-gray-900 mr-4">
-                    Orders
-                  </a>
-                  <form action="/users/log_out" method="post" class="inline">
-                    <button type="submit" class="text-sm text-gray-700 hover:text-gray-900">
-                      Logout
-                    </button>
-                  </form>
-                </div>
-              </div>
-            <% else %>
-              <div class="flex items-center space-x-4">
-                <a href="/users/log_in" class="text-sm text-gray-700 hover:text-gray-900">
-                  Sign in
-                </a>
-                <a
-                  href="/users/register"
-                  class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700"
-                >
-                  Sign up
-                </a>
-              </div>
-            <% end %>
-          </div>
+          <img src="https://via.placeholder.com/200x120" class="mt-4 md:mt-0 md:ml-8" />
         </div>
       </div>
-    </div>
-  </nav>
-  <!-- Hero Section -->
-  <div class="relative bg-white overflow-hidden">
-    <div class="max-w-7xl mx-auto">
-      <div class="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-        <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-          <div class="sm:text-center lg:text-left">
-            <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-              <span class="block xl:inline">Premium Household</span>
-              <span class="block text-indigo-600 xl:inline">Appliances</span>
-            </h1>
-            <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-              Discover the latest in kitchen, cleaning, and laundry appliances. Quality products for your home.
-            </p>
-            <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-              <div class="rounded-md shadow">
-                <a
-                  href="/products"
-                  class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
-                >
-                  Shop Now
-                </a>
+      <!-- Explore Our Products -->
+      <div class="mt-12">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-2">
+            <span class="text-red-500 font-bold">Our Products</span>
+            <span class="text-lg font-bold">Explore Our Products</span>
+          </div>
+          <a href="/products" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+            View All Products
+          </a>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          <%= for product <- @featured_products do %>
+            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+              <img src="https://via.placeholder.com/150" class="w-32 h-32 object-cover mb-2" />
+              <div class="text-center">
+                <div class="font-bold text-sm mb-1"><%= product.name %></div>
+                <div class="text-xs text-gray-500 mb-1">$<%= product.price %></div>
+                <button class="bg-black text-white px-3 py-1 rounded text-xs mt-2">
+                  Add to Cart
+                </button>
               </div>
             </div>
-          </div>
-        </main>
+          <% end %>
+        </div>
       </div>
-    </div>
-  </div>
-  <!-- Featured Categories -->
-  <div class="bg-white">
-    <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-          Shop by Category
-        </h2>
-        <p class="mt-4 text-lg text-gray-500">
-          Find the perfect appliance for every room in your home
-        </p>
-      </div>
-
-      <div class="mt-12 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-        <%= for category <- @categories do %>
-          <div class="group relative">
-            <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none">
-              <img
-                src="https://via.placeholder.com/300x300"
-                class="w-full h-full object-center object-cover lg:w-full lg:h-full"
-              />
-            </div>
-            <div class="mt-4 flex justify-between">
-              <div>
-                <h3 class="text-sm text-gray-700">
-                  <a href="/categories">
-                    <span aria-hidden="true" class="absolute inset-0"></span>
-                    <%= category.name %>
-                  </a>
-                </h3>
-                <p class="mt-1 text-sm text-gray-500"><%= category.description %></p>
+      <!-- New Arrival -->
+      <div class="mt-12">
+        <div class="flex items-center mb-4">
+          <span class="text-red-500 font-bold mr-2">Featured</span>
+          <span class="text-lg font-bold">New Arrival</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+          <%= for product <- @featured_products do %>
+            <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+              <img src="https://via.placeholder.com/150" class="w-32 h-32 object-cover mb-2" />
+              <div class="text-center">
+                <div class="font-bold text-sm mb-1"><%= product.name %></div>
+                <div class="text-xs text-gray-500 mb-1">$<%= product.price %></div>
+                <button class="bg-black text-white px-3 py-1 rounded text-xs mt-2">
+                  Add to Cart
+                </button>
               </div>
             </div>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
       </div>
-    </div>
-  </div>
-  <!-- Featured Products -->
-  <div class="bg-gray-50">
-    <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-          Featured Products
-        </h2>
-        <p class="mt-4 text-lg text-gray-500">
-          Our most popular and highly-rated appliances
-        </p>
+      <!-- Features Row -->
+      <div class="mt-12 flex flex-col md:flex-row justify-between items-center bg-gray-100 rounded-lg p-8 space-y-4 md:space-y-0 md:space-x-8">
+        <div class="flex flex-col items-center">
+          <svg
+            class="w-10 h-10 text-black mb-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 10h1l2 7h13l2-7h1"
+            />
+          </svg>
+          <span class="font-bold">FREE AND FAST DELIVERY</span>
+          <span class="text-xs text-gray-500">Free delivery for all orders over $140</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <svg
+            class="w-10 h-10 text-black mb-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
+          </svg>
+          <span class="font-bold">24/7 CUSTOMER SERVICE</span>
+          <span class="text-xs text-gray-500">Friendly 24/7 customer support</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <svg
+            class="w-10 h-10 text-black mb-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <span class="font-bold">MONEY BACK GUARANTEE</span>
+          <span class="text-xs text-gray-500">We return money within 30 days</span>
+        </div>
       </div>
-
-      <div class="mt-12 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-        <%= for product <- @featured_products do %>
-          <div class="group relative">
-            <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none">
-              <img
-                src="https://via.placeholder.com/300x300"
-                class="w-full h-full object-center object-cover lg:w-full lg:h-full"
-              />
-            </div>
-            <div class="mt-4 flex justify-between">
-              <div>
-                <h3 class="text-sm text-gray-700">
-                  <a href="/products">
-                    <span aria-hidden="true" class="absolute inset-0"></span>
-                    <%= product.name %>
-                  </a>
-                </h3>
-                <p class="mt-1 text-sm text-gray-500"><%= product.brand %></p>
-              </div>
-              <p class="text-sm font-medium text-gray-900">$<%= product.price %></p>
-            </div>
-            <div class="mt-4">
-              <button class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors">
-                Add to Cart
-              </button>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  </div>
+    </section>
+  </main>
   <!-- Footer -->
-  <footer class="bg-white">
-    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-      <div class="xl:grid xl:grid-cols-3 xl:gap-8">
-        <div class="space-y-8 xl:col-span-1">
-          <span class="text-2xl font-bold text-gray-900">HomeWare</span>
-          <p class="text-gray-500 text-base">
-            Premium household appliances for modern living.
-          </p>
+  <footer class="bg-black text-white mt-12">
+    <div class="max-w-7xl mx-auto py-12 px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div>
+        <div class="font-bold text-2xl mb-2">Exclusive</div>
+        <div class="text-xs">Get 10% off your first order</div>
+      </div>
+      <div>
+        <div class="font-bold mb-2">Support</div>
+        <div class="text-xs">111 Bijoy sarani, Dhaka, DH 1515, Bangladesh</div>
+        <div class="text-xs">exclusive@gmail.com</div>
+        <div class="text-xs">+88015-88888-9999</div>
+      </div>
+      <div>
+        <div class="font-bold mb-2">Quick Link</div>
+        <div class="text-xs"><a href="/account">My Account</a></div>
+        <div class="text-xs"><a href="/login">Login / Register</a></div>
+        <div class="text-xs"><a href="/cart">Cart</a></div>
+        <div class="text-xs"><a href="/wishlist">Wishlist</a></div>
+        <div class="text-xs"><a href="/products">Shop</a></div>
+      </div>
+      <div>
+        <div class="font-bold mb-2">Download App</div>
+        <div class="flex space-x-2 mb-2">
+          <div class="w-16 h-16 bg-white rounded flex items-center justify-center">
+            <span class="text-black">QR</span>
+          </div>
         </div>
-        <div class="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
-          <div class="md:grid md:grid-cols-2 md:gap-8">
-            <div>
-              <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">
-                Shopping
-              </h3>
-              <ul class="mt-4 space-y-4">
-                <li>
-                  <a href="/products" class="text-base text-gray-500 hover:text-gray-900">
-                    All Products
-                  </a>
-                </li>
-                <li>
-                  <a href="/categories" class="text-base text-gray-500 hover:text-gray-900">
-                    Categories
-                  </a>
-                </li>
-                <li>
-                  <a href="/cart" class="text-base text-gray-500 hover:text-gray-900">Cart</a>
-                </li>
-              </ul>
-            </div>
-            <div class="mt-12 md:mt-0">
-              <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">
-                Support
-              </h3>
-              <ul class="mt-4 space-y-4">
-                <li>
-                  <a href="/contact" class="text-base text-gray-500 hover:text-gray-900">
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a href="/shipping" class="text-base text-gray-500 hover:text-gray-900">
-                    Shipping
-                  </a>
-                </li>
-                <li>
-                  <a href="/returns" class="text-base text-gray-500 hover:text-gray-900">
-                    Returns
-                  </a>
-                </li>
-              </ul>
-            </div>
+        <div class="flex space-x-2">
+          <div class="w-8 h-8 bg-white rounded flex items-center justify-center">
+            <span class="text-black">F</span>
+          </div>
+          <div class="w-8 h-8 bg-white rounded flex items-center justify-center">
+            <span class="text-black">T</span>
+          </div>
+          <div class="w-8 h-8 bg-white rounded flex items-center justify-center">
+            <span class="text-black">I</span>
+          </div>
+          <div class="w-8 h-8 bg-white rounded flex items-center justify-center">
+            <span class="text-black">L</span>
           </div>
         </div>
       </div>
+    </div>
+    <div class="text-center text-xs py-4 border-t border-gray-800">
+      &copy; Copyright HomeWare 2024. All rights reserved.
     </div>
   </footer>
 </div>

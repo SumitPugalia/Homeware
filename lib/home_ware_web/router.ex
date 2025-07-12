@@ -82,6 +82,7 @@ defmodule HomeWareWeb.Router do
     live "/orders", AdminOrdersLive, :index
     live "/users", AdminUsersLive, :index
   end
+
   # Other scopes may use custom stacks.
   # scope "/api", HomeWareWeb do
   #   pipe_through :api

@@ -1,32 +1,112 @@
-<header class="px-4 sm:px-6 lg:px-8">
-  <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
-    <div class="flex items-center gap-4">
-      <a href="/">
-        <img src={~p"/images/logo.svg"} width="36" />
-      </a>
-      <p class="bg-brand/5 text-brand rounded-full px-2 font-medium leading-6">
-        v<%= Application.spec(:phoenix, :vsn) %>
-      </p>
+<header class="sticky top-0 z-50 bg-white shadow">
+  <div class="w-full bg-black text-white text-xs flex justify-between items-center px-2 py-1">
+    <span>Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!</span>
+    <a href="/" class="underline">ShopNow</a>
+    <a href="/users/log_in" class="ml-4">Login</a>
+  </div>
+  <nav class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+    <div class="flex items-center space-x-8">
+      <a href="/" class="font-bold text-2xl">Exclusive</a>
+      <div class="hidden md:flex space-x-6">
+        <a href="/" class="hover:text-red-500">Home</a>
+        <a href="/contact" class="hover:text-red-500">Contact</a>
+        <a href="/about" class="hover:text-red-500">About</a>
+        <a href="/users/register" class="hover:text-red-500">Sign Up</a>
+      </div>
     </div>
-    <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
-      <a href="https://twitter.com/elixirphoenix" class="hover:text-zinc-700">
-        @elixirphoenix
+    <div class="flex-1 flex justify-center md:justify-end items-center space-x-4">
+      <form action="/search" method="get" class="relative w-full max-w-xs hidden md:block">
+        <input
+          type="text"
+          name="q"
+          placeholder="What are you looking for?"
+          class="border rounded-full px-4 py-1 w-full"
+        />
+        <button type="submit" class="absolute right-2 top-1 text-gray-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-4.35-4.35M17 11A6 6 0 1 0 5 11a6 6 0 0 0 12 0z"
+            />
+          </svg>
+        </button>
+      </form>
+      <a href="/wishlist" class="hover:text-red-500">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4.318 6.318a4.5 4.5 0 0 1 6.364 0L12 7.636l1.318-1.318a4.5 4.5 0 1 1 6.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 0 1 0-6.364z"
+          />
+        </svg>
       </a>
-      <a href="https://github.com/phoenixframework/phoenix" class="hover:text-zinc-700">
-        GitHub
+      <a href="/cart" class="hover:text-red-500">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m6 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+          />
+        </svg>
       </a>
-      <a
-        href="https://hexdocs.pm/phoenix/overview.html"
-        class="rounded-lg bg-zinc-100 px-2 py-1 hover:bg-zinc-200/80"
+      <a href="/profile" class="hover:text-red-500">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5.121 17.804A9 9 0 1 1 12 21a9 9 0 0 1-6.879-3.196z"
+          />
+        </svg>
+      </a>
+      <!-- Hamburger for mobile -->
+      <button
+        class="md:hidden ml-2"
+        aria-label="Open Menu"
+        onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
       >
-        Get Started <span aria-hidden="true">&rarr;</span>
-      </a>
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
     </div>
+  </nav>
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="md:hidden hidden px-4 pb-4">
+    <a href="/" class="block py-2">Home</a>
+    <a href="/contact" class="block py-2">Contact</a>
+    <a href="/about" class="block py-2">About</a>
+    <a href="/users/register" class="block py-2">Sign Up</a>
+    <form action="/search" method="get" class="relative w-full mt-2">
+      <input
+        type="text"
+        name="q"
+        placeholder="What are you looking for?"
+        class="border rounded-full px-4 py-1 w-full"
+      />
+      <button type="submit" class="absolute right-2 top-1 text-gray-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-4.35-4.35M17 11A6 6 0 1 0 5 11a6 6 0 0 0 12 0z"
+          />
+        </svg>
+      </button>
+    </form>
   </div>
 </header>
-<main class="px-4 py-20 sm:px-6 lg:px-8">
-  <div class="mx-auto max-w-2xl">
-    <.flash_group flash={@flash} />
-    <%= @inner_content %>
-  </div>
+<main class="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+  <.flash_group flash={@flash} />
+  <%= @inner_content %>
 </main>

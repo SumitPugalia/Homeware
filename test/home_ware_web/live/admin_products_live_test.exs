@@ -68,6 +68,7 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       conn = log_in_user(conn, user, token)
       {:ok, live, _html} = live(conn, ~p"/admin/products")
       live |> element("button", "Add Product") |> render_click()
+
       live
       |> form("#product-form", %{
         "product[name]" => "UI Created Product",
@@ -81,6 +82,7 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
         "product[is_active]" => "true"
       })
       |> render_submit()
+
       assert has_element?(live, ".alert", "Product created successfully")
       assert render(live) =~ "UI Created Product"
     end
@@ -95,12 +97,14 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       html = render(live)
       assert html =~ "Edit Product"
       assert html =~ product.name
+
       live
       |> form("#product-form", %{
         "product[name]" => "Edited Product Name",
         "product[price]" => "99.99"
       })
       |> render_submit()
+
       assert has_element?(live, ".alert", "Product updated successfully")
       assert render(live) =~ "Edited Product Name"
     end
@@ -119,12 +123,14 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       conn = log_in_user(conn, user, token)
       {:ok, live, _html} = live(conn, ~p"/admin/products")
       live |> element("button", "Add Product") |> render_click()
+
       live
       |> form("#product-form", %{
         "product[name]" => "",
         "product[price]" => "invalid"
       })
       |> render_submit()
+
       assert render(live) =~ "Add New Product"
     end
 
