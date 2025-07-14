@@ -65,7 +65,7 @@ defmodule HomeWare.AccountsTest do
     test "authenticate_user/2 with valid credentials returns user" do
       user = Factory.insert(:user, %{email: "test@example.com"})
       # Set password for authentication
-      {:ok, user_with_password} =
+      {:ok, _user_with_password} =
         Accounts.update_user(user, %{hashed_password: Bcrypt.hash_pwd_salt("testpassword123")})
 
       assert {:ok, authenticated_user} =

@@ -11,7 +11,6 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(HomeWare.Repo, {:shared, self()})
     end
-
     user = Factory.insert(:user, %{role: :admin})
     {:ok, token, _claims} = Guardian.encode_and_sign(user)
     %{user: user, token: token}
@@ -120,7 +119,7 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
     end
 
     test "form validation works", %{conn: conn, user: user, token: token} do
-      category = Factory.insert(:category)
+      _category = Factory.insert(:category)
       conn = log_in_user(conn, user, token)
       {:ok, live, _html} = live(conn, ~p"/admin/products")
       live |> element("button", "Add Product") |> render_click()

@@ -1,8 +1,6 @@
 defmodule HomeWareWeb.UserRegistrationControllerTest do
   use HomeWareWeb.ConnCase
 
-  alias HomeWare.Accounts
-
   describe "GET /users/register" do
     test "renders registration form", %{conn: conn} do
       conn = get(conn, ~p"/users/register")
@@ -24,7 +22,7 @@ defmodule HomeWareWeb.UserRegistrationControllerTest do
 
       conn = post(conn, ~p"/users/register", user_params)
       assert redirected_to(conn) == ~p"/users/log_in"
-      assert get_flash(conn, :info) =~ "Registration successful"
+      assert Phoenix.Flash.get(conn, :info) =~ "Registration successful"
     end
 
     test "returns error with invalid data", %{conn: conn} do

@@ -60,18 +60,11 @@ defmodule HomeWareWeb.AdminProductsLive do
             <h2 class="text-xl font-semibold text-gray-900 mb-4">
               <%= if @editing_product, do: "Edit Product", else: "Add New Product" %>
             </h2>
-            <.form
-              for={@product_changeset}
-              phx-submit="save_product"
-              phx-change="validate_product"
-              id="product-form"
-              class="space-y-4"
-            >
-              <!-- form fields here (unchanged) -->
+            <.form :let={f} for={@product_changeset} phx-submit="save_product" phx-change="validate_product" id="product-form" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <.input
-                    field={@product_changeset[:name]}
+                    field={f[:name]}
                     type="text"
                     label="Name"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -79,7 +72,7 @@ defmodule HomeWareWeb.AdminProductsLive do
                 </div>
                 <div>
                   <.input
-                    field={@product_changeset[:slug]}
+                    field={f[:slug]}
                     type="text"
                     label="Slug"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -87,7 +80,7 @@ defmodule HomeWareWeb.AdminProductsLive do
                 </div>
                 <div>
                   <.input
-                    field={@product_changeset[:price]}
+                    field={f[:price]}
                     type="number"
                     step="0.01"
                     label="Price"
@@ -95,29 +88,19 @@ defmodule HomeWareWeb.AdminProductsLive do
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700">Category</label>
-                  <select
-                    name="product[category_id]"
+                  <.input
+                    field={f[:category_id]}
+                    type="select"
+                    label="Category"
+                    options={Enum.map(@categories, fn cat -> {cat.name, cat.id} end)}
+                    prompt="Select Category"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  >
-                    <option value="">Select Category</option>
-                    <%= for category <- @categories do %>
-                      <option
-                        value={category.id}
-                        selected={
-                          @product_changeset.changes[:category_id] == category.id ||
-                            @product_changeset.data.category_id == category.id
-                        }
-                      >
-                        <%= category.name %>
-                      </option>
-                    <% end %>
-                  </select>
+                  />
                 </div>
               </div>
               <div>
                 <.input
-                  field={@product_changeset[:description]}
+                  field={f[:description]}
                   type="textarea"
                   label="Description"
                   rows="3"
@@ -127,7 +110,7 @@ defmodule HomeWareWeb.AdminProductsLive do
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <.input
-                    field={@product_changeset[:sku]}
+                    field={f[:sku]}
                     type="text"
                     label="SKU"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -135,7 +118,7 @@ defmodule HomeWareWeb.AdminProductsLive do
                 </div>
                 <div>
                   <.input
-                    field={@product_changeset[:brand]}
+                    field={f[:brand]}
                     type="text"
                     label="Brand"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -143,7 +126,7 @@ defmodule HomeWareWeb.AdminProductsLive do
                 </div>
                 <div>
                   <.input
-                    field={@product_changeset[:inventory_quantity]}
+                    field={f[:inventory_quantity]}
                     type="number"
                     label="Inventory Quantity"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -151,31 +134,18 @@ defmodule HomeWareWeb.AdminProductsLive do
                 </div>
               </div>
               <div class="flex items-center space-x-4">
-                <label class="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="product[is_featured]"
-                    value="true"
-                    checked={
-                      @product_changeset.changes[:is_featured] || @product_changeset.data.is_featured
-                    }
-                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                  <span class="ml-2 text-sm text-gray-700">Featured Product</span>
-                </label>
-                <label class="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="product[is_active]"
-                    value="true"
-                    checked={
-                      @product_changeset.changes[:is_active] != false &&
-                        @product_changeset.data.is_active != false
-                    }
-                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                  <span class="ml-2 text-sm text-gray-700">Active</span>
-                </label>
+                <.input
+                  field={f[:is_featured]}
+                  type="checkbox"
+                  label="Featured Product"
+                  class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+                <.input
+                  field={f[:is_active]}
+                  type="checkbox"
+                  label="Active"
+                  class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
               </div>
               <div class="flex justify-end space-x-3">
                 <button
