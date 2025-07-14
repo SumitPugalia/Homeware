@@ -6,7 +6,7 @@ defmodule HomeWareWeb.UserRegistrationControllerTest do
   describe "GET /users/register" do
     test "renders registration form", %{conn: conn} do
       conn = get(conn, ~p"/users/register")
-      assert html_response(conn, 200) =~ "Create your account"
+      assert html_response(conn, 200) =~ "Create an account"
     end
   end
 
@@ -39,7 +39,53 @@ defmodule HomeWareWeb.UserRegistrationControllerTest do
       }
 
       conn = post(conn, ~p"/users/register", user_params)
-      assert html_response(conn, 200) =~ "Create your account"
+      html = html_response(conn, 200)
+      assert html =~ "Create an account"
+      assert html =~ "must have the @ sign and no spaces"
+      assert html =~ "must include at least one lowercase letter"
+      assert html =~ "should be at least %{count} character(s)"
+    end
+
+    test "shows error for invalid email format", %{conn: conn} do
+      user_params = %{
+        "user" => %{
+          "email" => "not-an-email",
+          "first_name" => "Test",
+          "password" => "password123"
+        }
+      }
+
+      conn = post(conn, ~p"/users/register", user_params)
+      html = html_response(conn, 200)
+      assert html =~ "must have the @ sign and no spaces"
+    end
+
+    test "shows error for short password", %{conn: conn} do
+      user_params = %{
+        "user" => %{
+          "email" => "test@example.com",
+          "first_name" => "Test",
+          "password" => "123"
+        }
+      }
+
+      conn = post(conn, ~p"/users/register", user_params)
+      html = html_response(conn, 200)
+      assert html =~ "must include at least one lowercase letter"
+    end
+
+    test "shows error for missing required fields", %{conn: conn} do
+      user_params = %{
+        "user" => %{
+          "email" => "",
+          "first_name" => "",
+          "password" => ""
+        }
+      }
+
+      conn = post(conn, ~p"/users/register", user_params)
+      html = html_response(conn, 200)
+      assert html =~ "can&#39;t be blank"
     end
   end
 end

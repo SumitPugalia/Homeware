@@ -4,7 +4,8 @@ defmodule HomeWareWeb.UserRegistrationController do
   alias HomeWare.Accounts
 
   def new(conn, _params) do
-    render(conn, :new)
+    changeset = HomeWare.Accounts.change_user_registration(%HomeWare.Accounts.User{})
+    render(conn, :new, changeset: changeset)
   end
 
   def create(conn, %{"user" => user_params}) do
