@@ -25,7 +25,10 @@ defmodule HomeWareWeb.UserSessionControllerTest do
     assert html_response(conn, 200)
   end
 
-  test "POST /users/log_in with valid credentials redirects regular user to home", %{conn: conn, user: user} do
+  test "POST /users/log_in with valid credentials redirects regular user to home", %{
+    conn: conn,
+    user: user
+  } do
     valid_attrs = %{
       "user" => %{
         "email" => user.email,
@@ -37,7 +40,10 @@ defmodule HomeWareWeb.UserSessionControllerTest do
     assert redirected_to(conn) == ~p"/"
   end
 
-  test "POST /users/log_in with valid credentials redirects admin user to admin dashboard", %{conn: conn, admin_user: admin_user} do
+  test "POST /users/log_in with valid credentials redirects admin user to admin dashboard", %{
+    conn: conn,
+    admin_user: admin_user
+  } do
     valid_attrs = %{
       "user" => %{
         "email" => admin_user.email,

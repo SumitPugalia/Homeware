@@ -35,4 +35,20 @@ defmodule HomeWareWeb.ConnCase do
     HomeWare.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
+
+  def log_in_admin_user(conn) do
+    admin =
+      HomeWare.Factory.insert(:user, %{
+        role: :admin,
+        email: "admin#{System.unique_integer()}@example.com"
+      })
+
+    {:ok, token, _claims} = HomeWare.Guardian.encode_and_sign(admin)
+
+    conn
+    |> Plug.Conn.fetch_session()
+    |> Plug.Conn.assign(:current_user, admin)
+    |> Plug.Conn.put_session(:user_token, token)
+    |> Map.put(:admin, admin)
+  end
 end

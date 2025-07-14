@@ -84,3 +84,13 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+config :ex_aws,
+  access_key_id: "DO_SPACES_ACCESS_KEY",
+  secret_access_key: "DO_SPACES_SECRET_KEY",
+  region: "DO_SPACES_REGION",
+  s3: [
+    scheme: "https://",
+    host: "DO_SPACES_BUCKET.DO_SPACES_REGION.digitaloceanspaces.com",
+    region: "DO_SPACES_REGION"
+  ]

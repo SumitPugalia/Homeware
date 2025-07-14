@@ -132,6 +132,8 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       |> render_submit()
 
       assert render(live) =~ "Add New Product"
+      # The form should still be visible after validation errors
+      assert render(live) =~ "Name"
     end
 
     test "can cancel form", %{conn: conn, user: user, token: token} do

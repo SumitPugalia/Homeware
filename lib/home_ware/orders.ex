@@ -68,4 +68,16 @@ defmodule HomeWare.Orders do
     |> order_by([o], desc: o.inserted_at)
     |> Repo.all()
   end
+
+  def get_order_with_details!(id) do
+    Order
+    |> Repo.get_by!(id: id)
+    |> Repo.preload([
+      :user,
+      :shipping_address,
+      :billing_address,
+      :product_reviews,
+      order_items: [:product]
+    ])
+  end
 end

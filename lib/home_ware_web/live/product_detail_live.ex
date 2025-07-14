@@ -40,7 +40,7 @@ defmodule HomeWareWeb.ProductDetailLive do
           <!-- Left: Image Gallery -->
           <div class="flex flex-col lg:w-1/2">
             <div class="flex flex-row lg:flex-col gap-4 mb-4 lg:mb-0 lg:mr-4">
-              <%= for i <- 0..3 do %>
+              <%= for _i <- 0..3 do %>
                 <button class="border-2 border-gray-200 rounded-lg p-1 hover:border-red-500">
                   <img
                     src="https://via.placeholder.com/80x80"

@@ -730,4 +730,75 @@ defmodule HomeWareWeb.CoreComponents do
     </footer>
     """
   end
+
+  @doc """
+  Renders the admin sidebar navigation for the dashboard and related pages.
+  """
+  attr :current, :string,
+    default: "dashboard",
+    doc: "the current active page (dashboard, products, orders)"
+
+  attr :categories, :list, default: [], doc: "list of categories with %{name: ..., count: ...}"
+
+  def admin_sidebar(assigns) do
+    ~H"""
+    <aside class="w-64 min-h-screen bg-[#fafafa] flex flex-col py-6 px-4 border-r border-gray-200">
+      <div class="flex items-center mb-10">
+        <img src="/images/logo.svg" alt="Arik Logo" class="h-10 mr-2" />
+        <span class="text-3xl font-bold text-[#1a2a3a] tracking-tight">Arik</span>
+      </div>
+      <nav class="flex flex-col gap-2 mb-8">
+        <a
+          href="/admin/dashboard"
+          class={[
+            "flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm ",
+            @current == "dashboard" && "bg-[#0a3d62] text-white",
+            @current != "dashboard" && "hover:bg-gray-100 text-gray-700"
+          ]}
+        >
+          <span class="material-icons text-base">dashboard</span> DASHBOARD
+        </a>
+        <a
+          href="/admin/products"
+          class={[
+            "flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm ",
+            @current == "products" && "bg-[#0a3d62] text-white",
+            @current != "products" && "hover:bg-gray-100 text-gray-700"
+          ]}
+        >
+          <span class="material-icons text-base">inventory_2</span> ALL PRODUCTS
+        </a>
+        <a
+          href="/admin/orders"
+          class={[
+            "flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm ",
+            @current == "orders" && "bg-[#0a3d62] text-white",
+            @current != "orders" && "hover:bg-gray-100 text-gray-700"
+          ]}
+        >
+          <span class="material-icons text-base">list_alt</span> ORDER LIST
+        </a>
+      </nav>
+      <div class="mt-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-bold text-lg text-gray-900">Categories</span>
+          <span class="material-icons text-base">expand_more</span>
+        </div>
+        <ul class="flex flex-col gap-2">
+          <%= for {cat, idx} <- Enum.with_index(@categories) do %>
+            <li class="flex items-center justify-between">
+              <span class="text-gray-800 text-base"><%= cat.name %></span>
+              <span class={[
+                "w-10 h-8 flex items-center justify-center rounded bg-gray-200 text-gray-800 font-semibold",
+                idx == 0 && "bg-[#0a3d62] text-white"
+              ]}>
+                <%= String.pad_leading(Integer.to_string(cat.count), 2, "0") %>
+              </span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </aside>
+    """
+  end
 end

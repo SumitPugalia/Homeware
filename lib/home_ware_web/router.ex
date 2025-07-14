@@ -78,8 +78,10 @@ defmodule HomeWareWeb.Router do
 
     live "/dashboard", AdminDashboardLive, :index
     live "/products", AdminProductsLive, :index
+    live "/products/:id", AdminProductDetailLive, :show
     live "/categories", AdminCategoriesLive, :index
     live "/orders", AdminOrdersLive, :index
+    live "/orders/:id", AdminOrderDetailLive, :show
     live "/users", AdminUsersLive, :index
   end
 

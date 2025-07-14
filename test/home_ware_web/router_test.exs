@@ -17,12 +17,12 @@ defmodule HomeWareWeb.RouterTest do
 
     test "GET /users/register", %{conn: conn} do
       conn = get(conn, ~p"/users/register")
-      assert html_response(conn, 200) =~ "Create your account"
+      assert html_response(conn, 200) =~ "Create an account"
     end
 
     test "GET /users/log_in", %{conn: conn} do
       conn = get(conn, ~p"/users/log_in")
-      assert html_response(conn, 200) =~ "Sign in to your account"
+      assert html_response(conn, 200) =~ "Log in to Exclusive"
     end
   end
 
