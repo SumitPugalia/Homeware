@@ -22,7 +22,7 @@ defmodule HomeWareWeb.UserRegistrationControllerTest do
 
       conn = post(conn, ~p"/users/register", user_params)
       assert redirected_to(conn) == ~p"/users/log_in"
-      assert Phoenix.Flash.get(conn, :info) =~ "Registration successful"
+      assert @flash[:info] =~ "Registration successful"
     end
 
     test "returns error with invalid data", %{conn: conn} do

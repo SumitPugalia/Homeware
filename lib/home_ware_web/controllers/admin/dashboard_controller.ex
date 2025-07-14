@@ -7,9 +7,9 @@ defmodule HomeWareWeb.Admin.DashboardController do
   def index(conn, _params) do
     # Order stats
     total_orders = Orders.count_orders()
-    active_orders = Orders.count_orders_by_status("active")
-    completed_orders = Orders.count_orders_by_status("completed")
-    return_orders = Orders.count_orders_by_status("returned")
+    active_orders = Orders.count_orders_by_status(:pending)
+    completed_orders = Orders.count_orders_by_status(:delivered)
+    return_orders = Orders.count_orders_by_status(:cancelled)
 
     # Best sellers (top 3 products by sales count)
     best_sellers = Products.top_selling_products(3)

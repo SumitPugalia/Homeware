@@ -94,17 +94,17 @@ defmodule HomeWare.Orders do
   def list_recent_orders(n) do
     query =
       from o in Order,
-        join: p in assoc(o, :product),
         join: u in assoc(o, :user),
         order_by: [desc: o.inserted_at],
         limit: ^n,
         select: %{
           id: o.id,
-          product_name: p.name,
+          # Since orders can have multiple items
+          product_name: "Multiple Products",
           date: o.inserted_at,
           customer_name: u.first_name,
           status: o.status,
-          amount: o.total
+          amount: o.total_amount
         }
 
     HomeWare.Repo.all(query)
