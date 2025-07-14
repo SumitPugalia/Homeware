@@ -35,7 +35,12 @@ defmodule HomeWareWeb.AdminProductDetailLiveTest do
   describe "product details live" do
     setup [:create_product]
 
-    test "renders product details and allows editing", %{conn: conn, user: user, token: token, product: product} do
+    test "renders product details and allows editing", %{
+      conn: conn,
+      user: user,
+      token: token,
+      product: product
+    } do
       conn = log_in_user(conn, user, token)
       {:ok, lv, html} = live(conn, "/admin/products/#{product.id}")
       assert html =~ product.name
@@ -63,7 +68,12 @@ defmodule HomeWareWeb.AdminProductDetailLiveTest do
       assert render(lv) =~ new_name
     end
 
-    test "shows validation errors on invalid input", %{conn: conn, user: user, token: token, product: product} do
+    test "shows validation errors on invalid input", %{
+      conn: conn,
+      user: user,
+      token: token,
+      product: product
+    } do
       conn = log_in_user(conn, user, token)
       {:ok, lv, _html} = live(conn, "/admin/products/#{product.id}")
       form = form(lv, "#product-form", product: %{name: "", price: -1})
@@ -92,7 +102,12 @@ defmodule HomeWareWeb.AdminProductDetailLiveTest do
       end
     end
 
-    test "cancel redirects to product list", %{conn: conn, user: user, token: token, product: product} do
+    test "cancel redirects to product list", %{
+      conn: conn,
+      user: user,
+      token: token,
+      product: product
+    } do
       conn = log_in_user(conn, user, token)
       {:ok, lv, _html} = live(conn, "/admin/products/#{product.id}")
       render_click(element(lv, "button", "CANCEL"))
@@ -107,6 +122,7 @@ defmodule HomeWareWeb.AdminProductDetailLiveTest do
       bypass: bypass
     } do
       conn = log_in_user(conn, user, token)
+
       Bypass.expect(bypass, "PUT", "/DO_SPACES_BUCKET/products/", fn conn ->
         Plug.Conn.resp(conn, 200, "")
       end)

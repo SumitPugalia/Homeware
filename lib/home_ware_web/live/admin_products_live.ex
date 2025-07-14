@@ -43,209 +43,80 @@ defmodule HomeWareWeb.AdminProductsLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex min-h-screen">
-      <.admin_sidebar current="products" categories={@sidebar_categories} />
-      <main class="flex-1 bg-[#f9f9f9] p-8">
-        <div class="flex justify-between items-center mb-8">
-          <h1 class="text-3xl font-bold text-gray-900">Product Management</h1>
-          <button
-            phx-click="show_add_form"
-            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Add Product
+    <div class="flex min-h-screen bg-[#f5f6f8]">
+      <!-- Sidebar -->
+      <aside class="w-64 min-h-screen bg-white flex flex-col py-6 px-4 border-r border-gray-200">
+        <div class="flex items-center mb-10">
+          <img src="/images/logo.svg" alt="Arik Logo" class="h-10 mr-2"/>
+          <span class="text-3xl font-bold text-[#1a2a3a] tracking-tight">Arik</span>
+        </div>
+        <nav class="flex flex-col gap-2 mb-8">
+          <a href="/admin/dashboard" class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm hover:bg-gray-100 text-gray-700">
+            <span class="material-icons text-base">dashboard</span> DASHBOARD
+          </a>
+          <a href="/admin/products" class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm bg-[#0a3d62] text-white">
+            <span class="material-icons text-base">inventory_2</span> ALL PRODUCTS
+          </a>
+          <a href="/admin/orders" class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm hover:bg-gray-100 text-gray-700">
+            <span class="material-icons text-base">list_alt</span> ORDER LIST
+          </a>
+        </nav>
+        <div class="mt-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-lg text-gray-900">Categories</span>
+            <span class="material-icons text-base">expand_more</span>
+          </div>
+          <ul class="flex flex-col gap-2">
+            <%!-- <%= for cat <- @categories do %>
+              <li class="flex items-center justify-between px-2 py-1 rounded hover:bg-gray-100">
+                <span><%= cat.name %></span>
+                <span class="bg-gray-200 text-xs rounded px-2 py-0.5 font-semibold"><%= cat.product_count || 0 %></span>
+              </li>
+            <% end %> --%>
+          </ul>
+        </div>
+      </aside>
+      <!-- Main Content -->
+      <main class="flex-1 p-8">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Home &gt; All Products</div>
+            <h1 class="text-2xl font-bold text-gray-900">All Products</h1>
+          </div>
+          <button phx-click="show_add_form" class="bg-black text-white px-5 py-2 rounded flex items-center gap-2 hover:bg-gray-800">
+            <span class="material-icons">add</span> ADD NEW PRODUCT
           </button>
         </div>
-        <%= if @show_form do %>
-          <div class="bg-white rounded-lg shadow p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">
-              <%= if @editing_product, do: "Edit Product", else: "Add New Product" %>
-            </h2>
-            <.form :let={f} for={@product_changeset} phx-submit="save_product" phx-change="validate_product" id="product-form" class="space-y-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <.input
-                    field={f[:name]}
-                    type="text"
-                    label="Name"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <.input
-                    field={f[:slug]}
-                    type="text"
-                    label="Slug"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <.input
-                    field={f[:price]}
-                    type="number"
-                    step="0.01"
-                    label="Price"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <.input
-                    field={f[:category_id]}
-                    type="select"
-                    label="Category"
-                    options={Enum.map(@categories, fn cat -> {cat.name, cat.id} end)}
-                    prompt="Select Category"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
+        <!-- Product Card Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <%= for product <- @products do %>
+            <div class="bg-white rounded-lg shadow p-4 flex flex-col">
+              <img src={product.featured_image || "/images/placeholder.png"} alt={product.name} class="h-32 w-full object-cover rounded" />
+              <div class="mt-2 font-bold"><%= product.name %></div>
+              <div class="text-sm text-gray-500"><%= product.category && product.category.name %></div>
+              <div class="font-semibold mt-1">₹<%= product.price %></div>
+              <div class="text-xs text-gray-600 mt-2"><%= product.description %></div>
+              <div class="flex justify-between mt-4 text-xs">
+                <div>Sales<br/><span class="font-bold text-orange-500">1269</span></div>
+                <div>Remaining Products<br/><span class="font-bold text-gray-700">1269</span></div>
               </div>
-              <div>
-                <.input
-                  field={f[:description]}
-                  type="textarea"
-                  label="Description"
-                  rows="3"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <.input
-                    field={f[:sku]}
-                    type="text"
-                    label="SKU"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <.input
-                    field={f[:brand]}
-                    type="text"
-                    label="Brand"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <.input
-                    field={f[:inventory_quantity]}
-                    type="number"
-                    label="Inventory Quantity"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-              <div class="flex items-center space-x-4">
-                <.input
-                  field={f[:is_featured]}
-                  type="checkbox"
-                  label="Featured Product"
-                  class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-                <.input
-                  field={f[:is_active]}
-                  type="checkbox"
-                  label="Active"
-                  class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-              <div class="flex justify-end space-x-3">
-                <button
-                  type="button"
-                  phx-click="cancel_form"
-                  class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  <%= if @editing_product, do: "Update Product", else: "Create Product" %>
+              <div class="flex justify-end mt-2">
+                <button class="p-2 rounded hover:bg-gray-100">
+                  <span class="material-icons">more_horiz</span>
                 </button>
               </div>
-            </.form>
-          </div>
-        <% end %>
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-          <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Products</h3>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Product
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Category
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Price
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Inventory
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <%= for product <- @products do %>
-                  <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="flex items-center">
-                        <div class="ml-4">
-                          <div class="text-sm font-medium text-gray-900"><%= product.name %></div>
-                          <div class="text-sm text-gray-500"><%= product.sku %></div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <%= if product.category, do: product.category.name, else: "No Category" %>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      $<%= product.price %>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <%= product.inventory_quantity %>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span class={
-                        if product.is_active,
-                          do:
-                            "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800",
-                          else:
-                            "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"
-                      }>
-                        <%= if product.is_active, do: "Active", else: "Inactive" %>
-                      </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        phx-click="edit_product"
-                        phx-value-id={product.id}
-                        class="text-blue-600 hover:text-blue-900 mr-3"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        phx-click="delete_product"
-                        phx-value-id={product.id}
-                        data-confirm="Are you sure you want to delete this product?"
-                        class="text-red-600 hover:text-red-900"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
+            </div>
+          <% end %>
+        </div>
+        <!-- Pagination -->
+        <div class="flex justify-center mt-8">
+          <nav class="inline-flex -space-x-px">
+            <button class="px-3 py-1 rounded-l border border-gray-300 bg-white text-gray-500 hover:bg-gray-100">&lt;</button>
+            <%= for page <- 1..10 do %>
+              <button class={"px-3 py-1 border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 " <> if page == @page, do: "font-bold bg-gray-200", else: ""}><%= page %></button>
+            <% end %>
+            <button class="px-3 py-1 rounded-r border border-gray-300 bg-white text-gray-500 hover:bg-gray-100">NEXT &gt;</button>
+          </nav>
         </div>
       </main>
     </div>

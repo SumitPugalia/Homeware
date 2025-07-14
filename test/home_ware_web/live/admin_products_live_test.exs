@@ -11,6 +11,7 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(HomeWare.Repo, {:shared, self()})
     end
+
     user = Factory.insert(:user, %{role: :admin})
     {:ok, token, _claims} = Guardian.encode_and_sign(user)
     %{user: user, token: token}
