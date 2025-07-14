@@ -11,11 +11,13 @@ defmodule HomeWareWeb.UserAuthGuardian do
   def log_in_user(conn, user, _params \\ %{}) do
     case Guardian.encode_and_sign(user) do
       {:ok, token, _claims} ->
+        redirect_path = if user.role == :admin, do: ~p"/admin/dashboard", else: ~p"/"
+
         conn
         |> assign(:current_user, user)
         |> put_resp_header("authorization", "Bearer #{token}")
         |> put_session(:user_token, token)
-        |> redirect(to: ~p"/")
+        |> redirect(to: redirect_path)
 
       {:error, _reason} ->
         conn
