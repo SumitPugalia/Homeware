@@ -48,4 +48,22 @@ defmodule HomeWare.Categories do
       category -> update_category(category, attrs)
     end
   end
+
+  def list_categories_with_counts do
+    import Ecto.Query
+    alias HomeWare.Categories.Category
+    alias HomeWare.Repo
+
+    query =
+      from c in Category,
+        left_join: p in assoc(c, :products),
+        group_by: c.id,
+        select: %{
+          id: c.id,
+          name: c.name,
+          product_count: count(p.id)
+        }
+
+    Repo.all(query)
+  end
 end

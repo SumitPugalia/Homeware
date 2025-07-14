@@ -73,16 +73,14 @@ defmodule HomeWareWeb.Router do
   end
 
   # Admin routes
-  scope "/admin", HomeWareWeb do
+  scope "/admin", HomeWareWeb.Admin, as: :admin do
     pipe_through [:browser, :require_admin]
 
-    live "/dashboard", AdminDashboardLive, :index
-    live "/products", AdminProductsLive, :index
-    live "/products/:id", AdminProductDetailLive, :show
-    live "/categories", AdminCategoriesLive, :index
-    live "/orders", AdminOrdersLive, :index
-    live "/orders/:id", AdminOrderDetailLive, :show
-    live "/users", AdminUsersLive, :index
+    resources "/dashboard", DashboardController, only: [:index]
+    resources "/products", ProductController
+    # resources "/categories", CategoryController
+    # resources "/orders", OrderController
+    # resources "/users", UserController
   end
 
   # Other scopes may use custom stacks.

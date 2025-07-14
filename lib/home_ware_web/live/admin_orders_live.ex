@@ -140,10 +140,7 @@ defmodule HomeWareWeb.AdminOrdersLive do
           <div class="mt-8 flex justify-center">
             <nav class="flex items-center space-x-2">
               <%= if @page > 1 do %>
-                <a
-                  href={~p"/admin/orders?page=#{@page - 1}"}
-                  class="px-3 py-2 text-gray-500 hover:text-gray-700"
-                >
+                <a href="#" class="px-3 py-2 text-gray-500 hover:text-gray-700">
                   Previous
                 </a>
               <% end %>
@@ -151,10 +148,7 @@ defmodule HomeWareWeb.AdminOrdersLive do
                 Page <%= @page %> of <%= ceil(length(@orders) / @per_page) %>
               </span>
               <%= if @page < ceil(length(@orders) / @per_page) do %>
-                <a
-                  href={~p"/admin/orders?page=#{@page + 1}"}
-                  class="px-3 py-2 text-gray-500 hover:text-gray-700"
-                >
+                <a href="#" class="px-3 py-2 text-gray-500 hover:text-gray-700">
                   Next
                 </a>
               <% end %>

@@ -80,4 +80,41 @@ defmodule HomeWare.Orders do
       order_items: [:product]
     ])
   end
+
+  def count_orders do
+    alias HomeWare.Orders.Order
+    HomeWare.Repo.one(from o in Order, select: count(o.id))
+  end
+
+  def count_orders_by_status(status) do
+    alias HomeWare.Orders.Order
+    HomeWare.Repo.one(from o in Order, where: o.status == ^status, select: count(o.id))
+  end
+
+  def list_recent_orders(n) do
+    query =
+      from o in Order,
+        join: p in assoc(o, :product),
+        join: u in assoc(o, :user),
+        order_by: [desc: o.inserted_at],
+        limit: ^n,
+        select: %{
+          id: o.id,
+          product_name: p.name,
+          date: o.inserted_at,
+          customer_name: u.first_name,
+          status: o.status,
+          amount: o.total
+        }
+
+    HomeWare.Repo.all(query)
+  end
+
+  def monthly_sales_data(n) do
+    alias HomeWare.Orders.Order
+    now = Date.utc_today()
+    months = Enum.map(0..(n - 1), fn i -> Date.add(now, -30 * i) end)
+    # This is a stub, you may want to use fragment for real month grouping
+    Enum.map(months, fn date -> {Date.to_string(date), Enum.random(1000..5000)} end)
+  end
 end

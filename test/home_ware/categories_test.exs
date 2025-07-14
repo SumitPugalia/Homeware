@@ -3,6 +3,7 @@ defmodule HomeWare.CategoriesTest do
 
   alias HomeWare.Categories
   alias HomeWare.Factory
+  alias HomeWare.Products
 
   describe "categories" do
     alias HomeWare.Categories.Category
@@ -60,6 +61,29 @@ defmodule HomeWare.CategoriesTest do
     test "change_category/1 returns a category changeset" do
       category = Factory.insert(:category)
       assert %Ecto.Changeset{} = Categories.change_category(category)
+    end
+  end
+
+  describe "list_categories_with_counts/0" do
+    test "returns categories with correct product counts" do
+      {:ok, cat1} = Categories.create_category(%{name: "Cat1", slug: "cat1"})
+      {:ok, cat2} = Categories.create_category(%{name: "Cat2", slug: "cat2"})
+
+      {:ok, _p1} =
+        Products.create_product(%{name: "P1", slug: "p1", price: 10, category_id: cat1.id})
+
+      {:ok, _p2} =
+        Products.create_product(%{name: "P2", slug: "p2", price: 20, category_id: cat1.id})
+
+      {:ok, _p3} =
+        Products.create_product(%{name: "P3", slug: "p3", price: 30, category_id: cat2.id})
+
+      result = Categories.list_categories_with_counts()
+      cat1_count = Enum.find(result, &(&1.id == cat1.id)).product_count
+      cat2_count = Enum.find(result, &(&1.id == cat2.id)).product_count
+
+      assert cat1_count == 2
+      assert cat2_count == 1
     end
   end
 end

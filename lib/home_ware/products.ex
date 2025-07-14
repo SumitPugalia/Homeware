@@ -163,6 +163,20 @@ defmodule HomeWare.Products do
     |> Repo.all()
   end
 
+  def count_products do
+    import Ecto.Query
+    alias HomeWare.Products.Product
+    HomeWare.Repo.one(from p in Product, select: count(p.id))
+  end
+
+  def top_selling_products(n) do
+    import Ecto.Query
+    alias HomeWare.Products.Product
+    # This is a stub: add a random sales_count for demo
+    products = HomeWare.Repo.all(from p in Product, limit: ^n)
+    Enum.map(products, fn p -> Map.put(p, :sales_count, Enum.random(100..1000)) end)
+  end
+
   defp apply_filters(query, filters) do
     Enum.reduce(filters, query, fn {key, value}, acc ->
       case key do

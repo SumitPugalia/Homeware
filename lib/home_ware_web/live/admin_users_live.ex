@@ -225,10 +225,7 @@ defmodule HomeWareWeb.AdminUsersLive do
           <div class="mt-8 flex justify-center">
             <nav class="flex items-center space-x-2">
               <%= if @page > 1 do %>
-                <a
-                  href={~p"/admin/users?page=#{@page - 1}"}
-                  class="px-3 py-2 text-gray-500 hover:text-gray-700"
-                >
+                <a href="#" class="px-3 py-2 text-gray-500 hover:text-gray-700">
                   Previous
                 </a>
               <% end %>
@@ -238,10 +235,7 @@ defmodule HomeWareWeb.AdminUsersLive do
               </span>
 
               <%= if @page < ceil(length(@users) / @per_page) do %>
-                <a
-                  href={~p"/admin/users?page=#{@page + 1}"}
-                  class="px-3 py-2 text-gray-500 hover:text-gray-700"
-                >
+                <a href="#" class="px-3 py-2 text-gray-500 hover:text-gray-700">
                   Next
                 </a>
               <% end %>
