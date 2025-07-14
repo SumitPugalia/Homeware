@@ -63,6 +63,7 @@ defmodule HomeWare.MixProject do
       {:guardian, "~> 2.3"},
       {:ex_aws, "~> 2.4"},
       {:ex_aws_s3, "~> 2.4"},
+      {:hackney, "~> 1.18"},
       {:sweet_xml, "~> 0.7"},
       {:bypass, "~> 2.1", only: :test}
     ]

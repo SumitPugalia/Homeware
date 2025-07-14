@@ -121,21 +121,21 @@ defmodule HomeWareWeb.AdminProductDetailLive do
           <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="flex flex-col gap-4">
               <div>
-                <label class="font-semibold text-sm">Product Name</label>
-                <input
+                <.input
+                  field={@changeset[:name]}
                   type="text"
-                  name="product[name]"
-                  value={@changeset.changes[:name] || @changeset.data.name}
+                  label="Product Name"
                   class="w-full border rounded px-3 py-2 text-sm mt-1"
                 />
               </div>
               <div>
-                <label class="font-semibold text-sm">Description</label>
-                <textarea
-                  name="product[description]"
+                <.input
+                  field={@changeset[:description]}
+                  type="textarea"
+                  label="Description"
                   rows="4"
                   class="w-full border rounded px-3 py-2 text-sm mt-1"
-                ><%= @changeset.changes[:description] || @changeset.data.description %></textarea>
+                />
               </div>
               <div>
                 <label class="font-semibold text-sm">Category</label>
@@ -151,55 +151,47 @@ defmodule HomeWareWeb.AdminProductDetailLive do
                 </select>
               </div>
               <div>
-                <label class="font-semibold text-sm">Brand Name</label>
-                <input
+                <.input
+                  field={@changeset[:brand]}
                   type="text"
-                  name="product[brand]"
-                  value={@changeset.changes[:brand] || @changeset.data.brand}
+                  label="Brand Name"
                   class="w-full border rounded px-3 py-2 text-sm mt-1"
                 />
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="font-semibold text-sm">SKU</label>
-                  <input
+                  <.input
+                    field={@changeset[:sku]}
                     type="text"
-                    name="product[sku]"
-                    value={@changeset.changes[:sku] || @changeset.data.sku}
+                    label="SKU"
                     class="w-full border rounded px-3 py-2 text-sm mt-1"
                   />
                 </div>
                 <div>
-                  <label class="font-semibold text-sm">Stock Quantity</label>
-                  <input
+                  <.input
+                    field={@changeset[:inventory_quantity]}
                     type="number"
-                    name="product[inventory_quantity]"
-                    value={
-                      @changeset.changes[:inventory_quantity] || @changeset.data.inventory_quantity ||
-                        0
-                    }
+                    label="Stock Quantity"
                     class="w-full border rounded px-3 py-2 text-sm mt-1"
                   />
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="font-semibold text-sm">Regular Price</label>
-                  <input
+                  <.input
+                    field={@changeset[:price]}
                     type="number"
                     step="0.01"
-                    name="product[price]"
-                    value={@changeset.changes[:price] || @changeset.data.price}
+                    label="Regular Price"
                     class="w-full border rounded px-3 py-2 text-sm mt-1"
                   />
                 </div>
                 <div>
-                  <label class="font-semibold text-sm">Sale Price</label>
-                  <input
+                  <.input
+                    field={@changeset[:compare_at_price]}
                     type="number"
                     step="0.01"
-                    name="product[compare_at_price]"
-                    value={@changeset.changes[:compare_at_price] || @changeset.data.compare_at_price}
+                    label="Sale Price"
                     class="w-full border rounded px-3 py-2 text-sm mt-1"
                   />
                 </div>

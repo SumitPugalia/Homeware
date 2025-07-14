@@ -3,24 +3,40 @@ defmodule HomeWareWeb.AdminProductDetailLiveTest do
   import Phoenix.LiveViewTest
   import HomeWare.Factory
   alias HomeWare.Products
+  alias HomeWare.Guardian
 
-  setup do
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(HomeWare.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(HomeWare.Repo, {:shared, self()})
+    end
+
     bypass = Bypass.open()
-    {:ok, bypass: bypass}
+    user = HomeWare.Factory.insert(:user, %{role: :admin})
+    {:ok, token, _claims} = Guardian.encode_and_sign(user)
+    %{user: user, token: token, bypass: bypass}
   end
 
-  setup [:register_and_log_in_admin, :create_product]
+  defp log_in_user(conn, user, token) do
+    conn
+    |> put_req_header("authorization", "Bearer #{token}")
+    |> assign(:current_user, user)
+  end
 
-  defp register_and_log_in_admin(%{conn: conn}) do
-    conn = Phoenix.ConnTest.init_test_session(conn, %{})
-    conn = log_in_admin_user(conn)
-    {:ok, conn: conn}
+  setup [:create_product]
+
+  defp create_product(_) do
+    category = insert(:category)
+    product = insert(:product, %{category_id: category.id})
+    %{product: product}
   end
 
   describe "product details live" do
     setup [:create_product]
 
-    test "renders product details and allows editing", %{conn: conn, product: product} do
+    test "renders product details and allows editing", %{conn: conn, user: user, token: token, product: product} do
+      conn = log_in_user(conn, user, token)
       {:ok, lv, html} = live(conn, "/admin/products/#{product.id}")
       assert html =~ product.name
       assert html =~ "Product Details"
@@ -47,7 +63,8 @@ defmodule HomeWareWeb.AdminProductDetailLiveTest do
       assert render(lv) =~ new_name
     end
 
-    test "shows validation errors on invalid input", %{conn: conn, product: product} do
+    test "shows validation errors on invalid input", %{conn: conn, user: user, token: token, product: product} do
+      conn = log_in_user(conn, user, token)
       {:ok, lv, _html} = live(conn, "/admin/products/#{product.id}")
       form = form(lv, "#product-form", product: %{name: "", price: -1})
       html = render_change(form)
@@ -55,14 +72,28 @@ defmodule HomeWareWeb.AdminProductDetailLiveTest do
       assert html =~ "must be greater than 0"
     end
 
-    test "deletes product and redirects", %{conn: conn, product: product} do
-      {:ok, lv, _html} = live(conn, "/admin/products/#{product.id}")
-      render_click(element(lv, "button", "DELETE"))
-      assert_redirect(lv, "/admin/products")
-      refute Products.get_product!(product.id)
+    test "product details live deletes product and redirects", %{
+      conn: conn,
+      user: user,
+      token: token,
+      product: product
+    } do
+      conn = log_in_user(conn, user, token)
+      {:ok, live, _html} = live(conn, ~p"/admin/products/#{product.id}")
+
+      live |> element("button", "DELETE") |> render_click()
+
+      # Should redirect to products list
+      assert_redirect(live, "/admin/products")
+
+      # Product should be deleted
+      assert_raise Ecto.NoResultsError, fn ->
+        Products.get_product!(product.id)
+      end
     end
 
-    test "cancel redirects to product list", %{conn: conn, product: product} do
+    test "cancel redirects to product list", %{conn: conn, user: user, token: token, product: product} do
+      conn = log_in_user(conn, user, token)
       {:ok, lv, _html} = live(conn, "/admin/products/#{product.id}")
       render_click(element(lv, "button", "CANCEL"))
       assert_redirect(lv, "/admin/products")
@@ -70,9 +101,12 @@ defmodule HomeWareWeb.AdminProductDetailLiveTest do
 
     test "uploads multiple images and updates product images", %{
       conn: conn,
+      user: user,
+      token: token,
       product: product,
       bypass: bypass
     } do
+      conn = log_in_user(conn, user, token)
       Bypass.expect(bypass, "PUT", "/DO_SPACES_BUCKET/products/", fn conn ->
         Plug.Conn.resp(conn, 200, "")
       end)
@@ -106,11 +140,5 @@ defmodule HomeWareWeb.AdminProductDetailLiveTest do
       updated = Products.get_product!(product.id)
       assert length(updated.images) >= 2
     end
-  end
-
-  defp create_product(_) do
-    category = insert(:category)
-    product = insert(:product, %{category_id: category.id})
-    %{product: product}
   end
 end

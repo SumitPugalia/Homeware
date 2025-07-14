@@ -70,30 +70,27 @@ defmodule HomeWareWeb.AdminProductsLive do
               <!-- form fields here (unchanged) -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700">Name</label>
-                  <input
+                  <.input
+                    field={@product_changeset[:name]}
                     type="text"
-                    name="product[name]"
-                    value={@product_changeset.changes[:name] || @product_changeset.data.name}
+                    label="Name"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700">Slug</label>
-                  <input
+                  <.input
+                    field={@product_changeset[:slug]}
                     type="text"
-                    name="product[slug]"
-                    value={@product_changeset.changes[:slug] || @product_changeset.data.slug}
+                    label="Slug"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700">Price</label>
-                  <input
+                  <.input
+                    field={@product_changeset[:price]}
                     type="number"
                     step="0.01"
-                    name="product[price]"
-                    value={@product_changeset.changes[:price] || @product_changeset.data.price}
+                    label="Price"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                 </div>
@@ -119,41 +116,36 @@ defmodule HomeWareWeb.AdminProductsLive do
                 </div>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">Description</label>
-                <textarea
-                  name="product[description]"
+                <.input
+                  field={@product_changeset[:description]}
+                  type="textarea"
+                  label="Description"
                   rows="3"
                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                ><%= @product_changeset.changes[:description] || @product_changeset.data.description %></textarea>
+                />
               </div>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700">SKU</label>
-                  <input
+                  <.input
+                    field={@product_changeset[:sku]}
                     type="text"
-                    name="product[sku]"
-                    value={@product_changeset.changes[:sku] || @product_changeset.data.sku}
+                    label="SKU"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700">Brand</label>
-                  <input
+                  <.input
+                    field={@product_changeset[:brand]}
                     type="text"
-                    name="product[brand]"
-                    value={@product_changeset.changes[:brand] || @product_changeset.data.brand}
+                    label="Brand"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700">Inventory Quantity</label>
-                  <input
+                  <.input
+                    field={@product_changeset[:inventory_quantity]}
                     type="number"
-                    name="product[inventory_quantity]"
-                    value={
-                      @product_changeset.changes[:inventory_quantity] ||
-                        @product_changeset.data.inventory_quantity || 0
-                    }
+                    label="Inventory Quantity"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                 </div>
@@ -365,7 +357,7 @@ defmodule HomeWareWeb.AdminProductsLive do
               editing_product: nil,
               product_changeset: Product.changeset(%Product{}, %{})
             )
-            |> then(&load_products(&1, 1))
+            |> load_products(1)
 
           {:error, %Ecto.Changeset{} = changeset} ->
             categories = Categories.list_categories()
@@ -383,7 +375,7 @@ defmodule HomeWareWeb.AdminProductsLive do
               editing_product: nil,
               product_changeset: Product.changeset(%Product{}, %{})
             )
-            |> then(&load_products(&1, socket.assigns.page))
+            |> load_products(socket.assigns.page)
 
           {:error, %Ecto.Changeset{} = changeset} ->
             categories = Categories.list_categories()

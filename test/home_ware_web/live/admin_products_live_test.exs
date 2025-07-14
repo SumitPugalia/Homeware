@@ -84,6 +84,7 @@ defmodule HomeWareWeb.AdminProductsLiveTest do
       |> render_submit()
 
       assert has_element?(live, ".alert", "Product created successfully")
+      # Check that the product appears in the table
       assert render(live) =~ "UI Created Product"
     end
 
