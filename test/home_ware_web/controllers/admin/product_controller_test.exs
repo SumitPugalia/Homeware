@@ -84,7 +84,7 @@ defmodule HomeWareWeb.Admin.ProductControllerTest do
     test "renders delete confirmation page", %{conn: conn, product: product} do
       conn = log_in_admin_user(conn)
       conn = get(conn, ~p"/admin/products/#{product.id}/confirm_delete")
-      assert html_response(conn, 200) =~ "Are you sure you want to delete the following product?"
+      assert html_response(conn, 200) =~ "Are you sure you want to delete this product?"
       assert html_response(conn, 200) =~ product.name
     end
 
