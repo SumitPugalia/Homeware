@@ -57,7 +57,6 @@ defmodule HomeWare.Products.Product do
     |> validate_required([
       :name,
       :brand,
-      :model,
       :product_type,
       :product_category,
       :description,

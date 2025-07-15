@@ -8,6 +8,8 @@ defmodule HomeWareWeb.Admin.ProductController do
 
   @per_page 12
 
+  @brands ["Elf Bar", "Other"]
+
   def index(conn, params) do
     page = params["page"] |> to_int() |> max(1)
     products = Products.paginated_products(page, @per_page)
@@ -43,7 +45,10 @@ defmodule HomeWareWeb.Admin.ProductController do
   def create(conn, %{"product" => product_params}) do
     Logger.info("Creating product with params: #{inspect(product_params)}")
 
-    case Products.create_product(product_params) do
+    # Transform the parameters to match the database structure
+    transformed_params = transform_product_params(product_params)
+
+    case Products.create_product(transformed_params) do
       {:ok, product} ->
         Logger.info("Product created successfully with ID: #{inspect(product.id)}")
 
@@ -54,7 +59,7 @@ defmodule HomeWareWeb.Admin.ProductController do
       {:error, changeset} ->
         Logger.error("Error creating product: #{inspect(changeset)}")
         categories = HomeWare.Categories.list_categories()
-        brands = HomeWare.Products.list_brands()
+        brands = @brands
         form = to_form(changeset)
 
         render(conn, "new.html",
@@ -70,7 +75,7 @@ defmodule HomeWareWeb.Admin.ProductController do
     product = Products.get_product!(id)
     changeset = Products.change_product(product)
     categories = Categories.list_categories()
-    brands = Products.list_brands()
+    brands = @brands
     form = to_form(changeset)
 
     render(conn, "edit.html",
@@ -85,7 +90,10 @@ defmodule HomeWareWeb.Admin.ProductController do
   def update(conn, %{"id" => id, "product" => product_params}) do
     product = Products.get_product!(id)
 
-    case Products.update_product(product, product_params) do
+    # Transform the parameters to match the database structure
+    transformed_params = transform_product_params(product_params)
+
+    case Products.update_product(product, transformed_params) do
       {:ok, _product} ->
         conn
         |> put_flash(:info, "Product updated!")
@@ -93,7 +101,7 @@ defmodule HomeWareWeb.Admin.ProductController do
 
       {:error, changeset} ->
         categories = Categories.list_categories()
-        brands = Products.list_brands()
+        brands = @brands
         form = to_form(changeset)
 
         render(conn, "edit.html",
@@ -128,6 +136,70 @@ defmodule HomeWareWeb.Admin.ProductController do
       current_path: conn.request_path
     )
   end
+
+  # Transform product parameters to match database structure
+  defp transform_product_params(params) do
+    params
+    |> transform_dimensions()
+    |> transform_specifications()
+    |> transform_images()
+    |> transform_boolean_fields()
+  end
+
+  # Transform dimensions from separate fields to a map
+  defp transform_dimensions(%{"dimensions" => dimensions} = params) when is_map(dimensions) do
+    dimensions_map = %{
+      "length" => dimensions["length"] || "",
+      "width" => dimensions["width"] || "",
+      "height" => dimensions["height"] || ""
+    }
+
+    # Only include dimensions if at least one field has a value
+    if Enum.any?(dimensions_map, fn {_k, v} -> v != "" end) do
+      Map.put(params, "dimensions", dimensions_map)
+    else
+      Map.put(params, "dimensions", %{})
+    end
+  end
+  defp transform_dimensions(params), do: params
+
+  # Transform specifications from separate fields to a map
+  defp transform_specifications(%{"specifications" => specs} = params) when is_map(specs) do
+    specs_map = %{
+      "color" => specs["color"] || "",
+      "material" => specs["material"] || ""
+    }
+
+    # Only include specifications if at least one field has a value
+    if Enum.any?(specs_map, fn {_k, v} -> v != "" end) do
+      Map.put(params, "specifications", specs_map)
+    else
+      Map.put(params, "specifications", %{})
+    end
+  end
+  defp transform_specifications(params), do: params
+
+  # Transform images from comma-separated string to array
+  defp transform_images(%{"images" => images} = params) when is_binary(images) do
+    images_array =
+      images
+      |> String.trim()
+      |> String.split(",")
+      |> Enum.map(&String.trim/1)
+      |> Enum.filter(&(&1 != ""))
+
+    Map.put(params, "images", images_array)
+  end
+  defp transform_images(params), do: params
+
+  # Transform boolean fields
+  defp transform_boolean_fields(%{"is_active" => "true"} = params) do
+    Map.put(params, "is_active", true)
+  end
+  defp transform_boolean_fields(%{"is_featured" => "true"} = params) do
+    Map.put(params, "is_featured", true)
+  end
+  defp transform_boolean_fields(params), do: params
 
   defp to_int(nil), do: 1
   defp to_int(str) when is_binary(str), do: String.to_integer(str)

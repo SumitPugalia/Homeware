@@ -33,7 +33,13 @@
           <input type="hidden" name="_method" value="put" />
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <.input field={@form[:name]} label="Product Name" required />
-            <.input field={@form[:brand]} label="Brand" required />
+            <.input
+              field={@form[:brand]}
+              label="Brand"
+              type="select"
+              options={[{"Select a brand", ""} | Enum.map(@brands, &{&1, &1})]}
+              required
+            />
             <.input field={@form[:model]} label="Model" required />
             <.input field={@form[:product_type]} label="Product Type" required />
             <.input field={@form[:product_category]} label="Product Category" required />
