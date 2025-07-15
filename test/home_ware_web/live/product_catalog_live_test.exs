@@ -10,9 +10,9 @@ defmodule HomeWareWeb.ProductCatalogLiveTest do
     category = Factory.insert(:category)
     product = Factory.insert(:product, %{category_id: category.id})
     {:ok, token, _claims} = Guardian.encode_and_sign(user)
-    conn = conn
-           |> fetch_session()
-           |> put_session(:user_token, token)
+
+    conn = Phoenix.ConnTest.init_test_session(conn, user_token: token)
+
     %{conn: conn, product: product, category: category, user: user}
   end
 
