@@ -214,8 +214,10 @@ defmodule HomeWareWeb.ProductCatalogLive do
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           <%= for product <- @products do %>
             <div
-              class="group relative bg-gray-800 rounded-2xl p-6 hover:bg-gray-700 transition-all duration-500 transform hover:-translate-y-2"
+              class="group relative bg-gray-800 rounded-2xl p-6 hover:bg-gray-700 transition-all duration-500 transform hover:-translate-y-2 cursor-pointer"
               data-product-id={product.id}
+              phx-click="navigate_to_product"
+              phx-value-product-id={product.id}
             >
               <div class="relative overflow-hidden rounded-xl mb-4">
                 <img
@@ -249,6 +251,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
                 <button
                   phx-click="add_to_cart"
                   phx-value-product-id={product.id}
+                  phx-stop-propagation
                   class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
                 >
                   +
@@ -358,6 +361,11 @@ defmodule HomeWareWeb.ProductCatalogLive do
   def handle_event("add_to_cart", %{"product-id" => _product_id}, socket) do
     # TODO: Implement add to cart functionality
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("navigate_to_product", %{"product-id" => product_id}, socket) do
+    {:noreply, push_navigate(socket, to: ~p"/products/#{product_id}")}
   end
 
   @impl true
