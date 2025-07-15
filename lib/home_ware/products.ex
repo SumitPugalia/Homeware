@@ -221,6 +221,14 @@ defmodule HomeWare.Products do
     |> Repo.all()
   end
 
+  def list_featured_products_by_category(category_id, limit \\ 1) do
+    Product
+    |> where(category_id: ^category_id, is_active: true, is_featured: true)
+    |> preload(:category)
+    |> limit(^limit)
+    |> Repo.all()
+  end
+
   def count_products do
     import Ecto.Query
     alias HomeWare.Products.Product

@@ -26,10 +26,18 @@ defmodule HomeWareWeb.PageController do
     # Get featured products (first 8 for display)
     featured_products = Enum.filter(filtered_products, fn product -> product.is_featured end)
 
+    # Get a featured product from each category for category cards
+    categories_with_featured_products =
+      Enum.map(categories, fn category ->
+        featured_product = Products.list_featured_products_by_category(category.id, 1)
+        featured_product = if featured_product != [], do: List.first(featured_product), else: nil
+        Map.put(category, :featured_product, featured_product)
+      end)
+
     render(conn, :home,
       featured_products: featured_products,
       products: filtered_products,
-      categories: categories,
+      categories: categories_with_featured_products,
       search_query: search_query,
       selected_category_id: category_id,
       min_price: params["min_price"] || "",
