@@ -5,10 +5,13 @@ defmodule HomeWareWeb.Admin.ProductController do
 
   alias HomeWare.Products
   alias HomeWare.Categories
+  alias HomeWare.UploadService
 
   @per_page 12
 
   @brands ["Elf Bar", "Other"]
+
+  defp upload_impl, do: Application.get_env(:home_ware, :upload_impl, HomeWare.UploadService)
 
   def index(conn, params) do
     page = params["page"] |> to_int() |> max(1)
@@ -31,7 +34,7 @@ defmodule HomeWareWeb.Admin.ProductController do
   def new(conn, _params) do
     changeset = HomeWare.Products.change_product(%HomeWare.Products.Product{})
     categories = HomeWare.Categories.list_categories()
-    brands = HomeWare.Products.list_brands()
+    brands = @brands
     form = to_form(changeset)
 
     render(conn, "new.html",
@@ -45,24 +48,44 @@ defmodule HomeWareWeb.Admin.ProductController do
   def create(conn, %{"product" => product_params}) do
     Logger.info("Creating product with params: #{inspect(product_params)}")
 
-    # Transform the parameters to match the database structure
-    transformed_params = transform_product_params(product_params)
+    # Handle file uploads
+    case handle_file_uploads(conn, product_params) do
+      {:ok, updated_params} ->
+        # Transform the parameters to match the database structure
+        transformed_params = transform_product_params(updated_params)
 
-    case Products.create_product(transformed_params) do
-      {:ok, product} ->
-        Logger.info("Product created successfully with ID: #{inspect(product.id)}")
+        case Products.create_product(transformed_params) do
+          {:ok, product} ->
+            Logger.info("Product created successfully with ID: #{inspect(product.id)}")
 
-        conn
-        |> put_flash(:info, "Product created!")
-        |> redirect(to: ~p"/admin/products")
+            conn
+            |> put_flash(:info, "Product created!")
+            |> redirect(to: ~p"/admin/products")
 
-      {:error, changeset} ->
-        Logger.error("Error creating product: #{inspect(changeset)}")
+          {:error, changeset} ->
+            Logger.error("Error creating product: #{inspect(changeset)}")
+            categories = HomeWare.Categories.list_categories()
+            brands = @brands
+            form = to_form(changeset)
+
+            render(conn, "new.html",
+              form: form,
+              categories: categories,
+              brands: brands,
+              current_path: conn.request_path
+            )
+        end
+
+      {:error, reason} ->
+        Logger.error("Error uploading files: #{inspect(reason)}")
         categories = HomeWare.Categories.list_categories()
         brands = @brands
+        changeset = HomeWare.Products.change_product(%HomeWare.Products.Product{})
         form = to_form(changeset)
 
-        render(conn, "new.html",
+        conn
+        |> put_flash(:error, "Error uploading images: #{reason}")
+        |> render("new.html",
           form: form,
           categories: categories,
           brands: brands,
@@ -90,21 +113,42 @@ defmodule HomeWareWeb.Admin.ProductController do
   def update(conn, %{"id" => id, "product" => product_params}) do
     product = Products.get_product!(id)
 
-    # Transform the parameters to match the database structure
-    transformed_params = transform_product_params(product_params)
+    # Handle file uploads
+    case handle_file_uploads(conn, product_params) do
+      {:ok, updated_params} ->
+        # Transform the parameters to match the database structure
+        transformed_params = transform_product_params(updated_params)
 
-    case Products.update_product(product, transformed_params) do
-      {:ok, _product} ->
-        conn
-        |> put_flash(:info, "Product updated!")
-        |> redirect(to: ~p"/admin/products")
+        case Products.update_product(product, transformed_params) do
+          {:ok, _product} ->
+            conn
+            |> put_flash(:info, "Product updated!")
+            |> redirect(to: ~p"/admin/products")
 
-      {:error, changeset} ->
+          {:error, changeset} ->
+            categories = Categories.list_categories()
+            brands = @brands
+            form = to_form(changeset)
+
+            render(conn, "edit.html",
+              product: product,
+              form: form,
+              categories: categories,
+              brands: brands,
+              current_path: conn.request_path
+            )
+        end
+
+      {:error, reason} ->
+        Logger.error("Error uploading files: #{inspect(reason)}")
         categories = Categories.list_categories()
         brands = @brands
+        changeset = Products.change_product(product)
         form = to_form(changeset)
 
-        render(conn, "edit.html",
+        conn
+        |> put_flash(:error, "Error uploading images: #{reason}")
+        |> render("edit.html",
           product: product,
           form: form,
           categories: categories,
@@ -181,16 +225,10 @@ defmodule HomeWareWeb.Admin.ProductController do
 
   defp transform_specifications(params), do: params
 
-  # Transform images from comma-separated string to array
-  defp transform_images(%{"images" => images} = params) when is_binary(images) do
-    images_array =
-      images
-      |> String.trim()
-      |> String.split(",")
-      |> Enum.map(&String.trim/1)
-      |> Enum.filter(&(&1 != ""))
-
-    Map.put(params, "images", images_array)
+  # Transform images - now handled by file upload, just ensure it's an array
+  defp transform_images(%{"images" => images} = params) when is_list(images) do
+    # Images are already processed as URLs from file upload
+    params
   end
 
   defp transform_images(params), do: params
@@ -205,6 +243,95 @@ defmodule HomeWareWeb.Admin.ProductController do
   end
 
   defp transform_boolean_fields(params), do: params
+
+  # Handle file uploads for product images
+  defp handle_file_uploads(conn, params) do
+    try do
+      # Handle featured image upload
+      featured_image_url =
+        case conn.body_params["product"]["featured_image"] do
+          %Plug.Upload{} = upload ->
+            case upload_single_image(upload) do
+              {:ok, url} ->
+                url
+
+              {:error, reason} ->
+                Logger.error("Error uploading featured image: #{inspect(reason)}")
+                nil
+            end
+
+          _ ->
+            nil
+        end
+
+      # Handle additional images upload
+      additional_images =
+        case conn.body_params["product"]["images"] do
+          uploads when is_list(uploads) ->
+            uploads
+            |> Enum.filter(&valid_upload?/1)
+            |> Enum.map(&upload_single_image/1)
+            |> Enum.filter(fn
+              {:ok, _url} ->
+                true
+
+              {:error, reason} ->
+                Logger.error("Error uploading additional image: #{inspect(reason)}")
+                false
+            end)
+            |> Enum.map(fn {:ok, url} -> url end)
+
+          _ ->
+            []
+        end
+
+      # For updates, preserve existing images if no new ones are uploaded
+      updated_params =
+        case {featured_image_url, additional_images} do
+          {nil, []} ->
+            # No new images uploaded, keep existing ones
+            params
+
+          {new_featured, []} ->
+            # Only new featured image
+            params |> Map.put("featured_image", new_featured)
+
+          {nil, new_additional} ->
+            # Only new additional images
+            params |> Map.put("images", new_additional)
+
+          {new_featured, new_additional} ->
+            # Both new featured and additional images
+            all_images = [new_featured | new_additional]
+
+            params
+            |> Map.put("featured_image", new_featured)
+            |> Map.put("images", all_images)
+        end
+
+      {:ok, updated_params}
+    rescue
+      e ->
+        Logger.error("Error in file upload handling: #{inspect(e)}")
+        {:error, "File upload failed"}
+    end
+  end
+
+  defp valid_upload?(%Plug.Upload{} = upload) do
+    upload.filename && upload.path && File.exists?(upload.path)
+  end
+
+  defp valid_upload?(_), do: false
+
+  defp upload_single_image(%Plug.Upload{} = upload) do
+    filename = UploadService.generate_filename(upload.filename)
+    destination_path = "products/#{filename}"
+
+    case upload_impl().upload_file(upload.path, destination_path) do
+      {:ok, url} -> {:ok, url}
+      {:error, reason} -> {:error, reason}
+    end
+  end
 
   defp to_int(nil), do: 1
   defp to_int(str) when is_binary(str), do: String.to_integer(str)

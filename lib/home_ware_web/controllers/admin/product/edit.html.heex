@@ -29,7 +29,13 @@
     <!-- Content Area -->
     <div class="p-6">
       <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-        <.form for={@form} action={~p"/admin/products/#{@product.id}"} method="post">
+        <.form
+          for={@form}
+          action={~p"/admin/products/#{@product.id}"}
+          method="post"
+          multipart
+          enctype="multipart/form-data"
+        >
           <input type="hidden" name="_method" value="put" />
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <.input field={@form[:name]} label="Product Name" required />
@@ -71,13 +77,68 @@
               options={Enum.map(@categories, &{&1.name, &1.id})}
               required
             />
-            <.input
-              field={@form[:featured_image]}
-              label="Featured Image URL"
-              type="text"
-              required
-            />
-            <.input field={@form[:images]} label="Image URLs (comma separated)" type="text" />
+            <!-- Current Images Display -->
+            <div class="md:col-span-2">
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Current Images</h3>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <%= if @product.featured_image do %>
+                  <div class="relative">
+                    <img
+                      src={@product.featured_image}
+                      alt="Featured Image"
+                      class="w-full h-32 object-cover rounded-lg border border-gray-200"
+                    />
+                    <div class="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                      Featured
+                    </div>
+                  </div>
+                <% end %>
+                <%= for {image, index} <- Enum.with_index(@product.images || []) do %>
+                  <%= if image != @product.featured_image do %>
+                    <div class="relative">
+                      <img
+                        src={image}
+                        alt={"Product Image #{index + 1}"}
+                        class="w-full h-32 object-cover rounded-lg border border-gray-200"
+                      />
+                    </div>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+            <!-- Image Upload Section -->
+            <div class="md:col-span-2">
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Update Product Images</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-semibold leading-6 text-zinc-800 mb-2">
+                    New Featured Image
+                  </label>
+                  <input
+                    type="file"
+                    name="product[featured_image]"
+                    accept="image/*"
+                    class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                  <p class="mt-1 text-sm text-gray-500">Upload a new featured image (optional)</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold leading-6 text-zinc-800 mb-2">
+                    Additional Images
+                  </label>
+                  <input
+                    type="file"
+                    name="product[images][]"
+                    accept="image/*"
+                    multiple
+                    class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                  <p class="mt-1 text-sm text-gray-500">
+                    Upload additional product images (optional)
+                  </p>
+                </div>
+              </div>
+            </div>
             <!-- Dimensions Section -->
             <div class="md:col-span-2">
               <h3 class="text-lg font-medium text-gray-900 mb-4">Dimensions</h3>

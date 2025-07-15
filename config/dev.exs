@@ -86,11 +86,16 @@ config :phoenix_live_view,
 config :swoosh, :api_client, false
 
 config :ex_aws,
-  access_key_id: "DO_SPACES_ACCESS_KEY",
-  secret_access_key: "DO_SPACES_SECRET_KEY",
-  region: "DO_SPACES_REGION",
+  access_key_id: System.get_env("DO_SPACES_ACCESS_KEY"),
+  secret_access_key: System.get_env("DO_SPACES_SECRET_KEY"),
+  region: "blr1",
   s3: [
     scheme: "https://",
-    host: "DO_SPACES_BUCKET.DO_SPACES_REGION.digitaloceanspaces.com",
-    region: "DO_SPACES_REGION"
+    host: "https://vibe.blr1.digitaloceanspaces.com",
+    region: "blr1"
   ]
+
+# DigitalOcean Spaces configuration
+config :home_ware,
+  do_spaces_bucket: "vibe",
+  do_spaces_region: "blr1"

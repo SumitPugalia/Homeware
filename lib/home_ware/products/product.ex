@@ -64,8 +64,6 @@ defmodule HomeWare.Products.Product do
       :selling_price,
       :inventory_quantity,
       :category_id,
-      :images,
-      :featured_image,
       :dimensions,
       :specifications,
       :is_active,
