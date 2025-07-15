@@ -95,7 +95,7 @@ defmodule HomeWareWeb.Admin.ProductController do
   end
 
   def edit(conn, %{"id" => id}) do
-    product = Products.get_product!(id)
+    product = Products.get_product_with_variants!(id)
     changeset = Products.change_product(product)
     categories = Categories.list_categories()
     brands = @brands

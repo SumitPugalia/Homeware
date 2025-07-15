@@ -164,6 +164,50 @@ defmodule HomeWare.Products do
     HomeWare.Repo.one(from p in Product, select: count(p.id))
   end
 
+  # Product Variant functions
+  alias HomeWare.Products.ProductVariant
+
+  def get_product_with_variants!(id) do
+    Product
+    |> where(id: ^id)
+    |> preload(:category)
+    |> preload(variants: ^from(v in ProductVariant, where: v.is_active == true))
+    |> Repo.one!()
+  end
+
+  def create_product_variant(attrs \\ %{}) do
+    %ProductVariant{}
+    |> ProductVariant.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_product_variant(%ProductVariant{} = variant, attrs) do
+    variant
+    |> ProductVariant.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_product_variant(%ProductVariant{} = variant) do
+    variant
+    |> ProductVariant.changeset(%{is_active: false})
+    |> Repo.update()
+  end
+
+  def get_product_variant!(id) do
+    ProductVariant
+    |> Repo.get!(id)
+  end
+
+  def list_product_variants(product_id) do
+    ProductVariant
+    |> where(product_id: ^product_id, is_active: true)
+    |> Repo.all()
+  end
+
+  def change_product_variant(%ProductVariant{} = variant, attrs \\ %{}) do
+    ProductVariant.changeset(variant, attrs)
+  end
+
   def top_selling_products(n) do
     import Ecto.Query
     alias HomeWare.Products.Product
