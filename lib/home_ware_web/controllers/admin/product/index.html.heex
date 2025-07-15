@@ -53,6 +53,9 @@
                   Stock
                 </th>
                 <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Variants
+                </th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Status
                 </th>
                 <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -61,7 +64,7 @@
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <%= if Enum.empty?(@products) do %>
+              <%= if Enum.empty?(@products.entries) do %>
                 <tr>
                   <td colspan="6" class="px-6 py-12 text-center">
                     <div class="flex flex-col items-center">
@@ -93,7 +96,7 @@
                   </td>
                 </tr>
               <% else %>
-                <%= for product <- @products do %>
+                <%= for product <- @products.entries do %>
                   <tr class="hover:bg-gray-50 transition-colors">
                     <td class="px-6 py-4">
                       <div class="flex items-center">
@@ -185,6 +188,19 @@
                           </span>
                         <% end %>
                       </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <%= if product.variants && length(product.variants) > 0 do %>
+                        <div class="flex flex-wrap gap-1">
+                          <%= for variant <- product.variants do %>
+                            <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                              <%= variant.sku %>
+                            </span>
+                          <% end %>
+                        </div>
+                      <% else %>
+                        <span class="text-xs text-gray-500">No variants</span>
+                      <% end %>
                     </td>
                     <td class="px-6 py-4">
                       <span class={"inline-flex px-3 py-1 text-xs font-semibold rounded-full #{if product.is_active, do: "bg-green-100 text-green-800", else: "bg-gray-100 text-gray-800"}"}>

@@ -48,6 +48,7 @@ defmodule HomeWare.Products do
     |> where(is_active: true)
     |> apply_filters(filters)
     |> preload(:category)
+    |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
     |> order_by([p], desc: p.inserted_at)
     |> Repo.paginate(page: page, page_size: per_page)
   end
@@ -171,7 +172,7 @@ defmodule HomeWare.Products do
     Product
     |> where(id: ^id)
     |> preload(:category)
-    |> preload(variants: ^from(v in ProductVariant, where: v.is_active == true))
+    |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
     |> Repo.one!()
   end
 
