@@ -4,7 +4,7 @@ defmodule HomeWareWeb.UserRegistrationControllerTest do
   describe "GET /users/register" do
     test "renders registration form", %{conn: conn} do
       conn = get(conn, ~p"/users/register")
-      assert html_response(conn, 200) =~ "Create an account"
+      assert html_response(conn, 200) =~ "Create Your Account"
     end
   end
 
@@ -22,7 +22,7 @@ defmodule HomeWareWeb.UserRegistrationControllerTest do
 
       conn = post(conn, ~p"/users/register", user_params)
       assert redirected_to(conn) == ~p"/users/log_in"
-      assert get_flash(conn, :info) =~ "Registration successful"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Registration successful"
     end
 
     test "returns error with invalid data", %{conn: conn} do
@@ -38,7 +38,7 @@ defmodule HomeWareWeb.UserRegistrationControllerTest do
 
       conn = post(conn, ~p"/users/register", user_params)
       html = html_response(conn, 200)
-      assert html =~ "Create an account"
+      assert html =~ "Create Your Account"
       assert html =~ "must have the @ sign and no spaces"
       assert html =~ "must include at least one lowercase letter"
       assert html =~ "should be at least %{count} character(s)"

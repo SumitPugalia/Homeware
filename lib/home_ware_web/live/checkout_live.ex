@@ -1,6 +1,8 @@
 defmodule HomeWareWeb.CheckoutLive do
   use HomeWareWeb, :live_view
 
+  on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
+
   @impl true
   def mount(_params, _session, socket) do
     # TODO: Get cart items and user from session

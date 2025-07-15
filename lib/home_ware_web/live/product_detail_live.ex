@@ -7,6 +7,8 @@ defmodule HomeWareWeb.ProductDetailLive do
   alias HomeWare.Categories.Category
   alias Decimal
 
+  on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
+
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     product = Repo.get(Product, id)

@@ -34,18 +34,7 @@ defmodule HomeWareWeb.Router do
 
     get "/", PageController, :home
 
-    # Product pages
-    live "/products", ProductCatalogLive, :index
-    live "/products/:id", ProductDetailLive, :show
-    live "/categories", CategoryIndexLive, :index
-    live "/categories/:id", CategoryShowLive, :show
-    live "/search", SearchLive, :index
-
-    # Cart and checkout
-    live "/cart", CartLive, :index
-    live "/checkout", CheckoutLive, :index
-
-    # Static pages
+    # Static pages (public)
     get "/about", PageController, :about
     get "/contact", PageController, :contact
     get "/shipping", PageController, :shipping
@@ -59,7 +48,22 @@ defmodule HomeWareWeb.Router do
     post "/users/register", UserRegistrationController, :create
     get "/users/log_in", UserSessionController, :new
     post "/users/log_in", UserSessionController, :create
-    get "/users/log_out", UserSessionController, :delete
+    delete "/users/log_out", UserSessionController, :delete
+  end
+
+  # Protected LiveView routes
+  scope "/", HomeWareWeb do
+    pipe_through :browser
+
+    live "/products", ProductCatalogLive, :index
+    live "/products/:id", ProductDetailLive, :show
+    live "/categories", CategoryIndexLive, :index
+    live "/categories/:id", CategoryShowLive, :show
+    live "/search", SearchLive, :index
+
+    # Cart and checkout
+    live "/cart", CartLive, :index
+    live "/checkout", CheckoutLive, :index
   end
 
   # Protected routes

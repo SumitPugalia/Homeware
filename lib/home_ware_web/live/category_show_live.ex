@@ -4,6 +4,8 @@ defmodule HomeWareWeb.CategoryShowLive do
   alias HomeWare.Categories
   alias HomeWare.Products
 
+  on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
+
   @impl true
   def mount(%{"id" => category_id}, _session, socket) do
     category = Categories.get_category!(category_id)

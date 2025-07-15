@@ -4,6 +4,8 @@ defmodule HomeWareWeb.SearchLive do
   alias HomeWare.Products
   alias HomeWare.Categories
 
+  on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
+
   @impl true
   def mount(_params, _session, socket) do
     {:ok,

@@ -1,6 +1,8 @@
 defmodule HomeWareWeb.AccountLive do
   use HomeWareWeb, :live_view
 
+  on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
+
   @impl true
   def mount(_params, _session, socket) do
     {:ok, assign(socket, user: socket.assigns.current_user)}

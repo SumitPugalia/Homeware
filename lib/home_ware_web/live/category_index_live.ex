@@ -3,6 +3,8 @@ defmodule HomeWareWeb.CategoryIndexLive do
 
   alias HomeWare.Categories
 
+  on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
+
   @impl true
   def mount(_params, _session, socket) do
     categories = Categories.list_categories_with_products()

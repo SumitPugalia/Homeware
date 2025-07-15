@@ -6,6 +6,8 @@ defmodule HomeWareWeb.ProductCatalogLive do
   alias HomeWare.Products.Product
   alias HomeWare.Categories.Category
 
+  on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
+
   @impl true
   def mount(params, _session, socket) do
     categories = Repo.all(Category)
