@@ -37,6 +37,7 @@ defmodule HomeWareWeb.Admin.ProductController do
         conn
         |> put_flash(:info, "Product created!")
         |> redirect(to: ~p"/admin/products")
+
       {:error, changeset} ->
         categories = HomeWare.Categories.list_categories()
         brands = HomeWare.Products.list_brands()

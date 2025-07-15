@@ -24,6 +24,7 @@ defmodule HomeWareWeb.Admin.ProductControllerTest do
 
     test "creates product with valid data", %{conn: conn, category: category} do
       conn = log_in_admin_user(conn)
+
       product_params = %{
         "name" => "Test Product",
         "slug" => "test-product",

@@ -2,12 +2,13 @@ defmodule HomeWareWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :home_ware
 
   # Use session options from config, falling back to default
-  @session_options Application.compile_env(:home_ware, HomeWareWeb.Endpoint)[:session_options] || [
-    store: :cookie,
-    key: "_home_ware_key",
-    signing_salt: "Og6CcweZ",
-    same_site: "Lax"
-  ]
+  @session_options Application.compile_env(:home_ware, HomeWareWeb.Endpoint)[:session_options] ||
+                     [
+                       store: :cookie,
+                       key: "_home_ware_key",
+                       signing_salt: "Og6CcweZ",
+                       same_site: "Lax"
+                     ]
 
   socket "/live", Phoenix.LiveView.Socket,
     websocket: [connect_info: [session: @session_options]],
