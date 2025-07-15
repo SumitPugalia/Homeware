@@ -5,11 +5,16 @@ defmodule HomeWareWeb.ProductCatalogLive do
   alias HomeWare.Repo
   alias HomeWare.Products.Product
   alias HomeWare.Categories.Category
+  alias HomeWare.CartItems
 
-  on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
+  # Product catalog should be publicly accessible
+  # on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
 
   @impl true
-  def mount(params, _session, socket) do
+  def mount(params, session, socket) do
+    # Assign current_user for layout compatibility (can be nil for unauthenticated users)
+    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
+
     categories = Repo.all(Category)
 
     # Get initial filters from URL params
@@ -360,9 +365,22 @@ defmodule HomeWareWeb.ProductCatalogLive do
   end
 
   @impl true
-  def handle_event("add_to_cart", %{"product-id" => _product_id}, socket) do
-    # TODO: Implement add to cart functionality
-    {:noreply, socket}
+  def handle_event("add_to_cart", %{"product-id" => product_id}, socket) do
+    user = Map.get(socket.assigns, :current_user)
+
+    cond do
+      is_nil(user) ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "You must be logged in to add items to your cart.")
+         |> push_navigate(to: "/users/log_in")}
+
+      true ->
+        IO.inspect(user.id)
+        IO.inspect(product_id)
+        CartItems.add_to_cart(user.id, product_id, nil, 1)
+        {:noreply, put_flash(socket, :info, "Added to cart!")}
+    end
   end
 
   @impl true
@@ -474,5 +492,20 @@ defmodule HomeWareWeb.ProductCatalogLive do
   # Helper function to get unique brands from products
   defp get_brands() do
     Repo.all(from p in Product, distinct: true, select: p.brand)
+  end
+
+  defp get_user_from_session(session) do
+    token = session["user_token"]
+
+    case token do
+      nil ->
+        nil
+
+      token ->
+        case HomeWare.Guardian.resource_from_token(token) do
+          {:ok, user, _claims} -> user
+          {:error, _reason} -> nil
+        end
+    end
   end
 end

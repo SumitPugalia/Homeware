@@ -6,6 +6,8 @@ defmodule HomeWare.CartItems do
   import Ecto.Query, warn: false
   alias HomeWare.Repo
   alias HomeWare.CartItem
+  alias HomeWare.Products.Product
+  alias HomeWare.Products.ProductVariant
 
   def list_user_cart_items(user_id) do
     CartItem
@@ -40,5 +42,48 @@ defmodule HomeWare.CartItems do
     CartItem
     |> where(user_id: ^user_id)
     |> Repo.delete_all()
+  end
+
+  @doc """
+  Adds a product (with optional variant) to the user's cart. If a cart item for the same user/product/variant exists, increments quantity.
+  """
+  def add_to_cart(user_id, product_id, variant_id, quantity)
+      when is_binary(user_id) and is_binary(product_id) do
+    base_query =
+      from ci in CartItem,
+        where: ci.user_id == ^user_id and ci.product_id == ^product_id
+
+    query = maybe_variant_id_filter(base_query, variant_id)
+
+    with cart_item <- Repo.one(query),
+         {:product, product} <- {:product, Repo.get(Product, product_id)},
+         {:variant, variant} <-
+           {:variant, if(variant_id, do: Repo.get(ProductVariant, variant_id), else: nil)} do
+      cond do
+        is_nil(cart_item) ->
+          create_cart_item(%{
+            user_id: user_id,
+            product_id: product_id,
+            product_variant_id: variant_id,
+            quantity: quantity
+          })
+
+        true ->
+          new_quantity = cart_item.quantity + quantity
+          update_cart_item(cart_item, %{quantity: new_quantity})
+      end
+    else
+      {:product, nil} ->
+        {:error, :product_not_found}
+
+      {:variant, nil} when not is_nil(variant_id) ->
+        {:error, :variant_not_found}
+    end
+  end
+
+  defp maybe_variant_id_filter(query, nil), do: query
+
+  defp maybe_variant_id_filter(query, variant_id) do
+    query |> where([ci], ci.product_variant_id == ^variant_id)
   end
 end

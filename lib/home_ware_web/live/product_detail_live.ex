@@ -3,34 +3,41 @@ defmodule HomeWareWeb.ProductDetailLive do
   import Ecto.Query
 
   alias HomeWare.Repo
+  alias HomeWare.Products
   alias HomeWare.Products.Product
   alias HomeWare.Categories.Category
   alias Decimal
+  alias HomeWare.CartItems
+  alias HomeWare.Guardian
 
-  on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
+  # Product detail pages should be publicly accessible
+  # on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
 
   @impl true
-  def mount(%{"id" => id}, _session, socket) do
-    product = Repo.get(Product, id)
+  def mount(%{"id" => id}, session, socket) do
+    # Assign current_user for layout compatibility (can be nil for unauthenticated users)
+    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
 
-    if product do
-      # Get related products from the same category
-      related_products =
-        from(p in Product,
-          where: p.category_id == ^product.category_id and p.id != ^product.id,
-          limit: 4
-        )
-        |> Repo.all()
+    product = Products.get_product_with_variants!(id)
+    variants = product.variants || []
+    selected_variant_id = if variants != [], do: hd(variants).id, else: nil
 
-      {:ok,
-       assign(socket,
-         product: product,
-         related_products: related_products,
-         quantity: 1
-       )}
-    else
-      {:ok, push_navigate(socket, to: ~p"/products")}
-    end
+    # Get related products from the same category
+    related_products =
+      from(p in Product,
+        where: p.category_id == ^product.category_id and p.id != ^product.id,
+        limit: 4
+      )
+      |> Repo.all()
+
+    {:ok,
+     assign(socket,
+       product: product,
+       variants: variants,
+       selected_variant_id: selected_variant_id,
+       related_products: related_products,
+       quantity: 1
+     )}
   end
 
   @impl true
@@ -87,15 +94,45 @@ defmodule HomeWareWeb.ProductDetailLive do
             </div>
             <!-- Price Section -->
             <div class="space-y-4">
+              <%= if @variants != [] do %>
+                <div class="mb-4">
+                  <label class="block text-gray-300 font-semibold mb-2">Select Variant:</label>
+                  <select
+                    name="variant"
+                    id="variant-select"
+                    phx-change="select_variant"
+                    phx-value-product-id={@product.id}
+                    class="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
+                  >
+                    <%= for variant <- @variants do %>
+                      <option value={variant.id} selected={@selected_variant_id == variant.id}>
+                        <%= variant.option_name %> (<%= variant.sku %>) <%= if variant.price_override,
+                          do:
+                            " - ₹#{Number.Delimit.number_to_delimited(variant.price_override, precision: 2)}",
+                          else: "" %>
+                      </option>
+                    <% end %>
+                  </select>
+                </div>
+              <% end %>
               <div class="flex items-center space-x-4">
                 <span class="text-gray-400 line-through text-xl">
-                  ₹<%= Number.Delimit.number_to_delimited(@product.price, precision: 2) %>
+                  ₹<%= Number.Delimit.number_to_delimited(
+                    display_price(@product, @variants, @selected_variant_id, :original),
+                    precision: 2
+                  ) %>
                 </span>
                 <span class="text-4xl font-bold text-purple-400">
-                  ₹<%= Number.Delimit.number_to_delimited(@product.selling_price, precision: 2) %>
+                  ₹<%= Number.Delimit.number_to_delimited(
+                    display_price(@product, @variants, @selected_variant_id, :selling),
+                    precision: 2
+                  ) %>
                 </span>
                 <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm font-semibold border border-red-500/30">
-                  <%= calculate_discount(@product.price, @product.selling_price) %>% OFF
+                  <%= calculate_discount(
+                    display_price(@product, @variants, @selected_variant_id, :original),
+                    display_price(@product, @variants, @selected_variant_id, :selling)
+                  ) %>% OFF
                 </span>
               </div>
             </div>
@@ -155,6 +192,7 @@ defmodule HomeWareWeb.ProductDetailLive do
                 <button
                   phx-click="add_to_cart"
                   phx-value-product-id={@product.id}
+                  phx-value-variant-id={@selected_variant_id}
                   phx-value-quantity={@quantity}
                   class="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
                 >
@@ -302,15 +340,29 @@ defmodule HomeWareWeb.ProductDetailLive do
   end
 
   @impl true
-  def handle_event("add_to_cart", %{"product-id" => _product_id, "quantity" => _quantity}, socket) do
-    # TODO: Implement add to cart functionality
-    {:noreply, socket}
+  def handle_event(
+        "add_to_cart",
+        %{"product-id" => product_id, "variant-id" => variant_id, "quantity" => quantity},
+        socket
+      ) do
+    user = Map.get(socket.assigns, :current_user)
+
+    cond do
+      is_nil(user) ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "You must be logged in to add items to your cart.")
+         |> push_navigate(to: "/users/log_in")}
+
+      true ->
+        CartItems.add_to_cart(user.id, product_id, variant_id, String.to_integer(quantity))
+        {:noreply, put_flash(socket, :info, "Added to cart!")}
+    end
   end
 
   @impl true
-  def handle_event("add_to_cart", %{"product-id" => _product_id}, socket) do
-    # TODO: Implement add to cart functionality
-    {:noreply, socket}
+  def handle_event("select_variant", %{"variant" => variant_id}, socket) do
+    {:noreply, assign(socket, selected_variant_id: variant_id)}
   end
 
   @impl true
@@ -335,5 +387,36 @@ defmodule HomeWareWeb.ProductDetailLive do
   defp get_category_name(category_id) do
     category = Repo.get(Category, category_id)
     if category, do: category.name, else: "Unknown"
+  end
+
+  defp display_price(product, variants, selected_variant_id, type) do
+    case Enum.find(variants, &(&1.id == selected_variant_id)) do
+      nil ->
+        case type do
+          :original -> product.price
+          :selling -> product.selling_price
+        end
+
+      variant ->
+        case type do
+          :original -> variant.price_override || product.price
+          :selling -> variant.price_override || product.selling_price
+        end
+    end
+  end
+
+  defp get_user_from_session(session) do
+    token = session["user_token"]
+
+    case token do
+      nil ->
+        nil
+
+      token ->
+        case Guardian.resource_from_token(token) do
+          {:ok, user, _claims} -> user
+          {:error, _reason} -> nil
+        end
+    end
   end
 end

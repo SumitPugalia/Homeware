@@ -7,22 +7,19 @@ defmodule HomeWare.CartItem do
 
   schema "cart_items" do
     field :quantity, :integer
-    field :unit_price, :decimal
-    field :total_price, :decimal
-    field :notes, :string
+    field :session_id, :string
 
     belongs_to :user, HomeWare.Accounts.User
     belongs_to :product, HomeWare.Products.Product
+    belongs_to :product_variant, HomeWare.Products.ProductVariant
 
     timestamps(type: :utc_datetime)
   end
 
   def changeset(cart_item, attrs) do
     cart_item
-    |> cast(attrs, [:quantity, :unit_price, :total_price, :notes, :user_id, :product_id])
-    |> validate_required([:quantity, :unit_price, :total_price, :user_id, :product_id])
+    |> cast(attrs, [:quantity, :session_id, :user_id, :product_id, :product_variant_id])
+    |> validate_required([:quantity, :user_id, :product_id])
     |> validate_number(:quantity, greater_than: 0)
-    |> validate_number(:unit_price, greater_than: 0)
-    |> validate_number(:total_price, greater_than: 0)
   end
 end
