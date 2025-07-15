@@ -21,6 +21,7 @@ defmodule HomeWareWeb.Admin.ProductController do
       page: page,
       total_pages: total_pages,
       total_entries: total_entries,
+      per_page: @per_page,
       current_path: conn.request_path
     )
   end

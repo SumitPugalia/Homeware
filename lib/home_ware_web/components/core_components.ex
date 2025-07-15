@@ -20,6 +20,9 @@ defmodule HomeWareWeb.CoreComponents do
 
   alias Phoenix.LiveView.JS
 
+  # Import verified routes for sigil_p usage
+  use HomeWareWeb, :verified_routes
+
   @doc """
   Renders a modal.
 
@@ -799,6 +802,56 @@ defmodule HomeWareWeb.CoreComponents do
         </ul>
       </div>
     </aside>
+    """
+  end
+
+  @doc """
+  Renders a pagination component for admin interfaces.
+  """
+  def pagination(assigns) do
+    ~H"""
+    <div class="flex items-center justify-between mt-4">
+      <div class="text-xs text-gray-500">
+        Showing <%= (@page - 1) * @per_page + 1 %> to <%= min(@page * @per_page, @total_entries) %> of <%= @total_entries %> <%= @resource_name ||
+          "items" %>
+      </div>
+      <nav class="flex items-center space-x-1">
+        <%= if @page > 1 do %>
+          <a
+            href={"#{@base_path}?page=#{@page - 1}"}
+            class="px-2 py-1 text-xs border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 rounded"
+          >
+            Previous
+          </a>
+        <% else %>
+          <span class="px-2 py-1 text-xs border border-gray-300 bg-gray-50 text-gray-300 cursor-not-allowed rounded">
+            Previous
+          </span>
+        <% end %>
+
+        <%= for p <- max(1, @page - 2)..min(@total_pages, @page + 2) do %>
+          <a
+            href={"#{@base_path}?page=#{p}"}
+            class={"px-2 py-1 text-xs border rounded #{if p == @page, do: "bg-blue-600 text-white border-blue-600", else: "border-gray-300 bg-white text-gray-500 hover:bg-gray-50"}"}
+          >
+            <%= p %>
+          </a>
+        <% end %>
+
+        <%= if @page < @total_pages do %>
+          <a
+            href={"#{@base_path}?page=#{@page + 1}"}
+            class="px-2 py-1 text-xs border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 rounded"
+          >
+            Next
+          </a>
+        <% else %>
+          <span class="px-2 py-1 text-xs border border-gray-300 bg-gray-50 text-gray-300 cursor-not-allowed rounded">
+            Next
+          </span>
+        <% end %>
+      </nav>
+    </div>
     """
   end
 end

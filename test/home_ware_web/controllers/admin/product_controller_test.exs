@@ -12,7 +12,7 @@ defmodule HomeWareWeb.Admin.ProductControllerTest do
     test "renders new product form", %{conn: conn} do
       conn = log_in_admin_user(conn)
       conn = get(conn, ~p"/admin/products/new")
-      assert html_response(conn, 200) =~ "Product Details"
+      assert html_response(conn, 200) =~ "New Product"
     end
   end
 
@@ -68,7 +68,7 @@ defmodule HomeWareWeb.Admin.ProductControllerTest do
       conn = post(conn, ~p"/admin/products", %{"product" => product_params})
 
       # Should render the form again with errors
-      assert html_response(conn, 200) =~ "Product Details"
+      assert html_response(conn, 200) =~ "New Product"
       assert html_response(conn, 200) =~ "can&#39;t be blank"
       assert html_response(conn, 200) =~ "must be greater than 0"
     end

@@ -1,136 +1,166 @@
-<div class="flex min-h-screen bg-[#f5f6f8]">
+<div class="min-h-screen bg-gray-50 flex">
   <%= render_admin_sidebar(assigns) %>
-  <!-- Overlay for mobile sidebar -->
-  <div
-    id="sidebar-overlay"
-    class="fixed inset-0 z-20 bg-black bg-opacity-30 hidden md:hidden"
-    onclick="document.getElementById('admin-sidebar').classList.add('-translate-x-full'); this.classList.add('hidden')"
-  >
-  </div>
   <!-- Main Content -->
-  <main class="flex-1 p-4 sm:p-6 md:p-8 w-full md:ml-64">
-    <!-- Mobile header with menu button -->
-    <div class="flex items-center justify-between mb-4 md:hidden">
-      <button
-        class="p-2 rounded bg-white shadow border border-gray-200"
-        aria-label="Open menu"
-        onclick="document.getElementById('admin-sidebar').classList.remove('-translate-x-full'); document.getElementById('sidebar-overlay').classList.remove('hidden')"
-      >
-        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-        </svg>
-      </button>
-      <div class="text-lg font-bold">All Products</div>
-      <div></div>
-    </div>
-    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
-      <div>
-        <div class="text-xs text-gray-500 mb-1">Home &gt; All Products</div>
-        <h1 class="text-2xl font-bold text-gray-900 hidden md:block">All Products</h1>
-      </div>
-      <a
-        href="/admin/products/new"
-        class="bg-black text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-gray-800 text-xs font-semibold mt-2 md:mt-0"
-      >
-        <span class="material-icons">add</span> ADD NEW PRODUCT
-      </a>
-    </div>
-    <!-- Product Card Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-      <%= for product <- @products do %>
-        <div class="bg-white rounded-lg shadow p-4 flex flex-col text-xs">
-          <img
-            src={product.featured_image || "/images/placeholder.png"}
-            alt={product.name}
-            class="h-24 w-full object-cover rounded mb-2"
-          />
-          <div class="font-bold text-sm truncate"><%= product.name %></div>
-          <div class="text-xs text-gray-500 mb-1 truncate"><%= product.brand %></div>
-          <div class="font-semibold text-base mb-1">₹<%= product.price %></div>
-          <div class="text-xs text-gray-600 mb-2 line-clamp-2">
-            Summary<br /><%= product.description %>
-          </div>
-          <div class="flex justify-between mt-2 text-xs">
-            <div>
-              Remaining Products<br />
-              <span class="font-bold text-gray-700">
-                <%= product.inventory_quantity || 0 %>
-              </span>
-            </div>
-          </div>
-          <div class="flex flex-col sm:flex-row justify-end mt-2 gap-2">
-            <a
-              href={~p"/admin/products/#{product.id}/edit"}
-              class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs font-semibold text-center"
-            >
-              Edit
-            </a>
-            <a
-              href={~p"/admin/products/#{product.id}/confirm_delete"}
-              class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs font-semibold text-center"
-            >
-              Delete
-            </a>
-          </div>
+  <div class="flex-1 md:ml-64">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Products</h1>
+          <p class="text-sm text-gray-600 mt-1">Manage your product catalog</p>
         </div>
+        <a
+          href="/admin/products/new"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            >
+            </path>
+          </svg>
+          Add Product
+        </a>
+      </div>
+    </div>
+    <!-- Content Area -->
+    <div class="p-6">
+      <!-- Products Table -->
+      <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Product
+                </th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Brand
+                </th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Price
+                </th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Stock
+                </th>
+                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Status
+                </th>
+                <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <%= if Enum.empty?(@products) do %>
+                <tr>
+                  <td colspan="6" class="px-6 py-12 text-center">
+                    <div class="flex flex-col items-center">
+                      <svg
+                        class="w-12 h-12 text-gray-400 mb-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                        >
+                        </path>
+                      </svg>
+                      <h3 class="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                      <p class="text-gray-500 mb-4">
+                        Get started by adding your first product to the catalog.
+                      </p>
+                      <a
+                        href="/admin/products/new"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                      >
+                        Add Your First Product
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              <% else %>
+                <%= for product <- @products do %>
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4">
+                      <div class="flex items-center">
+                        <img
+                          src={product.featured_image || "/images/placeholder.png"}
+                          alt={product.name}
+                          class="h-12 w-12 object-cover rounded-lg mr-4 border border-gray-200"
+                        />
+                        <div class="min-w-0 flex-1">
+                          <div class="text-sm font-semibold text-gray-900 truncate">
+                            <%= product.name %>
+                          </div>
+                          <div class="text-sm text-gray-500 truncate">
+                            <%= product.model %>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="text-sm font-medium text-gray-900">
+                        <%= product.brand %>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="text-sm font-semibold text-gray-900">
+                        ₹<%= Number.Delimit.number_to_delimited(product.price, precision: 2) %>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span class={"inline-flex px-3 py-1 text-xs font-semibold rounded-full #{if((product.inventory_quantity || 0) > 10, do: "bg-green-100 text-green-800", else: if((product.inventory_quantity || 0) > 0, do: "bg-yellow-100 text-yellow-800", else: "bg-red-100 text-red-800"))}"}>
+                        <%= product.inventory_quantity || 0 %> units
+                      </span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span class={"inline-flex px-3 py-1 text-xs font-semibold rounded-full #{if product.is_active, do: "bg-green-100 text-green-800", else: "bg-gray-100 text-gray-800"}"}>
+                        <%= if product.is_active, do: "Active", else: "Inactive" %>
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 text-right text-sm font-medium">
+                      <div class="flex items-center justify-end space-x-3">
+                        <a
+                          href={~p"/admin/products/#{product.id}/edit"}
+                          class="text-blue-600 hover:text-blue-900 transition-colors"
+                        >
+                          Edit
+                        </a>
+                        <span class="text-gray-300">|</span>
+                        <a
+                          href={~p"/admin/products/#{product.id}/confirm_delete"}
+                          class="text-red-600 hover:text-red-900 transition-colors"
+                        >
+                          Delete
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Pagination -->
+      <%= if @total_entries > 0 do %>
+        <.pagination
+          page={@page}
+          total_pages={@total_pages}
+          total_entries={@total_entries}
+          per_page={@per_page}
+          base_path="/admin/products"
+          resource_name="products"
+        />
       <% end %>
     </div>
-    <!-- Pagination -->
-    <div class="flex flex-col items-center mt-8">
-      <nav class="inline-flex flex-wrap -space-x-px">
-        <%= if @page > 1 do %>
-          <a
-            href={~p"/admin/products?page=#{@page - 1}"}
-            class="px-3 py-1 rounded-l border border-gray-300 bg-white text-gray-500 hover:bg-gray-100"
-          >
-            &lt;
-          </a>
-        <% else %>
-          <span class="px-3 py-1 rounded-l border border-gray-300 bg-white text-gray-300 cursor-not-allowed">
-            &lt;
-          </span>
-        <% end %>
-        <%= for p <- 1..@total_pages//1 do %>
-          <a
-            href={~p"/admin/products?page=#{p}"}
-            class={"px-3 py-1 border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 " <> if p == @page, do: "font-bold bg-gray-200", else: ""}
-          >
-            <%= p %>
-          </a>
-        <% end %>
-        <%= if @page < @total_pages do %>
-          <a
-            href={~p"/admin/products?page=#{@page + 1}"}
-            class="px-3 py-1 rounded-r border border-gray-300 bg-white text-gray-500 hover:bg-gray-100"
-          >
-            NEXT &gt;
-          </a>
-        <% else %>
-          <span class="px-3 py-1 rounded-r border border-gray-300 bg-white text-gray-300 cursor-not-allowed">
-            NEXT &gt;
-          </span>
-        <% end %>
-      </nav>
-    </div>
-  </main>
+  </div>
 </div>
-
-<script>
-  // Sidebar toggle for mobile
-  // (This is a simple vanilla JS toggle, you can replace with Alpine.js or similar if desired)
-  document.addEventListener('DOMContentLoaded', function() {
-    var sidebar = document.getElementById('admin-sidebar');
-    var overlay = document.getElementById('sidebar-overlay');
-    if (sidebar && overlay) {
-      overlay.onclick = function() {
-        sidebar.classList.add('-translate-x-full');
-        overlay.classList.add('hidden');
-      };
-    }
-  });
-</script>

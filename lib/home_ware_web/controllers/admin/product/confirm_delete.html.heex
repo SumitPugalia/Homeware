@@ -1,53 +1,91 @@
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-gray-50 flex">
   <%= render_admin_sidebar(assigns) %>
   <!-- Main Content -->
-  <div class="ml-64 p-8">
-    <div class="max-w-md mx-auto">
-      <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex items-center mb-4">
-          <div class="flex-shrink-0">
-            <svg
-              class="h-12 w-12 text-red-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-              />
-            </svg>
-          </div>
-          <div class="ml-3">
-            <h3 class="text-lg font-medium text-gray-900">Delete Product</h3>
-            <p class="text-sm text-gray-500">Are you sure you want to delete this product?</p>
-          </div>
+  <div class="flex-1 md:ml-64">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Delete Product</h1>
+          <p class="text-sm text-gray-600 mt-1">Confirm product deletion</p>
         </div>
-        <div class="mt-4">
-          <p class="text-sm text-gray-700">
-            <strong>Product:</strong> <%= @product.name %><br />
-            <strong>Brand:</strong> <%= @product.brand %><br />
-            <strong>Price:</strong> ₹<%= @product.price %>
-          </p>
-        </div>
-        <div class="mt-6 flex justify-end space-x-3">
-          <a
-            href={~p"/admin/products"}
-            class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50"
-          >
-            Cancel
-          </a>
-          <form action={~p"/admin/products/#{@product.id}"} method="post" class="inline">
-            <input type="hidden" name="_method" value="delete" />
-            <button
-              type="submit"
-              class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
+        <a
+          href={~p"/admin/products"}
+          class="text-gray-600 hover:text-gray-900 text-sm flex items-center gap-2"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
             >
-              Delete
-            </button>
-          </form>
+            </path>
+          </svg>
+          Back to Products
+        </a>
+      </div>
+    </div>
+    <!-- Content Area -->
+    <div class="p-6">
+      <div class="max-w-md mx-auto">
+        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+          <div class="flex items-center mb-6">
+            <div class="flex-shrink-0">
+              <svg
+                class="h-8 w-8 text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-lg font-medium text-gray-900">Delete Product</h3>
+              <p class="text-sm text-gray-500">Are you sure you want to delete this product?</p>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <div class="bg-gray-50 rounded-lg p-4">
+              <h4 class="font-medium text-gray-900 mb-2">Product Details</h4>
+              <div class="space-y-1 text-sm text-gray-600">
+                <div><span class="font-medium">Name:</span> <%= @product.name %></div>
+                <div><span class="font-medium">Brand:</span> <%= @product.brand %></div>
+                <div>
+                  <span class="font-medium">Price:</span>
+                  ₹<%= Number.Delimit.number_to_delimited(@product.price, precision: 2) %>
+                </div>
+                <div>
+                  <span class="font-medium">Stock:</span> <%= @product.inventory_quantity || 0 %> units
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end space-x-4">
+            <a
+              href={~p"/admin/products"}
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </a>
+            <form action={~p"/admin/products/#{@product.id}"} method="post" class="inline">
+              <input type="hidden" name="_method" value="delete" />
+              <button
+                type="submit"
+                class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Delete Product
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>

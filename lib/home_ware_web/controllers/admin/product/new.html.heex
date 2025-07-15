@@ -1,16 +1,34 @@
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-gray-50 flex">
   <%= render_admin_sidebar(assigns) %>
   <!-- Main Content -->
-  <div class="ml-64 p-8">
-    <div class="mb-6">
-      <nav class="text-xs text-gray-500 mb-2">
-        Home &gt; All Products &gt; Product Details
-      </nav>
-      <h1 class="text-2xl font-bold text-gray-800 mb-4">Product Details</h1>
+  <div class="flex-1 md:ml-64">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">New Product</h1>
+          <p class="text-sm text-gray-600 mt-1">Add a new product to your catalog</p>
+        </div>
+        <a
+          href={~p"/admin/products"}
+          class="text-gray-600 hover:text-gray-900 text-sm flex items-center gap-2"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            >
+            </path>
+          </svg>
+          Back to Products
+        </a>
+      </div>
     </div>
-    <div class="bg-white rounded-lg shadow p-8 flex flex-col lg:flex-row gap-8">
-      <!-- Product Form -->
-      <div class="flex-1">
+    <!-- Content Area -->
+    <div class="p-6">
+      <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
         <.form for={@form} action={~p"/admin/products"} method="post" multipart>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <.input field={@form[:name]} label="Product Name" required />
@@ -40,94 +58,22 @@
               required
             />
           </div>
-          <div class="mt-6 flex gap-3">
-            <button
-              type="submit"
-              class="bg-blue-900 text-white px-6 py-2 rounded hover:bg-blue-800"
-            >
-              CREATE
-            </button>
+
+          <div class="mt-8 flex items-center justify-end space-x-4">
             <a
               href={~p"/admin/products"}
-              class="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-100"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              CANCEL
+              Cancel
             </a>
+            <button
+              type="submit"
+              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Create Product
+            </button>
           </div>
         </.form>
-      </div>
-      <!-- Product Gallery (Mocked) -->
-      <div class="w-full lg:w-96">
-        <div class="bg-gray-100 rounded-lg h-48 flex items-center justify-center mb-4">
-          <span class="text-gray-400">Image Preview</span>
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Product Gallery</label>
-          <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center text-gray-400">
-            <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M7 16V4a1 1 0 011-1h8a1 1 0 011 1v12m-4 4h-4a1 1 0 01-1-1v-4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1z"
-              />
-            </svg>
-            <span>Drop your image here, or browse<br />Jpeg, png are allowed</span>
-          </div>
-        </div>
-        <div class="space-y-2">
-          <div class="flex items-center bg-white rounded shadow p-2">
-            <div class="w-10 h-10 bg-gray-200 rounded mr-3"></div>
-            <span class="flex-1 text-gray-700 text-sm">Product thumbnail.png</span>
-            <svg
-              class="w-5 h-5 text-green-500 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          </div>
-          <div class="flex items-center bg-white rounded shadow p-2">
-            <div class="w-10 h-10 bg-gray-200 rounded mr-3"></div>
-            <span class="flex-1 text-gray-700 text-sm">Product thumbnail.png</span>
-            <svg
-              class="w-5 h-5 text-green-500 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          </div>
-          <div class="flex items-center bg-white rounded shadow p-2">
-            <div class="w-10 h-10 bg-gray-200 rounded mr-3"></div>
-            <span class="flex-1 text-gray-700 text-sm">Product thumbnail.png</span>
-            <svg
-              class="w-5 h-5 text-green-500 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          </div>
-        </div>
       </div>
     </div>
   </div>
