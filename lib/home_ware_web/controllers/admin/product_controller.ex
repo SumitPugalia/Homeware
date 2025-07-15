@@ -241,11 +241,14 @@ defmodule HomeWareWeb.Admin.ProductController do
   # Handle file uploads for product images
   defp handle_file_uploads(conn, params) do
     try do
+      # Get category slug for upload path
+      category_slug = get_category_slug(params["category_id"])
+
       # Handle featured image upload
       featured_image_url =
         case conn.body_params["product"]["featured_image"] do
           %Plug.Upload{} = upload ->
-            case upload_single_image(upload) do
+            case upload_single_image(upload, category_slug) do
               {:ok, url} ->
                 url
 
@@ -264,7 +267,7 @@ defmodule HomeWareWeb.Admin.ProductController do
           uploads when is_list(uploads) ->
             uploads
             |> Enum.filter(&valid_upload?/1)
-            |> Enum.map(&upload_single_image/1)
+            |> Enum.map(&upload_single_image(&1, category_slug))
             |> Enum.filter(fn
               {:ok, _url} ->
                 true
@@ -317,10 +320,11 @@ defmodule HomeWareWeb.Admin.ProductController do
 
   defp valid_upload?(_), do: false
 
-  defp upload_single_image(%Plug.Upload{} = upload) do
+  defp upload_single_image(%Plug.Upload{} = upload, category_slug) do
     Logger.info("Uploading single image: #{inspect(upload.filename)}")
     filename = UploadService.generate_filename(upload.filename)
-    destination_path = "products/#{filename}"
+    category_path = if category_slug, do: "#{category_slug}", else: "uncategorized"
+    destination_path = "products/#{category_path}/#{filename}"
 
     case upload_impl().upload_file(upload.path, destination_path) do
       {:ok, url} -> {:ok, url}
@@ -331,4 +335,16 @@ defmodule HomeWareWeb.Admin.ProductController do
   defp to_int(nil), do: 1
   defp to_int(str) when is_binary(str), do: String.to_integer(str)
   defp to_int(int) when is_integer(int), do: int
+
+  # Get category name from category ID
+  defp get_category_slug(nil), do: "uncategorized"
+
+  defp get_category_slug(category_id) when is_binary(category_id) do
+    case HomeWare.Categories.get_category(category_id) do
+      nil -> "uncategorized"
+      category -> category.name || "uncategorized"
+    end
+  end
+
+  defp get_category_slug(_), do: "uncategorized"
 end

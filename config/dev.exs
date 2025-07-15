@@ -91,7 +91,7 @@ config :ex_aws,
   region: "blr1",
   s3: [
     scheme: "https://",
-    host: "https://vibe.blr1.digitaloceanspaces.com",
+    host: "blr1.digitaloceanspaces.com",
     region: "blr1"
   ]
 
