@@ -58,7 +58,7 @@ defmodule HomeWareWeb.Router do
     post "/users/register", UserRegistrationController, :create
     get "/users/log_in", UserSessionController, :new
     post "/users/log_in", UserSessionController, :create
-    delete "/users/log_out", UserSessionController, :delete
+    get "/users/log_out", UserSessionController, :delete
   end
 
   # Protected routes

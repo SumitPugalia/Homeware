@@ -67,8 +67,8 @@ defmodule HomeWareWeb.UserSessionControllerTest do
     assert html_response(conn, 200) =~ "Invalid email or password"
   end
 
-  test "DELETE /users/log_out redirects", %{conn: conn} do
-    conn = delete(conn, ~p"/users/log_out")
+  test "GET /users/log_out redirects", %{conn: conn} do
+    conn = get(conn, ~p"/users/log_out")
     assert redirected_to(conn) == ~p"/"
   end
 end
