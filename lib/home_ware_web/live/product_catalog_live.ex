@@ -38,65 +38,178 @@ defmodule HomeWareWeb.ProductCatalogLive do
     ~H"""
     <div class="min-h-screen bg-gray-900 text-white">
       <div class="container mx-auto px-4 py-8">
-        <!-- Filter Form -->
-        <form phx-submit="filter" id="filter-form" class="mb-8 bg-gray-800 p-6 rounded-2xl shadow-lg">
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-300">Category</label>
-              <select
-                name="category"
-                class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm"
-              >
-                <option value="">All Categories</option>
-                <%= for category <- @categories do %>
-                  <option value={category.id} selected={@filters[:category] == category.id}>
-                    <%= category.name %>
-                  </option>
-                <% end %>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-300">Brand</label>
-              <select
-                name="brand"
-                class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm"
-              >
-                <option value="">All Brands</option>
-                <%= for brand <- @brands do %>
-                  <option value={brand} selected={@filters[:brand] == brand}><%= brand %></option>
-                <% end %>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-300">Min Price</label>
-              <input
-                type="number"
-                name="min_price"
-                value={@filters[:min_price] || ""}
-                placeholder="Min price"
-                class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-300">Max Price</label>
-              <input
-                type="number"
-                name="max_price"
-                value={@filters[:max_price] || ""}
-                placeholder="Max price"
-                class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm"
-              />
-            </div>
+        <!-- Modern Filter Section -->
+        <div class="mb-12">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-white">Filters</h2>
           </div>
-          <div class="mt-4">
-            <button
-              type="submit"
-              class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105"
-            >
-              Apply Filters
-            </button>
-          </div>
-        </form>
+
+          <form
+            phx-submit="filter"
+            id="filter-form"
+            class="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-3xl shadow-2xl border border-gray-700"
+          >
+            <!-- Filter Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <!-- Category Filter -->
+              <div class="space-y-3">
+                <label class="block text-sm font-semibold text-gray-300 uppercase tracking-wide">
+                  Category
+                </label>
+                <div class="relative group">
+                  <select
+                    name="category"
+                    class="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
+                  >
+                    <option value="">All Categories</option>
+                    <%= for category <- @categories do %>
+                      <option value={category.id} selected={@filters[:category] == category.id}>
+                        <%= category.name %>
+                      </option>
+                    <% end %>
+                  </select>
+                  <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                    <svg
+                      class="w-5 h-5 text-gray-400 group-hover:text-gray-300 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      >
+                      </path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <!-- Brand Filter -->
+              <div class="space-y-3">
+                <label class="block text-sm font-semibold text-gray-300 uppercase tracking-wide">
+                  Brand
+                </label>
+                <div class="relative group">
+                  <select
+                    name="brand"
+                    class="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
+                  >
+                    <option value="">All Brands</option>
+                    <%= for brand <- @brands do %>
+                      <option value={brand} selected={@filters[:brand] == brand}><%= brand %></option>
+                    <% end %>
+                  </select>
+                  <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                    <svg
+                      class="w-5 h-5 text-gray-400 group-hover:text-gray-300 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      >
+                      </path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <!-- Min Price Filter -->
+              <div class="space-y-3">
+                <label class="block text-sm font-semibold text-gray-300 uppercase tracking-wide">
+                  Min Price
+                </label>
+                <div class="relative group">
+                  <input
+                    type="number"
+                    name="min_price"
+                    value={@filters[:min_price] || ""}
+                    placeholder="₹0"
+                    class="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
+                  />
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                    <span class="text-gray-400 text-sm">₹</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Max Price Filter -->
+              <div class="space-y-3">
+                <label class="block text-sm font-semibold text-gray-300 uppercase tracking-wide">
+                  Max Price
+                </label>
+                <div class="relative group">
+                  <input
+                    type="number"
+                    name="max_price"
+                    value={@filters[:max_price] || ""}
+                    placeholder="₹∞"
+                    class="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
+                  />
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                    <span class="text-gray-400 text-sm">₹</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-700">
+              <div class="flex items-center space-x-4">
+                <button
+                  type="submit"
+                  class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-2xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+                >
+                  <div class="flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"
+                      >
+                      </path>
+                    </svg>
+                    <span>Apply Filters</span>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  phx-click="reset_filters"
+                  class="text-gray-400 hover:text-white transition-colors font-medium"
+                >
+                  Reset
+                </button>
+              </div>
+              <!-- Active Filters Display -->
+              <div class="flex items-center space-x-2">
+                <%= if @filters[:category] || @filters[:brand] || @filters[:min_price] || @filters[:max_price] do %>
+                  <span class="text-sm text-gray-400">Active filters:</span>
+                  <div class="flex items-center space-x-2">
+                    <%= if @filters[:category] do %>
+                      <span class="px-3 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full border border-purple-500/30">
+                        Category
+                      </span>
+                    <% end %>
+                    <%= if @filters[:brand] do %>
+                      <span class="px-3 py-1 bg-pink-500/20 text-pink-300 text-xs rounded-full border border-pink-500/30">
+                        Brand
+                      </span>
+                    <% end %>
+                    <%= if @filters[:min_price] || @filters[:max_price] do %>
+                      <span class="px-3 py-1 bg-teal-500/20 text-teal-300 text-xs rounded-full border border-teal-500/30">
+                        Price
+                      </span>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </form>
+        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           <%= for product <- @products do %>
@@ -245,6 +358,36 @@ defmodule HomeWareWeb.ProductCatalogLive do
   def handle_event("add_to_cart", %{"product-id" => _product_id}, socket) do
     # TODO: Implement add to cart functionality
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("clear_filters", _params, socket) do
+    products = get_filtered_products(%{})
+    brands = get_brands()
+
+    {:noreply,
+     assign(socket,
+       filters: %{},
+       products: products,
+       total_count: length(products),
+       brands: brands,
+       page: 1
+     )}
+  end
+
+  @impl true
+  def handle_event("reset_filters", _params, socket) do
+    products = get_filtered_products(%{})
+    brands = get_brands()
+
+    {:noreply,
+     assign(socket,
+       filters: %{},
+       products: products,
+       total_count: length(products),
+       brands: brands,
+       page: 1
+     )}
   end
 
   defp maybe_add_filter(filters, _key, nil), do: filters
