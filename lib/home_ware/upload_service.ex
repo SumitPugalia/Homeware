@@ -117,7 +117,7 @@ defmodule HomeWare.UploadService do
   defp build_public_url(path) do
     bucket = bucket()
     region = Application.get_env(:home_ware, :do_spaces_region, "blr1")
-    "https://#{bucket}.#{region}.digitaloceanspaces.com/#{bucket}/#{path}"
+    "https://#{bucket}.#{region}.digitaloceanspaces.com/#{path}"
   end
 
   @doc """
