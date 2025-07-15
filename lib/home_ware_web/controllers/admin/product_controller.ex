@@ -161,6 +161,7 @@ defmodule HomeWareWeb.Admin.ProductController do
       Map.put(params, "dimensions", %{})
     end
   end
+
   defp transform_dimensions(params), do: params
 
   # Transform specifications from separate fields to a map
@@ -177,6 +178,7 @@ defmodule HomeWareWeb.Admin.ProductController do
       Map.put(params, "specifications", %{})
     end
   end
+
   defp transform_specifications(params), do: params
 
   # Transform images from comma-separated string to array
@@ -190,15 +192,18 @@ defmodule HomeWareWeb.Admin.ProductController do
 
     Map.put(params, "images", images_array)
   end
+
   defp transform_images(params), do: params
 
   # Transform boolean fields
   defp transform_boolean_fields(%{"is_active" => "true"} = params) do
     Map.put(params, "is_active", true)
   end
+
   defp transform_boolean_fields(%{"is_featured" => "true"} = params) do
     Map.put(params, "is_featured", true)
   end
+
   defp transform_boolean_fields(params), do: params
 
   defp to_int(nil), do: 1
