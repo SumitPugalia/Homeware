@@ -54,6 +54,7 @@ defmodule HomeWareWeb.Router do
     get "/terms", PageController, :terms
 
     # Authentication routes
+    get "/signup", UserRegistrationController, :new
     get "/users/register", UserRegistrationController, :new
     post "/users/register", UserRegistrationController, :create
     get "/users/log_in", UserSessionController, :new
