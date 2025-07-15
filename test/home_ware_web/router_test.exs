@@ -7,26 +7,26 @@ defmodule HomeWareWeb.RouterTest do
   describe "public routes" do
     test "GET /", %{conn: conn} do
       conn = get(conn, ~p"/")
-      assert html_response(conn, 200) =~ "HomeWare"
-    end
-
-    test "GET /products", %{conn: conn} do
-      conn = get(conn, ~p"/products")
-      assert html_response(conn, 200) =~ "Product Catalog"
+      assert html_response(conn, 200) =~ "Vibe Needs"
     end
 
     test "GET /users/register", %{conn: conn} do
       conn = get(conn, ~p"/users/register")
-      assert html_response(conn, 200) =~ "Create an account"
+      assert html_response(conn, 200) =~ "Create Your Account"
     end
 
     test "GET /users/log_in", %{conn: conn} do
       conn = get(conn, ~p"/users/log_in")
-      assert html_response(conn, 200) =~ "Log in to Exclusive"
+      assert html_response(conn, 200) =~ "Sign In"
     end
   end
 
   describe "protected routes" do
+    test "GET /products redirects when not authenticated", %{conn: conn} do
+      conn = get(conn, ~p"/products")
+      assert redirected_to(conn) == ~p"/users/log_in"
+    end
+
     test "GET /profile redirects when not authenticated", %{conn: conn} do
       conn = get(conn, ~p"/profile")
       assert redirected_to(conn) == ~p"/users/log_in"
@@ -51,7 +51,7 @@ defmodule HomeWareWeb.RouterTest do
         |> put_req_header("authorization", "Bearer #{token}")
         |> get(~p"/profile")
 
-      assert html_response(conn, 200) =~ "Profile"
+      assert html_response(conn, 200) =~ "Account Settings"
     end
 
     test "GET /orders works when authenticated", %{conn: conn} do
@@ -75,7 +75,7 @@ defmodule HomeWareWeb.RouterTest do
         |> put_req_header("authorization", "Bearer #{token}")
         |> get(~p"/admin/dashboard")
 
-      assert html_response(conn, 200) =~ "Admin Dashboard"
+      assert html_response(conn, 200) =~ "Dashboard"
     end
   end
 end

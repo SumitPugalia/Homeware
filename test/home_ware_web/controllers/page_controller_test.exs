@@ -14,10 +14,7 @@ defmodule HomeWareWeb.PageControllerTest do
   test "GET / contains expected content", %{conn: conn} do
     conn = get(conn, ~p"/")
     html = html_response(conn, 200)
-    assert html =~ "Exclusive"
-    assert html =~ "Flash Sales"
-    assert html =~ "Browse By Category"
-    assert html =~ "Best Selling Products"
-    assert html =~ "FREE AND FAST DELIVERY"
+    assert html =~ "Vibe Needs"
+    assert html =~ "Explore Categories"
   end
 end

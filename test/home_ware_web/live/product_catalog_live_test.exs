@@ -3,11 +3,15 @@ defmodule HomeWareWeb.ProductCatalogLiveTest do
 
   import Phoenix.LiveViewTest
   alias HomeWare.Factory
+  alias HomeWare.Guardian
 
-  setup do
+  setup %{conn: conn} do
+    user = Factory.insert(:user)
     category = Factory.insert(:category)
     product = Factory.insert(:product, %{category_id: category.id})
-    %{product: product, category: category}
+    {:ok, token, _claims} = Guardian.encode_and_sign(user)
+    conn = Plug.Conn.put_session(conn, :user_token, token)
+    %{conn: conn, product: product, category: category, user: user}
   end
 
   describe "index" do
