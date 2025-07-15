@@ -10,14 +10,16 @@ defmodule HomeWareWeb.ProductCatalogLiveTest do
     category = Factory.insert(:category)
     product = Factory.insert(:product, %{category_id: category.id})
     {:ok, token, _claims} = Guardian.encode_and_sign(user)
-    conn = Plug.Conn.put_session(conn, :user_token, token)
+    conn = conn
+           |> fetch_session()
+           |> put_session(:user_token, token)
     %{conn: conn, product: product, category: category, user: user}
   end
 
   describe "index" do
     test "renders product catalog", %{conn: conn} do
       {:ok, _index_live, html} = live(conn, ~p"/products")
-      assert html =~ "Product Catalog"
+      assert html =~ "Filters"
     end
 
     test "filters products by category", %{conn: conn, category: category} do
