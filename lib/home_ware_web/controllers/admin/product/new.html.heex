@@ -1,167 +1,134 @@
 <div class="min-h-screen bg-gray-50">
-  <div class="flex flex-col md:flex-row">
-    <!-- Sidebar (mocked, for layout consistency) -->
-    <aside class="w-full md:w-64 bg-white border-r min-h-screen p-6">
-      <div class="flex items-center mb-8">
-        <img src="/images/logo.svg" alt="Logo" class="h-8 mr-2" />
-        <span class="font-bold text-xl text-gray-700">Arik</span>
-      </div>
-      <nav class="space-y-2">
-        <a
-          href={~p"/admin/dashboard"}
-          class="flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100"
-        >
-          <span class="material-icons mr-2">DASHBOARD</span>
-        </a>
-        <a
-          href={~p"/admin/products"}
-          class="flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100"
-        >
-          <span class="material-icons mr-2">ALL PRODUCTS</span>
-        </a>
-        <a href="#" class="flex items-center px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
-          <span class="material-icons mr-2">ORDER LIST</span>
-        </a>
+  <%= render_admin_sidebar(assigns) %>
+  <!-- Main Content -->
+  <div class="ml-64 p-8">
+    <div class="mb-6">
+      <nav class="text-xs text-gray-500 mb-2">
+        Home &gt; All Products &gt; Product Details
       </nav>
-      <div class="mt-8">
-        <h3 class="text-sm font-semibold text-gray-500 mb-2">Categories</h3>
-        <ul class="space-y-1">
-          <%= for category <- @categories do %>
-            <li class="text-gray-600 text-sm"><%= category.name %></li>
-          <% end %>
-        </ul>
+      <h1 class="text-2xl font-bold text-gray-800 mb-4">Product Details</h1>
+    </div>
+    <div class="bg-white rounded-lg shadow p-8 flex flex-col lg:flex-row gap-8">
+      <!-- Product Form -->
+      <div class="flex-1">
+        <.form for={@form} action={~p"/admin/products"} method="post" multipart>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <.input field={@form[:name]} label="Product Name" required />
+            <.input field={@form[:brand]} label="Brand" required />
+            <.input field={@form[:model]} label="Model" required />
+            <.input field={@form[:product_type]} label="Product Type" required />
+            <.input field={@form[:product_category]} label="Product Category" required />
+            <.input
+              field={@form[:description]}
+              label="Description"
+              type="textarea"
+              class="md:col-span-2"
+              required
+            />
+            <.input field={@form[:price]} label="Price" type="number" step="0.01" required />
+            <.input
+              field={@form[:inventory_quantity]}
+              label="Stock Quantity"
+              type="number"
+              required
+            />
+            <.input
+              field={@form[:category_id]}
+              label="Category"
+              type="select"
+              options={Enum.map(@categories, &{&1.name, &1.id})}
+              required
+            />
+          </div>
+          <div class="mt-6 flex gap-3">
+            <button
+              type="submit"
+              class="bg-blue-900 text-white px-6 py-2 rounded hover:bg-blue-800"
+            >
+              CREATE
+            </button>
+            <a
+              href={~p"/admin/products"}
+              class="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-100"
+            >
+              CANCEL
+            </a>
+          </div>
+        </.form>
       </div>
-    </aside>
-    <!-- Main Content -->
-    <main class="flex-1 p-8">
-      <div class="mb-6">
-        <nav class="text-xs text-gray-500 mb-2">
-          Home &gt; All Products &gt; Product Details
-        </nav>
-        <h1 class="text-2xl font-bold text-gray-800 mb-4">Product Details</h1>
-      </div>
-      <div class="bg-white rounded-lg shadow p-8 flex flex-col lg:flex-row gap-8">
-        <!-- Product Form -->
-        <div class="flex-1">
-          <.form for={@form} action={~p"/admin/products"} method="post" multipart>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <.input field={@form[:name]} label="Product Name" required />
-              <.input field={@form[:brand]} label="Brand" required />
-              <.input field={@form[:model]} label="Model" required />
-              <.input field={@form[:product_type]} label="Product Type" required />
-              <.input field={@form[:product_category]} label="Product Category" required />
-              <.input
-                field={@form[:description]}
-                label="Description"
-                type="textarea"
-                class="md:col-span-2"
-                required
-              />
-              <.input field={@form[:price]} label="Price" type="number" step="0.01" required />
-              <.input
-                field={@form[:inventory_quantity]}
-                label="Stock Quantity"
-                type="number"
-                required
-              />
-              <.input
-                field={@form[:category_id]}
-                label="Category"
-                type="select"
-                options={Enum.map(@categories, &{&1.name, &1.id})}
-                required
-              />
-            </div>
-            <div class="mt-6 flex gap-3">
-              <button
-                type="submit"
-                class="bg-blue-900 text-white px-6 py-2 rounded hover:bg-blue-800"
-              >
-                CREATE
-              </button>
-              <a
-                href={~p"/admin/products"}
-                class="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-100"
-              >
-                CANCEL
-              </a>
-            </div>
-          </.form>
+      <!-- Product Gallery (Mocked) -->
+      <div class="w-full lg:w-96">
+        <div class="bg-gray-100 rounded-lg h-48 flex items-center justify-center mb-4">
+          <span class="text-gray-400">Image Preview</span>
         </div>
-        <!-- Product Gallery (Mocked) -->
-        <div class="w-full lg:w-96">
-          <div class="bg-gray-100 rounded-lg h-48 flex items-center justify-center mb-4">
-            <span class="text-gray-400">Image Preview</span>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Product Gallery</label>
+          <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center text-gray-400">
+            <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 16V4a1 1 0 011-1h8a1 1 0 011 1v12m-4 4h-4a1 1 0 01-1-1v-4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1z"
+              />
+            </svg>
+            <span>Drop your image here, or browse<br />Jpeg, png are allowed</span>
           </div>
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Product Gallery</label>
-            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center text-gray-400">
-              <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M7 16V4a1 1 0 011-1h8a1 1 0 011 1v12m-4 4h-4a1 1 0 01-1-1v-4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1z"
-                />
-              </svg>
-              <span>Drop your image here, or browse<br />Jpeg, png are allowed</span>
-            </div>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center bg-white rounded shadow p-2">
+            <div class="w-10 h-10 bg-gray-200 rounded mr-3"></div>
+            <span class="flex-1 text-gray-700 text-sm">Product thumbnail.png</span>
+            <svg
+              class="w-5 h-5 text-green-500 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
           </div>
-          <div class="space-y-2">
-            <div class="flex items-center bg-white rounded shadow p-2">
-              <div class="w-10 h-10 bg-gray-200 rounded mr-3"></div>
-              <span class="flex-1 text-gray-700 text-sm">Product thumbnail.png</span>
-              <svg
-                class="w-5 h-5 text-green-500 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <div class="flex items-center bg-white rounded shadow p-2">
-              <div class="w-10 h-10 bg-gray-200 rounded mr-3"></div>
-              <span class="flex-1 text-gray-700 text-sm">Product thumbnail.png</span>
-              <svg
-                class="w-5 h-5 text-green-500 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <div class="flex items-center bg-white rounded shadow p-2">
-              <div class="w-10 h-10 bg-gray-200 rounded mr-3"></div>
-              <span class="flex-1 text-gray-700 text-sm">Product thumbnail.png</span>
-              <svg
-                class="w-5 h-5 text-green-500 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
+          <div class="flex items-center bg-white rounded shadow p-2">
+            <div class="w-10 h-10 bg-gray-200 rounded mr-3"></div>
+            <span class="flex-1 text-gray-700 text-sm">Product thumbnail.png</span>
+            <svg
+              class="w-5 h-5 text-green-500 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+          <div class="flex items-center bg-white rounded shadow p-2">
+            <div class="w-10 h-10 bg-gray-200 rounded mr-3"></div>
+            <span class="flex-1 text-gray-700 text-sm">Product thumbnail.png</span>
+            <svg
+              class="w-5 h-5 text-green-500 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   </div>
 </div>
