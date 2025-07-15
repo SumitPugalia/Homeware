@@ -28,7 +28,7 @@ defmodule HomeWareWeb.CheckoutLive do
     <div class="min-h-screen bg-gray-50">
       <!-- Navigation -->
       <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-14xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-16">
             <div class="flex">
               <div class="flex-shrink-0 flex items-center">
@@ -88,7 +88,7 @@ defmodule HomeWareWeb.CheckoutLive do
       </nav>
       <!-- Checkout Progress -->
       <div class="bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-14xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex items-center justify-center py-4">
             <div class="flex items-center">
               <div class={if @step >= 1, do: "bg-indigo-600", else: "bg-gray-200"}>
@@ -134,7 +134,7 @@ defmodule HomeWareWeb.CheckoutLive do
       </div>
       <!-- Checkout Content -->
       <div class="bg-white">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
+        <div class="max-w-14xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
           <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
             <!-- Main Content -->
             <div class="lg:col-span-8">

@@ -24,7 +24,7 @@ defmodule HomeWareWeb.ProductDetailLive do
   def render(assigns) do
     ~H"""
     <div class="min-h-screen flex flex-col bg-white">
-      <main class="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-8">
+      <main class="flex-1 w-full max-w-14xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-8">
         <!-- Breadcrumb -->
         <nav class="text-sm text-gray-400 mb-6" aria-label="Breadcrumb">
           <ol class="list-reset flex">
@@ -54,7 +54,7 @@ defmodule HomeWareWeb.ProductDetailLive do
               <img
                 src="https://via.placeholder.com/400x400"
                 alt={@product.name}
-                class="rounded-xl w-full max-w-md object-cover shadow-lg"
+                class="rounded-xl w-full max-w-14xl-md object-cover shadow-lg"
               />
             </div>
           </div>

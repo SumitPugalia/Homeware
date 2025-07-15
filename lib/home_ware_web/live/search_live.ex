@@ -24,7 +24,7 @@ defmodule HomeWareWeb.SearchLive do
     <div class="min-h-screen bg-gray-50">
       <!-- Navigation -->
       <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-14xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-16">
             <div class="flex">
               <div class="flex-shrink-0 flex items-center">
@@ -84,7 +84,7 @@ defmodule HomeWareWeb.SearchLive do
       </nav>
       <!-- Search Header -->
       <div class="bg-white">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
+        <div class="max-w-14xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
           <div class="text-center">
             <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
               Search Products
@@ -94,7 +94,7 @@ defmodule HomeWareWeb.SearchLive do
             </p>
           </div>
           <!-- Search Form -->
-          <div class="mt-8 max-w-2xl mx-auto">
+          <div class="mt-8 max-w-14xl-2xl mx-auto">
             <form phx-submit="search" class="relative">
               <div class="relative">
                 <input
@@ -133,7 +133,7 @@ defmodule HomeWareWeb.SearchLive do
       <!-- Search Results -->
       <%= if @query != "" do %>
         <div class="bg-white">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="max-w-14xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="lg:grid lg:grid-cols-4 lg:gap-x-8 lg:items-start">
               <!-- Filters -->
               <div class="lg:col-span-1">

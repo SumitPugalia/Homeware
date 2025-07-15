@@ -28,7 +28,7 @@ defmodule HomeWareWeb.CategoryShowLive do
     <div class="min-h-screen bg-gray-50">
       <!-- Navigation -->
       <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-14xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-16">
             <div class="flex">
               <div class="flex-shrink-0 flex items-center">
@@ -88,7 +88,7 @@ defmodule HomeWareWeb.CategoryShowLive do
       </nav>
       <!-- Breadcrumb -->
       <div class="bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-14xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav class="flex py-4" aria-label="Breadcrumb">
             <ol class="flex items-center space-x-4">
               <li>
@@ -132,7 +132,7 @@ defmodule HomeWareWeb.CategoryShowLive do
       </div>
       <!-- Category Header -->
       <div class="bg-white">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
+        <div class="max-w-14xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
           <div class="text-center">
             <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
               <%= @category.name %>
@@ -145,7 +145,7 @@ defmodule HomeWareWeb.CategoryShowLive do
       </div>
       <!-- Filters and Products -->
       <div class="bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-14xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="lg:grid lg:grid-cols-4 lg:gap-x-8 lg:items-start">
             <!-- Filters -->
             <div class="lg:col-span-1">

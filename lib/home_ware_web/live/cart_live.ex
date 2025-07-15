@@ -22,7 +22,7 @@ defmodule HomeWareWeb.CartLive do
     <div class="min-h-screen bg-gray-50">
       <!-- Navigation -->
       <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-14xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-16">
             <div class="flex">
               <div class="flex-shrink-0 flex items-center">
@@ -82,7 +82,7 @@ defmodule HomeWareWeb.CartLive do
       </nav>
       <!-- Cart Content -->
       <div class="bg-white">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
+        <div class="max-w-14xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
           <h1 class="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
 
           <%= if Enum.empty?(@cart_items) do %>
