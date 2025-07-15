@@ -126,17 +126,6 @@ defmodule HomeWareWeb.AdminCategoriesLive do
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 </div>
-
-                <div>
-                  <label for="slug" class="block text-sm font-medium text-gray-700">Slug</label>
-                  <input
-                    type="text"
-                    name="category[slug]"
-                    id="slug"
-                    value={@category_changeset.changes[:slug] || @category_changeset.data.slug || ""}
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  />
-                </div>
               </div>
 
               <div class="mt-6">
@@ -208,9 +197,7 @@ defmodule HomeWareWeb.AdminCategoriesLive do
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Name
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Slug
-                </th>
+
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Description
                 </th>
@@ -239,9 +226,7 @@ defmodule HomeWareWeb.AdminCategoriesLive do
                       </div>
                     </div>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <%= category.slug %>
-                  </td>
+
                   <td class="px-6 py-4 text-sm text-gray-500">
                     <%= String.slice(category.description || "", 0, 50) %><%= if String.length(
                                                                                    category.description ||

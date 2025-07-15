@@ -110,6 +110,35 @@ defmodule HomeWareWeb.AdminProductDetailLive do
           <h1 class="text-xl font-bold text-gray-900">Product Details</h1>
           <p class="text-xs text-gray-500">Home &gt; All Products &gt; Product Details</p>
         </div>
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+          <h2 class="text-lg font-semibold mb-4">Product Information</h2>
+          <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+            <dt class="font-semibold">Name:</dt>
+            <dd><%= @product.name %></dd>
+            <dt class="font-semibold">Brand:</dt>
+            <dd><%= @product.brand %></dd>
+            <dt class="font-semibold">Model:</dt>
+            <dd><%= @product.model %></dd>
+            <dt class="font-semibold">Product Type:</dt>
+            <dd><%= @product.product_type %></dd>
+            <dt class="font-semibold">Product Category:</dt>
+            <dd><%= @product.product_category %></dd>
+            <dt class="font-semibold">Description:</dt>
+            <dd><%= @product.description %></dd>
+            <dt class="font-semibold">Price:</dt>
+            <dd>₹<%= @product.price %></dd>
+            <dt class="font-semibold">Selling Price:</dt>
+            <dd>₹<%= @product.selling_price %></dd>
+            <dt class="font-semibold">Stock Quantity:</dt>
+            <dd><%= @product.inventory_quantity %></dd>
+            <dt class="font-semibold">Active:</dt>
+            <dd><%= if @product.is_active, do: "Yes", else: "No" %></dd>
+            <dt class="font-semibold">Featured:</dt>
+            <dd><%= if @product.is_featured, do: "Yes", else: "No" %></dd>
+            <dt class="font-semibold">Category:</dt>
+            <dd><%= Enum.find(@categories, fn c -> c.id == @product.category_id end).name %></dd>
+          </dl>
+        </div>
         <.form
           for={@changeset}
           id="product-form"
@@ -161,12 +190,42 @@ defmodule HomeWareWeb.AdminProductDetailLive do
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <.input
-                    field={@changeset[:sku]}
+                    field={@changeset[:product_type]}
                     type="text"
-                    label="SKU"
+                    label="Product Type"
                     class="w-full border rounded px-3 py-2 text-sm mt-1"
                   />
                 </div>
+                <div>
+                  <.input
+                    field={@changeset[:product_category]}
+                    type="text"
+                    label="Product Category"
+                    class="w-full border rounded px-3 py-2 text-sm mt-1"
+                  />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <.input
+                    field={@changeset[:price]}
+                    type="number"
+                    step="0.01"
+                    label="Price"
+                    class="w-full border rounded px-3 py-2 text-sm mt-1"
+                  />
+                </div>
+                <div>
+                  <.input
+                    field={@changeset[:selling_price]}
+                    type="number"
+                    step="0.01"
+                    label="Selling Price"
+                    class="w-full border rounded px-3 py-2 text-sm mt-1"
+                  />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
                 <div>
                   <.input
                     field={@changeset[:inventory_quantity]}
@@ -179,19 +238,35 @@ defmodule HomeWareWeb.AdminProductDetailLive do
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <.input
-                    field={@changeset[:price]}
-                    type="number"
-                    step="0.01"
-                    label="Regular Price"
+                    field={@changeset[:dimensions]}
+                    type="text"
+                    label="Dimensions (JSON)"
                     class="w-full border rounded px-3 py-2 text-sm mt-1"
                   />
                 </div>
                 <div>
                   <.input
-                    field={@changeset[:compare_at_price]}
-                    type="number"
-                    step="0.01"
-                    label="Sale Price"
+                    field={@changeset[:specifications]}
+                    type="text"
+                    label="Specifications (JSON)"
+                    class="w-full border rounded px-3 py-2 text-sm mt-1"
+                  />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <.input
+                    field={@changeset[:is_active]}
+                    type="checkbox"
+                    label="Active"
+                    class="w-full border rounded px-3 py-2 text-sm mt-1"
+                  />
+                </div>
+                <div>
+                  <.input
+                    field={@changeset[:is_featured]}
+                    type="checkbox"
+                    label="Featured"
                     class="w-full border rounded px-3 py-2 text-sm mt-1"
                   />
                 </div>
@@ -230,6 +305,14 @@ defmodule HomeWareWeb.AdminProductDetailLive do
                   <span class="material-icons text-green-600">check_circle</span>
                 </div>
               <% end %>
+            </div>
+            <div class="mt-4">
+              <.input
+                field={@changeset[:images]}
+                type="text"
+                label="Images (comma separated URLs)"
+                class="w-full border rounded px-3 py-2 text-sm mt-1"
+              />
             </div>
           </div>
           <!-- Action Buttons -->

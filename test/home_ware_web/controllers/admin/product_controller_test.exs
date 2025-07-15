@@ -27,20 +27,26 @@ defmodule HomeWareWeb.Admin.ProductControllerTest do
 
       product_params = %{
         "name" => "Test Product",
-        "slug" => "test-product",
         "description" => "A test product.",
         "category_id" => category.id,
         "brand" => "TestBrand",
-        "sku" => "SKU123",
         "inventory_quantity" => 10,
         "price" => 99.99,
-        "compare_at_price" => 120.00
+        "selling_price" => 89.99,
+        "model" => "Test Model",
+        "product_type" => "Test Type",
+        "product_category" => "Test Category",
+        "images" => ["https://via.placeholder.com/150"],
+        "featured_image" => "https://via.placeholder.com/300",
+        "dimensions" => %{"length" => 10, "width" => 5, "height" => 3},
+        "specifications" => %{"color" => "White", "material" => "Stainless Steel"},
+        "is_active" => true,
+        "is_featured" => false
       }
 
       conn = post(conn, ~p"/admin/products", %{"product" => product_params})
       assert redirected_to(conn) == ~p"/admin/products"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Product created"
-      assert Products.get_product_by_slug!("test-product").name == "Test Product"
     end
 
     test "renders form with errors when product creation fails", %{conn: conn, category: category} do
@@ -50,11 +56,13 @@ defmodule HomeWareWeb.Admin.ProductControllerTest do
       product_params = %{
         # Empty name should fail validation
         "name" => "",
-        # Empty slug should fail validation
-        "slug" => "",
         # Negative price should fail validation
         "price" => -10,
-        "category_id" => category.id
+        "category_id" => category.id,
+        "brand" => "",
+        "model" => "",
+        "product_type" => "",
+        "product_category" => ""
       }
 
       conn = post(conn, ~p"/admin/products", %{"product" => product_params})
@@ -86,9 +94,9 @@ defmodule HomeWareWeb.Admin.ProductControllerTest do
       assert redirected_to(conn) == ~p"/admin/products"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Product deleted"
 
-      assert_raise Ecto.NoResultsError, fn ->
-        Products.get_product!(product.id)
-      end
+      # Product should still exist but be inactive (soft delete)
+      deleted_product = Products.get_product!(product.id)
+      assert deleted_product.is_active == false
     end
   end
 end

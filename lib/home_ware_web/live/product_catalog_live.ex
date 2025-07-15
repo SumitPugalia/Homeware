@@ -79,7 +79,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
           <div class="bg-white rounded-lg shadow-md overflow-hidden" data-product-id={product.id}>
             <div class="p-4">
               <h3 class="text-lg font-semibold text-gray-900"><%= product.name %></h3>
-              <p class="text-gray-600 mt-2"><%= product.short_description %></p>
+              <p class="text-gray-600 mt-2"><%= product.description %></p>
               <div class="mt-4 flex justify-between items-center">
                 <span class="text-xl font-bold text-gray-900">$<%= product.price %></span>
                 <button

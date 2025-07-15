@@ -14,20 +14,17 @@ defmodule HomeWare.Products.Product do
     field :description, :string
 
     field :price, :decimal
-    field :compare_at_price, :decimal
+    field :selling_price, :decimal
 
-    field :weight, :decimal
     field :dimensions, :map
-
     field :specifications, :map
 
     field :images, {:array, :string}, default: []
-
     field :featured_image, :string
 
     field :inventory_quantity, :integer
-    field :is_featured, :boolean, default: false
     field :is_active, :boolean, default: true
+    field :is_featured, :boolean, default: false
 
     belongs_to :category, HomeWare.Categories.Category
     has_many :order_items, HomeWare.Orders.OrderItem
@@ -41,32 +38,42 @@ defmodule HomeWare.Products.Product do
     product
     |> cast(attrs, [
       :name,
-      :slug,
       :description,
-      :short_description,
       :price,
-      :compare_at_price,
-      :sku,
+      :selling_price,
       :brand,
       :model,
-      :weight,
+      :product_type,
+      :product_category,
       :dimensions,
       :specifications,
       :images,
       :featured_image,
       :inventory_quantity,
-      :is_featured,
       :is_active,
-      :category_id,
-      :average_rating,
-      :review_count
+      :is_featured,
+      :category_id
     ])
-    |> validate_required([:name, :slug, :price])
+    |> validate_required([
+      :name,
+      :brand,
+      :model,
+      :product_type,
+      :product_category,
+      :description,
+      :price,
+      :selling_price,
+      :inventory_quantity,
+      :category_id,
+      :images,
+      :featured_image,
+      :dimensions,
+      :specifications,
+      :is_active,
+      :is_featured
+    ])
     |> validate_number(:price, greater_than: 0)
+    |> validate_number(:selling_price, greater_than: 0)
     |> validate_number(:inventory_quantity, greater_than_or_equal_to: 0)
-    |> validate_number(:average_rating, greater_than_or_equal_to: 0, less_than_or_equal_to: 5)
-    |> validate_number(:review_count, greater_than_or_equal_to: 0)
-    |> unique_constraint(:slug)
-    |> unique_constraint(:sku)
   end
 end

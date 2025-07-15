@@ -7,7 +7,6 @@ defmodule HomeWare.Categories.Category do
 
   schema "categories" do
     field :name, :string
-    field :slug, :string
     field :description, :string
     field :image_url, :string
     field :is_active, :boolean, default: true
@@ -21,8 +20,7 @@ defmodule HomeWare.Categories.Category do
 
   def changeset(category, attrs) do
     category
-    |> cast(attrs, [:name, :slug, :description, :image_url, :parent_id, :is_active])
-    |> validate_required([:name, :slug])
-    |> unique_constraint(:slug)
+    |> cast(attrs, [:name, :description, :image_url, :parent_id, :is_active])
+    |> validate_required([:name])
   end
 end

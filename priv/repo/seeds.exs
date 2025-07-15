@@ -15,7 +15,6 @@ alias HomeWare.Categories
 # Create categories
 case Categories.create_category(%{
        name: "Vape",
-       slug: "vape",
        description: "Vaping products and accessories",
        is_active: true
      }) do
@@ -25,7 +24,6 @@ end
 
 case Categories.create_category(%{
        name: "Sex Toys",
-       slug: "sex-toys",
        description: "Adult toys and accessories",
        is_active: true
      }) do

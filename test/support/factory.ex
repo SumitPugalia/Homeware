@@ -26,7 +26,6 @@ defmodule HomeWare.Factory do
     %HomeWare.Categories.Category{
       id: Ecto.UUID.generate(),
       name: "Test Category #{unique_id}",
-      slug: "test-category-#{unique_id}",
       description: "Test category description",
       image_url: "https://example.com/category.jpg",
       is_active: true
@@ -41,24 +40,20 @@ defmodule HomeWare.Factory do
     %HomeWare.Products.Product{
       id: Ecto.UUID.generate(),
       name: "Test Product #{unique_id}",
-      slug: "test-product-#{unique_id}",
       description: "Test product description",
-      short_description: "Test short description",
       price: Decimal.new("99.99"),
-      compare_at_price: Decimal.new("129.99"),
-      sku: "SKU-#{System.unique_integer()}",
+      selling_price: Decimal.new("89.99"),
       brand: "Test Brand",
       model: "Test Model",
-      weight: Decimal.new("5.5"),
+      product_type: "Test Type",
+      product_category: "Test Category",
       dimensions: %{"length" => 10, "width" => 5, "height" => 3},
       specifications: %{"color" => "White", "material" => "Stainless Steel"},
-      images: ["https://example.com/image1.jpg"],
+      images: ["https://example.com/image1.jpg", "https://example.com/image2.jpg"],
       featured_image: "https://example.com/featured.jpg",
       inventory_quantity: 10,
-      is_featured: false,
       is_active: true,
-      average_rating: Decimal.new("4.5"),
-      review_count: 5,
+      is_featured: false,
       category_id: category_id
     }
     |> Map.merge(attrs)

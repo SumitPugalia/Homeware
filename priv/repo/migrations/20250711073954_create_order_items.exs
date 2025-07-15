@@ -8,7 +8,6 @@ defmodule HomeWare.Repo.Migrations.CreateOrderItems do
       add :unit_price, :decimal
       add :total_price, :decimal
       add :product_name, :string
-      add :product_sku, :string
       add :order_id, references(:orders, on_delete: :delete_all, type: :uuid)
       add :product_id, references(:products, on_delete: :restrict, type: :uuid)
 

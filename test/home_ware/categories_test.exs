@@ -21,14 +21,12 @@ defmodule HomeWare.CategoriesTest do
     test "create_category/1 with valid data creates a category" do
       valid_attrs = %{
         name: "Kitchen Appliances",
-        slug: "kitchen-appliances",
         description: "All kitchen related appliances",
         image_url: "https://example.com/kitchen.jpg"
       }
 
       assert {:ok, %Category{} = category} = Categories.create_category(valid_attrs)
       assert category.name == "Kitchen Appliances"
-      assert category.slug == "kitchen-appliances"
     end
 
     test "create_category/1 with invalid data returns error changeset" do
@@ -66,17 +64,68 @@ defmodule HomeWare.CategoriesTest do
 
   describe "list_categories_with_counts/0" do
     test "returns categories with correct product counts" do
-      {:ok, cat1} = Categories.create_category(%{name: "Cat1", slug: "cat1"})
-      {:ok, cat2} = Categories.create_category(%{name: "Cat2", slug: "cat2"})
+      {:ok, cat1} = Categories.create_category(%{name: "Cat1"})
+      {:ok, cat2} = Categories.create_category(%{name: "Cat2"})
 
       {:ok, _p1} =
-        Products.create_product(%{name: "P1", slug: "p1", price: 10, category_id: cat1.id})
+        Products.create_product(%{
+          name: "P1",
+          description: "desc",
+          price: 10,
+          brand: "Brand1",
+          model: "Model1",
+          product_type: "Type1",
+          product_category: "CatType1",
+          inventory_quantity: 1,
+          category_id: cat1.id,
+          images: ["https://via.placeholder.com/150"],
+          selling_price: 100.0,
+          featured_image: "https://via.placeholder.com/300",
+          dimensions: %{"length" => 10, "width" => 5, "height" => 3},
+          specifications: %{"color" => "White", "material" => "Stainless Steel"},
+          is_active: true,
+          is_featured: false
+        })
 
       {:ok, _p2} =
-        Products.create_product(%{name: "P2", slug: "p2", price: 20, category_id: cat1.id})
+        Products.create_product(%{
+          name: "P2",
+          description: "desc",
+          price: 20,
+          brand: "Brand2",
+          model: "Model2",
+          product_type: "Type2",
+          product_category: "CatType2",
+          inventory_quantity: 2,
+          category_id: cat1.id,
+          images: ["https://via.placeholder.com/150"],
+          selling_price: 200.0,
+          featured_image: "https://via.placeholder.com/300",
+          dimensions: %{"length" => 20, "width" => 10, "height" => 6},
+          specifications: %{"color" => "Black", "material" => "Plastic"},
+          is_active: true,
+          is_featured: false
+        })
 
       {:ok, _p3} =
-        Products.create_product(%{name: "P3", slug: "p3", price: 30, category_id: cat2.id})
+        Products.create_product(%{
+          name: "P3",
+          description: "desc",
+          price: 30,
+          brand: "Brand3",
+          model: "Model3",
+          product_type: "Type3",
+          product_category: "CatType3",
+          inventory_quantity: 3,
+          category_id: cat2.id,
+          images: ["https://via.placeholder.com/150"],
+          selling_price: 300.0,
+          featured_image: "https://via.placeholder.com/300",
+          dimensions: %{"length" => 30, "width" => 15, "height" => 9},
+          specifications: %{"color" => "Red", "material" => "Metal"},
+          is_active: true,
+          is_featured: false
+        })
 
       result = Categories.list_categories_with_counts()
       cat1_count = Enum.find(result, &(&1.id == cat1.id)).product_count

@@ -125,19 +125,11 @@ defmodule HomeWareWeb.AdminProductsLive do
           >
             <%= if @active_tab == "basic" do %>
               <.input field={f[:name]} label="Name" class="mb-2" />
-              <.input field={f[:slug]} label="Slug" class="mb-2" />
               <.input
                 field={f[:description]}
                 type="textarea"
                 label="Description"
                 rows="2"
-                class="mb-2"
-              />
-              <.input
-                field={f[:short_description]}
-                type="textarea"
-                label="Short Description"
-                rows="1"
                 class="mb-2"
               />
               <div>
@@ -157,19 +149,19 @@ defmodule HomeWareWeb.AdminProductsLive do
               </div>
               <.input field={f[:brand]} label="Brand" class="mb-2" />
               <.input field={f[:model]} label="Model" class="mb-2" />
-              <.input field={f[:sku]} label="SKU" class="mb-2" />
+              <.input field={f[:product_type]} label="Product Type" class="mb-2" />
+              <.input field={f[:product_category]} label="Product Category" class="mb-2" />
               <.input field={f[:price]} type="number" step="0.01" label="Price" class="mb-2" />
               <.input
-                field={f[:compare_at_price]}
+                field={f[:selling_price]}
                 type="number"
                 step="0.01"
-                label="Compare at Price"
+                label="Selling Price"
                 class="mb-2"
               />
             <% end %>
             <%= if @active_tab == "inventory" do %>
               <.input field={f[:inventory_quantity]} type="number" label="Inventory Qty" class="mb-2" />
-              <.input field={f[:weight]} type="number" step="0.01" label="Weight" class="mb-2" />
               <.input field={f[:dimensions]} type="text" label="Dimensions (JSON)" class="mb-2" />
               <.input field={f[:is_active]} type="checkbox" label="Active" class="mb-2" />
               <.input field={f[:is_featured]} type="checkbox" label="Featured" class="mb-2" />
@@ -185,14 +177,6 @@ defmodule HomeWareWeb.AdminProductsLive do
                 label="Specifications (JSON)"
                 class="mb-2"
               />
-              <.input
-                field={f[:average_rating]}
-                type="number"
-                step="0.01"
-                label="Avg Rating"
-                class="mb-2"
-              />
-              <.input field={f[:review_count]} type="number" label="Review Count" class="mb-2" />
             <% end %>
             <div class="col-span-full flex gap-2 mt-2">
               <button type="submit" class="bg-blue-600 text-white px-4 py-1 rounded text-xs">

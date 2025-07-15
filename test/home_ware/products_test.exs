@@ -28,33 +28,30 @@ defmodule HomeWare.ProductsTest do
       assert retrieved_product.name == product.name
     end
 
-    test "get_product_by_slug!/1 returns the product with given slug" do
-      product = Factory.insert(:product, %{slug: "test-product"})
-      retrieved_product = Products.get_product_by_slug!("test-product")
-      assert retrieved_product.id == product.id
-      assert retrieved_product.slug == product.slug
-    end
-
     test "create_product/1 with valid data creates a product" do
       category = Factory.insert(:category)
 
       valid_attrs = %{
         name: "Test Product",
-        slug: "test-product",
         description: "Test description",
         price: 100.0,
         brand: "Test Brand",
+        model: "Test Model",
+        product_type: "Test Type",
+        product_category: "Test Category",
         is_active: true,
         is_featured: false,
         inventory_quantity: 10,
-        average_rating: 4.5,
-        review_count: 5,
-        category_id: category.id
+        category_id: category.id,
+        images: ["https://via.placeholder.com/150"],
+        selling_price: 100.0,
+        featured_image: "https://via.placeholder.com/300",
+        dimensions: %{"length" => 10, "width" => 5, "height" => 3},
+        specifications: %{"color" => "White", "material" => "Stainless Steel"}
       }
 
       assert {:ok, %Product{} = product} = Products.create_product(valid_attrs)
       assert product.name == "Test Product"
-      assert product.slug == "test-product"
       assert Decimal.compare(product.price, Decimal.new("100.0")) == :eq
     end
 
@@ -79,10 +76,15 @@ defmodule HomeWare.ProductsTest do
       assert retrieved_product.name == product.name
     end
 
-    test "delete_product/1 deletes the product" do
+    test "delete_product/1 deactivates the product" do
       product = Factory.insert(:product)
-      assert {:ok, %Product{}} = Products.delete_product(product)
-      assert_raise Ecto.NoResultsError, fn -> Products.get_product!(product.id) end
+      assert {:ok, %Product{} = deleted_product} = Products.delete_product(product)
+      assert deleted_product.is_active == false
+
+      # Product should still exist but be inactive
+      retrieved_product = Products.get_product!(product.id)
+      assert retrieved_product.id == product.id
+      assert retrieved_product.is_active == false
     end
 
     test "change_product/1 returns a product changeset" do

@@ -9,8 +9,6 @@
       <div class="mb-2"><%= @product.brand %></div>
       <div class="font-semibold">Price:</div>
       <div class="mb-2">₹<%= @product.price %></div>
-      <div class="font-semibold">SKU:</div>
-      <div class="mb-2"><%= @product.sku %></div>
     </div>
     <form action={~p"/admin/products/#{@product.id}"} method="post" class="flex gap-4">
       <input type="hidden" name="_method" value="delete" />

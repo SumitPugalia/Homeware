@@ -59,13 +59,6 @@ defmodule HomeWare.Products do
     |> Repo.one!()
   end
 
-  def get_product_by_slug!(slug) do
-    Product
-    |> where(slug: ^slug)
-    |> preload(:category)
-    |> Repo.one!()
-  end
-
   def create_product(attrs \\ %{}) do
     %Product{}
     |> Product.changeset(attrs)
