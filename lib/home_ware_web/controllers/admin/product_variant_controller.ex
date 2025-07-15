@@ -2,7 +2,6 @@ defmodule HomeWareWeb.Admin.ProductVariantController do
   use HomeWareWeb, :admin_controller
   import Phoenix.Component, only: [to_form: 1]
   alias HomeWare.Products
-  alias HomeWare.Products.Product
   alias HomeWare.Products.ProductVariant
 
   def new(conn, %{"product_id" => product_id}) do

@@ -43,6 +43,68 @@ defmodule HomeWare.Products do
     |> Repo.all()
   end
 
+  def list_products_with_variants do
+    Product
+    |> where(is_active: true)
+    |> preload(:category)
+    |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
+    |> Repo.all()
+  end
+
+  def list_products_with_filters(filters \\ %{}) do
+    Product
+    |> where(is_active: true)
+    |> apply_search_filter(filters[:search])
+    |> apply_category_filter(filters[:category_id])
+    |> apply_price_filters(filters[:min_price], filters[:max_price])
+    |> preload(:category)
+    |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
+    |> order_by([p], desc: p.inserted_at)
+    |> Repo.all()
+  end
+
+  defp apply_search_filter(query, nil), do: query
+  defp apply_search_filter(query, ""), do: query
+
+  defp apply_search_filter(query, search_term) do
+    search_pattern = "%#{search_term}%"
+
+    query
+    |> where(
+      [p],
+      ilike(p.name, ^search_pattern) or ilike(p.description, ^search_pattern) or
+        ilike(p.brand, ^search_pattern)
+    )
+  end
+
+  defp apply_category_filter(query, nil), do: query
+  defp apply_category_filter(query, ""), do: query
+
+  defp apply_category_filter(query, category_id) do
+    query
+    |> where([p], p.category_id == ^category_id)
+  end
+
+  defp apply_price_filters(query, nil, nil), do: query
+
+  defp apply_price_filters(query, min_price, nil) when is_number(min_price) do
+    query
+    |> where([p], p.selling_price >= ^min_price)
+  end
+
+  defp apply_price_filters(query, nil, max_price) when is_number(max_price) do
+    query
+    |> where([p], p.selling_price <= ^max_price)
+  end
+
+  defp apply_price_filters(query, min_price, max_price)
+       when is_number(min_price) and is_number(max_price) do
+    query
+    |> where([p], p.selling_price >= ^min_price and p.selling_price <= ^max_price)
+  end
+
+  defp apply_price_filters(query, _, _), do: query
+
   def paginated_products(page, per_page, filters \\ %{}) do
     Product
     |> where(is_active: true)
