@@ -1,10 +1,8 @@
 defmodule HomeWareWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :home_ware
 
-  # The session will be stored in the cookie and signed,
-  # this means its contents can be read but not tampered with.
-  # Set :encryption_salt if you would also like to encrypt it.
-  @session_options [
+  # Use session options from config, falling back to default
+  @session_options Application.compile_env(:home_ware, HomeWareWeb.Endpoint)[:session_options] || [
     store: :cookie,
     key: "_home_ware_key",
     signing_salt: "Og6CcweZ",

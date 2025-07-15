@@ -19,7 +19,13 @@ config :home_ware, HomeWare.Repo,
 config :home_ware, HomeWareWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "PINOY6l/DYOt7eTow2QV+CIMnIbfEsoPgK1087+V9AirmKody1ikAN0MRmcKprwN",
-  server: false
+  server: false,
+  session_options: [
+    store: :cookie,
+    key: "_home_ware_key",
+    signing_salt: "Og6CcweZ",
+    same_site: "Lax"
+  ]
 
 # In test we don't send emails.
 config :home_ware, HomeWare.Mailer, adapter: Swoosh.Adapters.Test

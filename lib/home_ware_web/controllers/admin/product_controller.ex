@@ -1,5 +1,6 @@
 defmodule HomeWareWeb.Admin.ProductController do
   use HomeWareWeb, :controller
+  import Phoenix.Component, only: [to_form: 1]
 
   alias HomeWare.Products
   alias HomeWare.Categories
@@ -23,13 +24,25 @@ defmodule HomeWareWeb.Admin.ProductController do
   end
 
   def new(conn, _params) do
-    # stub for new product form
-    render(conn, "new.html")
+    changeset = HomeWare.Products.change_product(%HomeWare.Products.Product{})
+    categories = HomeWare.Categories.list_categories()
+    brands = HomeWare.Products.list_brands()
+    form = to_form(changeset)
+    render(conn, "new.html", form: form, categories: categories, brands: brands)
   end
 
-  def create(conn, _params) do
-    # stub for product creation
-    conn |> put_flash(:info, "Product created!") |> redirect(to: ~p"/admin/products")
+  def create(conn, %{"product" => product_params}) do
+    case Products.create_product(product_params) do
+      {:ok, _product} ->
+        conn
+        |> put_flash(:info, "Product created!")
+        |> redirect(to: ~p"/admin/products")
+      {:error, changeset} ->
+        categories = HomeWare.Categories.list_categories()
+        brands = HomeWare.Products.list_brands()
+        form = to_form(changeset)
+        render(conn, "new.html", form: form, categories: categories, brands: brands)
+    end
   end
 
   def edit(conn, _params) do
