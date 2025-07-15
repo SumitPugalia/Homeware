@@ -119,25 +119,4 @@ defmodule HomeWare.UploadService do
     region = Application.get_env(:home_ware, :do_spaces_region, "blr1")
     "https://#{bucket}.#{region}.digitaloceanspaces.com/#{bucket}/#{path}"
   end
-
-  @doc """
-  Ensures the bucket has proper public access configuration.
-  This should be called once during application startup.
-  """
-  def ensure_bucket_public_access do
-    bucket_name = bucket()
-
-    # Set bucket ACL to public-read
-    S3.put_bucket_acl(bucket_name, "public-read")
-    |> ExAws.request()
-    |> case do
-      {:ok, _response} ->
-        Logger.info("Successfully set bucket #{bucket_name} to public-read")
-        :ok
-
-      {:error, reason} ->
-        Logger.warning("Could not set bucket ACL: #{inspect(reason)}")
-        :error
-    end
-  end
 end

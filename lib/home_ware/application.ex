@@ -25,11 +25,6 @@ defmodule HomeWare.Application do
     opts = [strategy: :one_for_one, name: HomeWare.Supervisor]
     result = Supervisor.start_link(children, opts)
 
-    # Configure bucket for public access (only in dev/prod, not test)
-    if Mix.env() != :test do
-      HomeWare.UploadService.ensure_bucket_public_access()
-    end
-
     result
   end
 
