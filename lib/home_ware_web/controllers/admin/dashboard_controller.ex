@@ -37,7 +37,8 @@ defmodule HomeWareWeb.Admin.DashboardController do
       return_orders: return_orders,
       best_sellers: best_sellers,
       recent_orders: recent_orders,
-      sale_graph_data: sale_graph_data
+      sale_graph_data: sale_graph_data,
+      current_path: conn.request_path
     )
   end
 end

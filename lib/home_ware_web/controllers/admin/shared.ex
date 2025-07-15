@@ -3,7 +3,9 @@ defmodule HomeWareWeb.Admin.Shared do
   Shared helpers for admin views.
   """
 
-  def render_admin_sidebar(_assigns) do
+  def render_admin_sidebar(assigns) do
+    current_path = assigns[:current_path] || "/admin/dashboard"
+
     """
     <div class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg">
       <div class="flex items-center justify-center h-16 bg-blue-600">
@@ -13,7 +15,7 @@ defmodule HomeWareWeb.Admin.Shared do
         <div class="px-4 space-y-2">
           <a
             href="/admin/dashboard"
-            class="flex items-center px-4 py-2 text-gray-700 bg-blue-50 rounded-lg"
+            class="flex items-center px-4 py-2 rounded-lg #{if String.contains?(current_path, "/admin/dashboard"), do: "text-gray-700 bg-blue-50", else: "text-gray-600 hover:bg-gray-50"}"
           >
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -28,7 +30,7 @@ defmodule HomeWareWeb.Admin.Shared do
           </a>
           <a
             href="/admin/products"
-            class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg"
+            class="flex items-center px-4 py-2 rounded-lg #{if String.contains?(current_path, "/admin/products"), do: "text-gray-700 bg-blue-50", else: "text-gray-600 hover:bg-gray-50"}"
           >
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -77,6 +79,20 @@ defmodule HomeWareWeb.Admin.Shared do
             </svg>
             Analytics
           </a>
+
+          <div class="pt-4 mt-4 border-t border-gray-200">
+            <a href="/users/log_out" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1"
+                />
+              </svg>
+              Logout
+            </a>
+          </div>
         </div>
       </nav>
     </div>

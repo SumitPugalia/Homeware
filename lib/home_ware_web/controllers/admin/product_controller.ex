@@ -20,7 +20,8 @@ defmodule HomeWareWeb.Admin.ProductController do
       categories: categories,
       page: page,
       total_pages: total_pages,
-      total_entries: total_entries
+      total_entries: total_entries,
+      current_path: conn.request_path
     )
   end
 
@@ -29,7 +30,13 @@ defmodule HomeWareWeb.Admin.ProductController do
     categories = HomeWare.Categories.list_categories()
     brands = HomeWare.Products.list_brands()
     form = to_form(changeset)
-    render(conn, "new.html", form: form, categories: categories, brands: brands)
+
+    render(conn, "new.html",
+      form: form,
+      categories: categories,
+      brands: brands,
+      current_path: conn.request_path
+    )
   end
 
   def create(conn, %{"product" => product_params}) do
@@ -48,7 +55,13 @@ defmodule HomeWareWeb.Admin.ProductController do
         categories = HomeWare.Categories.list_categories()
         brands = HomeWare.Products.list_brands()
         form = to_form(changeset)
-        render(conn, "new.html", form: form, categories: categories, brands: brands)
+
+        render(conn, "new.html",
+          form: form,
+          categories: categories,
+          brands: brands,
+          current_path: conn.request_path
+        )
     end
   end
 
@@ -63,7 +76,8 @@ defmodule HomeWareWeb.Admin.ProductController do
       product: product,
       form: form,
       categories: categories,
-      brands: brands
+      brands: brands,
+      current_path: conn.request_path
     )
   end
 
@@ -85,7 +99,8 @@ defmodule HomeWareWeb.Admin.ProductController do
           product: product,
           form: form,
           categories: categories,
-          brands: brands
+          brands: brands,
+          current_path: conn.request_path
         )
     end
   end
@@ -106,7 +121,11 @@ defmodule HomeWareWeb.Admin.ProductController do
 
   def confirm_delete(conn, %{"id" => id}) do
     product = Products.get_product!(id)
-    render(conn, "confirm_delete.html", product: product)
+
+    render(conn, "confirm_delete.html",
+      product: product,
+      current_path: conn.request_path
+    )
   end
 
   defp to_int(nil), do: 1

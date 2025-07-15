@@ -1,7 +1,12 @@
 <div class="flex min-h-screen bg-[#f5f6f8]">
   <%= render_admin_sidebar(assigns) %>
   <!-- Overlay for mobile sidebar -->
-  <div id="sidebar-overlay" class="fixed inset-0 z-20 bg-black bg-opacity-30 hidden md:hidden" onclick="document.getElementById('admin-sidebar').classList.add('-translate-x-full'); this.classList.add('hidden')"></div>
+  <div
+    id="sidebar-overlay"
+    class="fixed inset-0 z-20 bg-black bg-opacity-30 hidden md:hidden"
+    onclick="document.getElementById('admin-sidebar').classList.add('-translate-x-full'); this.classList.add('hidden')"
+  >
+  </div>
   <!-- Main Content -->
   <main class="flex-1 p-4 sm:p-6 md:p-8 w-full md:ml-64">
     <!-- Mobile header with menu button -->
@@ -12,7 +17,12 @@
         onclick="document.getElementById('admin-sidebar').classList.remove('-translate-x-full'); document.getElementById('sidebar-overlay').classList.remove('hidden')"
       >
         <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
         </svg>
       </button>
       <div class="text-lg font-bold">All Products</div>
@@ -111,16 +121,16 @@
 </div>
 
 <script>
-// Sidebar toggle for mobile
-// (This is a simple vanilla JS toggle, you can replace with Alpine.js or similar if desired)
-document.addEventListener('DOMContentLoaded', function() {
-  var sidebar = document.getElementById('admin-sidebar');
-  var overlay = document.getElementById('sidebar-overlay');
-  if (sidebar && overlay) {
-    overlay.onclick = function() {
-      sidebar.classList.add('-translate-x-full');
-      overlay.classList.add('hidden');
-    };
-  }
-});
+  // Sidebar toggle for mobile
+  // (This is a simple vanilla JS toggle, you can replace with Alpine.js or similar if desired)
+  document.addEventListener('DOMContentLoaded', function() {
+    var sidebar = document.getElementById('admin-sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+    if (sidebar && overlay) {
+      overlay.onclick = function() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      };
+    }
+  });
 </script>
