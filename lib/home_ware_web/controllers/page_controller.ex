@@ -42,7 +42,8 @@ defmodule HomeWareWeb.PageController do
       selected_category_id: category_id,
       min_price: params["min_price"] || "",
       max_price: params["max_price"] || "",
-      total_products: length(filtered_products)
+      total_products: length(filtered_products),
+      current_user: conn.assigns[:current_user]
     )
   end
 

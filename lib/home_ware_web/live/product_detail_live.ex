@@ -312,6 +312,8 @@ defmodule HomeWareWeb.ProductDetailLive do
                     <button
                       phx-click="add_to_cart"
                       phx-value-product-id={product.id}
+                      phx-value-variant-id={nil}
+                      phx-value-quantity="1"
                       phx-stop-propagation
                       class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
                     >
@@ -356,6 +358,23 @@ defmodule HomeWareWeb.ProductDetailLive do
 
       true ->
         CartItems.add_to_cart(user.id, product_id, variant_id, String.to_integer(quantity))
+        {:noreply, put_flash(socket, :info, "Added to cart!")}
+    end
+  end
+
+  @impl true
+  def handle_event("add_to_cart", %{"product-id" => product_id}, socket) do
+    user = Map.get(socket.assigns, :current_user)
+
+    cond do
+      is_nil(user) ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "You must be logged in to add items to your cart.")
+         |> push_navigate(to: "/users/log_in")}
+
+      true ->
+        CartItems.add_to_cart(user.id, product_id, nil, 1)
         {:noreply, put_flash(socket, :info, "Added to cart!")}
     end
   end

@@ -33,6 +33,7 @@ defmodule HomeWareWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    post "/cart/add", CartController, :add_to_cart
 
     # Static pages (public)
     get "/about", PageController, :about
