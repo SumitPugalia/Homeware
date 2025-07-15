@@ -39,8 +39,30 @@ defmodule HomeWareWeb.Admin.ProductControllerTest do
 
       conn = post(conn, ~p"/admin/products", %{"product" => product_params})
       assert redirected_to(conn) == ~p"/admin/products"
-      assert get_flash(conn, :info) =~ "Product created"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Product created"
       assert Products.get_product_by_slug!("test-product").name == "Test Product"
+    end
+
+    test "renders form with errors when product creation fails", %{conn: conn, category: category} do
+      conn = log_in_admin_user(conn)
+
+      # Invalid product params - missing required fields
+      product_params = %{
+        # Empty name should fail validation
+        "name" => "",
+        # Empty slug should fail validation
+        "slug" => "",
+        # Negative price should fail validation
+        "price" => -10,
+        "category_id" => category.id
+      }
+
+      conn = post(conn, ~p"/admin/products", %{"product" => product_params})
+
+      # Should render the form again with errors
+      assert html_response(conn, 200) =~ "Product Details"
+      assert html_response(conn, 200) =~ "can&#39;t be blank"
+      assert html_response(conn, 200) =~ "must be greater than 0"
     end
   end
 end

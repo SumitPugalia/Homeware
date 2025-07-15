@@ -1,6 +1,7 @@
 defmodule HomeWareWeb.Admin.ProductController do
   use HomeWareWeb, :controller
   import Phoenix.Component, only: [to_form: 1]
+  require Logger
 
   alias HomeWare.Products
   alias HomeWare.Categories
@@ -32,13 +33,18 @@ defmodule HomeWareWeb.Admin.ProductController do
   end
 
   def create(conn, %{"product" => product_params}) do
+    Logger.info("Creating product with params: #{inspect(product_params)}")
+
     case Products.create_product(product_params) do
-      {:ok, _product} ->
+      {:ok, product} ->
+        Logger.info("Product created successfully with ID: #{inspect(product.id)}")
+
         conn
         |> put_flash(:info, "Product created!")
         |> redirect(to: ~p"/admin/products")
 
       {:error, changeset} ->
+        Logger.error("Error creating product: #{inspect(changeset)}")
         categories = HomeWare.Categories.list_categories()
         brands = HomeWare.Products.list_brands()
         form = to_form(changeset)
