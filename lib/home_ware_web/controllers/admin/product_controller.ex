@@ -113,31 +113,25 @@ defmodule HomeWareWeb.Admin.ProductController do
   def update(conn, %{"id" => id, "product" => product_params}) do
     product = Products.get_product!(id)
 
-    # Handle file uploads
-    case handle_file_uploads(conn, product_params) do
-      {:ok, updated_params} ->
-        # Transform the parameters to match the database structure
-        transformed_params = transform_product_params(updated_params)
+    with {:ok, updated_params} <- handle_file_uploads(conn, product_params),
+         transformed_params = transform_product_params(updated_params),
+         {:ok, _product} <- Products.update_product(product, transformed_params) do
+      conn
+      |> put_flash(:info, "Product updated!")
+      |> redirect(to: ~p"/admin/products")
+    else
+      {:error, %Ecto.Changeset{} = changeset} ->
+        categories = Categories.list_categories()
+        brands = @brands
+        form = to_form(changeset)
 
-        case Products.update_product(product, transformed_params) do
-          {:ok, _product} ->
-            conn
-            |> put_flash(:info, "Product updated!")
-            |> redirect(to: ~p"/admin/products")
-
-          {:error, changeset} ->
-            categories = Categories.list_categories()
-            brands = @brands
-            form = to_form(changeset)
-
-            render(conn, "edit.html",
-              product: product,
-              form: form,
-              categories: categories,
-              brands: brands,
-              current_path: conn.request_path
-            )
-        end
+        render(conn, "edit.html",
+          product: product,
+          form: form,
+          categories: categories,
+          brands: brands,
+          current_path: conn.request_path
+        )
 
       {:error, reason} ->
         Logger.error("Error uploading files: #{inspect(reason)}")
@@ -324,6 +318,7 @@ defmodule HomeWareWeb.Admin.ProductController do
   defp valid_upload?(_), do: false
 
   defp upload_single_image(%Plug.Upload{} = upload) do
+    Logger.info("Uploading single image: #{inspect(upload.filename)}")
     filename = UploadService.generate_filename(upload.filename)
     destination_path = "products/#{filename}"
 
