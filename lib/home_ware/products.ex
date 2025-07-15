@@ -79,7 +79,9 @@ defmodule HomeWare.Products do
   end
 
   def delete_product(%Product{} = product) do
-    Repo.delete(product)
+    product
+    |> Product.changeset(%{is_active: false})
+    |> Repo.update()
   end
 
   def change_product(%Product{} = product, attrs \\ %{}) do

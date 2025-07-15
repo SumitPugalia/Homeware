@@ -10,19 +10,19 @@
         href="/admin/dashboard"
         class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm hover:bg-gray-100 text-gray-700"
       >
-        <span class="material-icons text-base">dashboard</span> DASHBOARD
+        <span class="material-icons text-base">DASHBOARD</span>
       </a>
       <a
         href="/admin/products"
         class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm bg-[#0a3d62] text-white"
       >
-        <span class="material-icons text-base">inventory_2</span> ALL PRODUCTS
+        <span class="material-icons text-base">ALL PRODUCTS</span>
       </a>
       <a
         href="/admin/orders"
         class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm hover:bg-gray-100 text-gray-700"
       >
-        <span class="material-icons text-base">list_alt</span> ORDER LIST
+        <span class="material-icons text-base">ORDER LIST</span>
       </a>
     </nav>
     <div class="mt-4">
@@ -79,10 +79,19 @@
               </span>
             </div>
           </div>
-          <div class="flex justify-end mt-2">
-            <button class="p-2 rounded hover:bg-gray-100">
-              <span class="material-icons">more_horiz</span>
-            </button>
+          <div class="flex justify-end mt-2 gap-2">
+            <a
+              href={~p"/admin/products/#{product.id}/edit"}
+              class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs font-semibold"
+            >
+              Edit
+            </a>
+            <a
+              href={~p"/admin/products/#{product.id}/confirm_delete"}
+              class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs font-semibold"
+            >
+              Delete
+            </a>
           </div>
         </div>
       <% end %>

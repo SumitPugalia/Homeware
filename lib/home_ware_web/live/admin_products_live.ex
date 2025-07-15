@@ -66,19 +66,19 @@ defmodule HomeWareWeb.AdminProductsLive do
             href="/admin/dashboard"
             class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm hover:bg-gray-100 text-gray-700"
           >
-            <span class="material-icons text-base">dashboard</span> DASHBOARD
+            <span class="material-icons text-base">DASHBOARD</span>
           </a>
           <a
             href="/admin/products"
             class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm bg-[#0a3d62] text-white"
           >
-            <span class="material-icons text-base">inventory_2</span> ALL PRODUCTS
+            <span class="material-icons text-base">ALL PRODUCTS</span>
           </a>
           <a
             href="/admin/orders"
             class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm hover:bg-gray-100 text-gray-700"
           >
-            <span class="material-icons text-base">list_alt</span> ORDER LIST
+            <span class="material-icons text-base">ORDER LIST</span>
           </a>
         </nav>
         <div class="mt-4">

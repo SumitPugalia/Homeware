@@ -77,6 +77,10 @@ defmodule HomeWareWeb.Router do
     pipe_through [:browser, :require_admin]
 
     resources "/dashboard", DashboardController, only: [:index]
+
+    get "/products/:id/confirm_delete", ProductController, :confirm_delete,
+      as: :product_confirm_delete
+
     resources "/products", ProductController
     # resources "/categories", CategoryController
     # resources "/orders", OrderController

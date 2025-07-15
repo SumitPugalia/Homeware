@@ -65,4 +65,30 @@ defmodule HomeWareWeb.Admin.ProductControllerTest do
       assert html_response(conn, 200) =~ "must be greater than 0"
     end
   end
+
+  describe "DELETE /admin/products/:id" do
+    setup do
+      category = HomeWare.Factory.insert(:category)
+      product = HomeWare.Factory.insert(:product, %{category_id: category.id})
+      %{category: category, product: product}
+    end
+
+    test "renders delete confirmation page", %{conn: conn, product: product} do
+      conn = log_in_admin_user(conn)
+      conn = get(conn, ~p"/admin/products/#{product.id}/confirm_delete")
+      assert html_response(conn, 200) =~ "Are you sure you want to delete the following product?"
+      assert html_response(conn, 200) =~ product.name
+    end
+
+    test "deletes product and redirects", %{conn: conn, product: product} do
+      conn = log_in_admin_user(conn)
+      conn = delete(conn, ~p"/admin/products/#{product.id}")
+      assert redirected_to(conn) == ~p"/admin/products"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "Product deleted"
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Products.get_product!(product.id)
+      end
+    end
+  end
 end

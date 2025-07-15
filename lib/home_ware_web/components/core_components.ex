@@ -756,7 +756,7 @@ defmodule HomeWareWeb.CoreComponents do
             @current != "dashboard" && "hover:bg-gray-100 text-gray-700"
           ]}
         >
-          <span class="material-icons text-base">dashboard</span> DASHBOARD
+          <span class="material-icons text-base">DASHBOARD</span>
         </a>
         <a
           href="/admin/products"
@@ -766,7 +766,7 @@ defmodule HomeWareWeb.CoreComponents do
             @current != "products" && "hover:bg-gray-100 text-gray-700"
           ]}
         >
-          <span class="material-icons text-base">inventory_2</span> ALL PRODUCTS
+          <span class="material-icons text-base">ALL PRODUCTS</span>
         </a>
         <a
           href="/admin/orders"
@@ -776,7 +776,7 @@ defmodule HomeWareWeb.CoreComponents do
             @current != "orders" && "hover:bg-gray-100 text-gray-700"
           ]}
         >
-          <span class="material-icons text-base">list_alt</span> ORDER LIST
+          <span class="material-icons text-base">ORDER LIST</span>
         </a>
       </nav>
       <div class="mt-4">

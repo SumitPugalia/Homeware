@@ -52,19 +52,61 @@ defmodule HomeWareWeb.Admin.ProductController do
     end
   end
 
-  def edit(conn, _params) do
-    # stub for edit product form
-    render(conn, "edit.html")
+  def edit(conn, %{"id" => id}) do
+    product = Products.get_product!(id)
+    changeset = Products.change_product(product)
+    categories = Categories.list_categories()
+    brands = Products.list_brands()
+    form = to_form(changeset)
+
+    render(conn, "edit.html",
+      product: product,
+      form: form,
+      categories: categories,
+      brands: brands
+    )
   end
 
-  def update(conn, _params) do
-    # stub for product update
-    conn |> put_flash(:info, "Product updated!") |> redirect(to: ~p"/admin/products")
+  def update(conn, %{"id" => id, "product" => product_params}) do
+    product = Products.get_product!(id)
+
+    case Products.update_product(product, product_params) do
+      {:ok, _product} ->
+        conn
+        |> put_flash(:info, "Product updated!")
+        |> redirect(to: ~p"/admin/products")
+
+      {:error, changeset} ->
+        categories = Categories.list_categories()
+        brands = Products.list_brands()
+        form = to_form(changeset)
+
+        render(conn, "edit.html",
+          product: product,
+          form: form,
+          categories: categories,
+          brands: brands
+        )
+    end
   end
 
-  def delete(conn, _params) do
-    # stub for product deletion
-    conn |> put_flash(:info, "Product deleted!") |> redirect(to: ~p"/admin/products")
+  def delete(conn, %{"id" => id}) do
+    product = Products.get_product!(id)
+
+    case Products.delete_product(product) do
+      {:ok, _product} ->
+        conn |> put_flash(:info, "Product deleted!") |> redirect(to: ~p"/admin/products")
+
+      {:error, _changeset} ->
+        conn
+        |> put_flash(:error, "Failed to delete product.")
+        |> redirect(to: ~p"/admin/products")
+    end
+  end
+
+  def confirm_delete(conn, %{"id" => id}) do
+    product = Products.get_product!(id)
+    render(conn, "confirm_delete.html", product: product)
   end
 
   defp to_int(nil), do: 1
