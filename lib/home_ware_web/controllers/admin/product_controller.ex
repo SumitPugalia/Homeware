@@ -1,5 +1,5 @@
 defmodule HomeWareWeb.Admin.ProductController do
-  use HomeWareWeb, :controller
+  use HomeWareWeb, :admin_controller
   import Phoenix.Component, only: [to_form: 1]
   require Logger
 

@@ -1,63 +1,37 @@
 <div class="flex min-h-screen bg-[#f5f6f8]">
-  <!-- Sidebar -->
-  <aside class="w-64 min-h-screen bg-white flex flex-col py-6 px-4 border-r border-gray-200">
-    <div class="flex items-center mb-10">
-      <img src="/images/logo.svg" alt="Arik Logo" class="h-10 mr-2" />
-      <span class="text-3xl font-bold text-[#1a2a3a] tracking-tight">Arik</span>
-    </div>
-    <nav class="flex flex-col gap-2 mb-8">
-      <a
-        href="/admin/dashboard"
-        class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm hover:bg-gray-100 text-gray-700"
-      >
-        <span class="material-icons text-base">DASHBOARD</span>
-      </a>
-      <a
-        href="/admin/products"
-        class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm bg-[#0a3d62] text-white"
-      >
-        <span class="material-icons text-base">ALL PRODUCTS</span>
-      </a>
-      <a
-        href="/admin/orders"
-        class="flex items-center gap-2 px-4 py-2 rounded transition font-medium text-sm hover:bg-gray-100 text-gray-700"
-      >
-        <span class="material-icons text-base">ORDER LIST</span>
-      </a>
-    </nav>
-    <div class="mt-4">
-      <div class="flex items-center justify-between mb-2">
-        <span class="font-bold text-lg text-gray-900">Categories</span>
-        <span class="material-icons text-base">expand_more</span>
-      </div>
-      <ul class="flex flex-col gap-2">
-        <%= for cat <- @categories do %>
-          <li class="flex items-center justify-between px-2 py-1 rounded hover:bg-gray-100">
-            <span><%= cat.name %></span>
-            <span class="bg-gray-200 text-xs rounded px-2 py-0.5 font-semibold">
-              <%= cat.product_count || 0 %>
-            </span>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-  </aside>
+  <%= render_admin_sidebar(assigns) %>
+  <!-- Overlay for mobile sidebar -->
+  <div id="sidebar-overlay" class="fixed inset-0 z-20 bg-black bg-opacity-30 hidden md:hidden" onclick="document.getElementById('admin-sidebar').classList.add('-translate-x-full'); this.classList.add('hidden')"></div>
   <!-- Main Content -->
-  <main class="flex-1 p-8">
-    <div class="flex justify-between items-center mb-6">
+  <main class="flex-1 p-4 sm:p-6 md:p-8 w-full md:ml-64">
+    <!-- Mobile header with menu button -->
+    <div class="flex items-center justify-between mb-4 md:hidden">
+      <button
+        class="p-2 rounded bg-white shadow border border-gray-200"
+        aria-label="Open menu"
+        onclick="document.getElementById('admin-sidebar').classList.remove('-translate-x-full'); document.getElementById('sidebar-overlay').classList.remove('hidden')"
+      >
+        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <div class="text-lg font-bold">All Products</div>
+      <div></div>
+    </div>
+    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
       <div>
         <div class="text-xs text-gray-500 mb-1">Home &gt; All Products</div>
-        <h1 class="text-2xl font-bold text-gray-900">All Products</h1>
+        <h1 class="text-2xl font-bold text-gray-900 hidden md:block">All Products</h1>
       </div>
       <a
         href="/admin/products/new"
-        class="bg-black text-white px-5 py-2 rounded flex items-center gap-2 hover:bg-gray-800 text-xs font-semibold"
+        class="bg-black text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-gray-800 text-xs font-semibold mt-2 md:mt-0"
       >
         <span class="material-icons">add</span> ADD NEW PRODUCT
       </a>
     </div>
     <!-- Product Card Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
       <%= for product <- @products do %>
         <div class="bg-white rounded-lg shadow p-4 flex flex-col text-xs">
           <img
@@ -65,10 +39,10 @@
             alt={product.name}
             class="h-24 w-full object-cover rounded mb-2"
           />
-          <div class="font-bold text-sm"><%= product.name %></div>
-          <div class="text-xs text-gray-500 mb-1"><%= product.brand %></div>
+          <div class="font-bold text-sm truncate"><%= product.name %></div>
+          <div class="text-xs text-gray-500 mb-1 truncate"><%= product.brand %></div>
           <div class="font-semibold text-base mb-1">₹<%= product.price %></div>
-          <div class="text-xs text-gray-600 mb-2">
+          <div class="text-xs text-gray-600 mb-2 line-clamp-2">
             Summary<br /><%= product.description %>
           </div>
           <div class="flex justify-between mt-2 text-xs">
@@ -79,16 +53,16 @@
               </span>
             </div>
           </div>
-          <div class="flex justify-end mt-2 gap-2">
+          <div class="flex flex-col sm:flex-row justify-end mt-2 gap-2">
             <a
               href={~p"/admin/products/#{product.id}/edit"}
-              class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs font-semibold"
+              class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs font-semibold text-center"
             >
               Edit
             </a>
             <a
               href={~p"/admin/products/#{product.id}/confirm_delete"}
-              class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs font-semibold"
+              class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs font-semibold text-center"
             >
               Delete
             </a>
@@ -97,8 +71,8 @@
       <% end %>
     </div>
     <!-- Pagination -->
-    <div class="flex justify-center mt-8">
-      <nav class="inline-flex -space-x-px">
+    <div class="flex flex-col items-center mt-8">
+      <nav class="inline-flex flex-wrap -space-x-px">
         <%= if @page > 1 do %>
           <a
             href={~p"/admin/products?page=#{@page - 1}"}
@@ -135,3 +109,18 @@
     </div>
   </main>
 </div>
+
+<script>
+// Sidebar toggle for mobile
+// (This is a simple vanilla JS toggle, you can replace with Alpine.js or similar if desired)
+document.addEventListener('DOMContentLoaded', function() {
+  var sidebar = document.getElementById('admin-sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  if (sidebar && overlay) {
+    overlay.onclick = function() {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    };
+  }
+});
+</script>

@@ -1,5 +1,5 @@
 defmodule HomeWareWeb.Admin.DashboardController do
-  use HomeWareWeb, :controller
+  use HomeWareWeb, :admin_controller
 
   alias HomeWare.Orders
   alias HomeWare.Products

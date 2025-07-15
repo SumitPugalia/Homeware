@@ -49,6 +49,19 @@ defmodule HomeWareWeb do
     end
   end
 
+  def admin_controller do
+    quote do
+      use Phoenix.Controller,
+        formats: [:html, :json],
+        layouts: [html: {HomeWareWeb.Layouts, :admin}]
+
+      import Plug.Conn
+      import HomeWareWeb.Gettext
+
+      unquote(verified_routes())
+    end
+  end
+
   def live_view do
     quote do
       use Phoenix.LiveView,
