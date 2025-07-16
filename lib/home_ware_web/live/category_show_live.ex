@@ -1,5 +1,6 @@
 defmodule HomeWareWeb.CategoryShowLive do
   use HomeWareWeb, :live_view
+  on_mount {HomeWareWeb.NavCountsLive, :default}
 
   alias HomeWare.Categories
   alias HomeWare.Products
@@ -7,7 +8,8 @@ defmodule HomeWareWeb.CategoryShowLive do
   on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
 
   @impl true
-  def mount(%{"id" => category_id}, _session, socket) do
+  def mount(%{"id" => category_id}, session, socket) do
+    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
     category = Categories.get_category!(category_id)
     products = Products.list_products_by_category(category_id)
     brands = Products.list_brands_by_category(category_id)
@@ -22,6 +24,21 @@ defmodule HomeWareWeb.CategoryShowLive do
        page: 1,
        per_page: 12
      )}
+  end
+
+  defp get_user_from_session(session) do
+    token = session["user_token"]
+
+    case token do
+      nil ->
+        nil
+
+      token ->
+        case HomeWare.Guardian.resource_from_token(token) do
+          {:ok, user, _claims} -> user
+          {:error, _reason} -> nil
+        end
+    end
   end
 
   @impl true

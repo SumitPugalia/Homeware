@@ -1,12 +1,13 @@
 defmodule HomeWareWeb.ProductDetailLive do
   use HomeWareWeb, :live_view
+  on_mount {HomeWareWeb.NavCountsLive, :default}
 
   alias HomeWare.Repo
   alias HomeWare.Products
   alias HomeWare.Categories.Category
   alias Decimal
   alias HomeWare.CartItems
-  alias HomeWare.Guardian
+  alias HomeWare.WishlistItems
 
   # Product detail pages should be publicly accessible
   # on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
@@ -23,11 +24,12 @@ defmodule HomeWareWeb.ProductDetailLive do
     # Get related products from the same category
     related_products = Products.list_related_products(product)
 
-    # Get cart count for the current user
-    cart_count =
-      case socket.assigns[:current_user] do
-        nil -> 0
-        user -> CartItems.get_user_cart_count(user.id)
+    # Check if product is in user's wishlist
+    is_in_wishlist =
+      if socket.assigns[:current_user] do
+        WishlistItems.is_in_wishlist?(socket.assigns[:current_user].id, product.id)
+      else
+        false
       end
 
     {:ok,
@@ -36,8 +38,8 @@ defmodule HomeWareWeb.ProductDetailLive do
        variants: variants,
        selected_variant_id: selected_variant_id,
        related_products: related_products,
-       cart_count: cart_count,
-       quantity: 1
+       quantity: 1,
+       is_in_wishlist: is_in_wishlist
      )}
   end
 
@@ -284,11 +286,17 @@ defmodule HomeWareWeb.ProductDetailLive do
                   </button>
                 <% end %>
                 <button
-                  phx-click="add_to_wishlist"
+                  phx-click={if @is_in_wishlist, do: "remove_from_wishlist", else: "add_to_wishlist"}
                   phx-value-product-id={@product.id}
-                  class="w-12 h-12 flex items-center justify-center bg-gray-800 hover:bg-gray-700 rounded-2xl transition-colors border border-gray-700"
+                  class={"w-12 h-12 flex items-center justify-center rounded-2xl transition-colors border #{if @is_in_wishlist, do: "bg-pink-600 hover:bg-pink-700 border-pink-500", else: "bg-gray-800 hover:bg-gray-700 border-gray-700"}"}
+                  title={if @is_in_wishlist, do: "Remove from wishlist", else: "Add to wishlist"}
                 >
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class={"w-6 h-6 #{if @is_in_wishlist, do: "text-white", else: "text-gray-400"}"}
+                    fill={if @is_in_wishlist, do: "currentColor", else: "none"}
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -488,9 +496,50 @@ defmodule HomeWareWeb.ProductDetailLive do
   end
 
   @impl true
-  def handle_event("add_to_wishlist", %{"product-id" => _product_id}, socket) do
-    # TODO: Implement add to wishlist functionality
-    {:noreply, socket}
+  def handle_event("add_to_wishlist", %{"product-id" => product_id}, socket) do
+    user = Map.get(socket.assigns, :current_user)
+
+    cond do
+      is_nil(user) ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "You must be logged in to add items to your wishlist.")
+         |> push_navigate(to: "/users/log_in")}
+
+      true ->
+        case WishlistItems.add_to_wishlist(user.id, product_id) do
+          {:ok, _wishlist_item} ->
+            {:noreply,
+             socket
+             |> assign(is_in_wishlist: true)
+             |> put_flash(:info, "Added to wishlist!")}
+
+          {:error, _changeset} ->
+            {:noreply, put_flash(socket, :error, "Failed to add item to wishlist.")}
+        end
+    end
+  end
+
+  @impl true
+  def handle_event("remove_from_wishlist", %{"product-id" => product_id}, socket) do
+    user = Map.get(socket.assigns, :current_user)
+
+    cond do
+      is_nil(user) ->
+        {:noreply, put_flash(socket, :error, "You must be logged in to manage your wishlist.")}
+
+      true ->
+        case WishlistItems.remove_from_wishlist(user.id, product_id) do
+          {:ok, :deleted} ->
+            {:noreply,
+             socket
+             |> assign(is_in_wishlist: false)
+             |> put_flash(:info, "Removed from wishlist!")}
+
+          {:error, :not_found} ->
+            {:noreply, put_flash(socket, :error, "Item not found in wishlist.")}
+        end
+    end
   end
 
   @impl true
@@ -535,7 +584,7 @@ defmodule HomeWareWeb.ProductDetailLive do
         nil
 
       token ->
-        case Guardian.resource_from_token(token) do
+        case HomeWare.Guardian.resource_from_token(token) do
           {:ok, user, _claims} -> user
           {:error, _reason} -> nil
         end

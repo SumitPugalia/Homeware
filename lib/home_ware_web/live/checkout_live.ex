@@ -2,6 +2,7 @@ defmodule HomeWareWeb.CheckoutLive do
   use HomeWareWeb, :live_view
 
   on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
+  on_mount {HomeWareWeb.NavCountsLive, :default}
 
   alias HomeWare.CartItems
   alias HomeWare.Addresses
@@ -9,7 +10,8 @@ defmodule HomeWareWeb.CheckoutLive do
   require Logger
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
+    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
     user = socket.assigns.current_user
     cart_items = CartItems.list_user_cart_items(user.id)
 
@@ -66,7 +68,6 @@ defmodule HomeWareWeb.CheckoutLive do
        shipping: shipping,
        tax: tax,
        grand_total: grand_total,
-       cart_count: CartItems.get_user_cart_count(user.id),
        step: 1,
        selected_shipping_address_id: nil,
        selected_billing_address_id: nil,
@@ -837,5 +838,20 @@ defmodule HomeWareWeb.CheckoutLive do
   defp calculate_tax(subtotal) do
     # Simple tax calculation (8.875% for NY)
     Decimal.mult(subtotal, Decimal.new("0.08875"))
+  end
+
+  defp get_user_from_session(session) do
+    token = session["user_token"]
+
+    case token do
+      nil ->
+        nil
+
+      token ->
+        case HomeWare.Guardian.resource_from_token(token) do
+          {:ok, user, _claims} -> user
+          {:error, _reason} -> nil
+        end
+    end
   end
 end

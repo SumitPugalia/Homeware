@@ -23,6 +23,7 @@ defmodule HomeWare.Accounts.User do
     has_many :orders, HomeWare.Orders.Order
     has_many :product_reviews, HomeWare.ProductReview
     has_many :cart_items, HomeWare.CartItem
+    has_many :wishlist_items, HomeWare.WishlistItem
 
     timestamps(type: :utc_datetime)
   end

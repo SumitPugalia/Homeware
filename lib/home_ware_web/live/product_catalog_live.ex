@@ -1,11 +1,13 @@
 defmodule HomeWareWeb.ProductCatalogLive do
   use HomeWareWeb, :live_view
+  on_mount {HomeWareWeb.NavCountsLive, :default}
   import Ecto.Query
 
   alias HomeWare.Repo
   alias HomeWare.Products.Product
   alias HomeWare.Categories.Category
   alias HomeWare.CartItems
+  alias HomeWare.WishlistItems
 
   # Product catalog should be publicly accessible
   # on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
@@ -28,11 +30,17 @@ defmodule HomeWareWeb.ProductCatalogLive do
     # Get filtered products
     products = get_filtered_products(filters)
 
-    cart_count =
+    # Add wishlist status to products if user is authenticated
+    products_with_wishlist_status =
       if socket.assigns.current_user do
-        CartItems.get_user_cart_count(socket.assigns.current_user.id)
+        Enum.map(products, fn product ->
+          is_in_wishlist =
+            WishlistItems.is_in_wishlist?(socket.assigns.current_user.id, product.id)
+
+          Map.put(product, :is_in_wishlist, is_in_wishlist)
+        end)
       else
-        0
+        Enum.map(products, fn product -> Map.put(product, :is_in_wishlist, false) end)
       end
 
     {:ok,
@@ -40,11 +48,10 @@ defmodule HomeWareWeb.ProductCatalogLive do
        page: 1,
        per_page: 9,
        filters: filters,
-       products: products,
-       total_count: length(products),
+       products: products_with_wishlist_status,
+       total_count: length(products_with_wishlist_status),
        categories: categories,
-       brands: get_brands(),
-       cart_count: cart_count
+       brands: get_brands()
      )}
   end
 
@@ -253,6 +260,33 @@ defmodule HomeWareWeb.ProductCatalogLive do
                     <%= HomeWare.Products.Product.availability_status(product) %>
                   </span>
                 </div>
+                <!-- Wishlist Button -->
+                <button
+                  phx-click={
+                    if Map.get(product, :is_in_wishlist, false), do: "remove_from_wishlist", else: "add_to_wishlist"
+                  }
+                  phx-value-product-id={product.id}
+                  phx-stop-propagation
+                  class={"absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full shadow-md transition-all duration-300 #{if Map.get(product, :is_in_wishlist, false), do: "bg-pink-500 hover:bg-pink-600", else: "bg-gray-800/80 hover:bg-gray-700/80"}"}
+                  title={
+                    if Map.get(product, :is_in_wishlist, false), do: "Remove from wishlist", else: "Add to wishlist"
+                  }
+                >
+                  <svg
+                    class={"w-4 h-4 #{if Map.get(product, :is_in_wishlist, false), do: "text-white", else: "text-gray-400"}"}
+                    fill={if Map.get(product, :is_in_wishlist, false), do: "currentColor", else: "none"}
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    >
+                    </path>
+                  </svg>
+                </button>
                 <!-- Out of Stock Overlay -->
                 <%= if !product.available? do %>
                   <div class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
@@ -440,6 +474,73 @@ defmodule HomeWareWeb.ProductCatalogLive do
   @impl true
   def handle_event("navigate_to_product", %{"product-id" => product_id}, socket) do
     {:noreply, push_navigate(socket, to: ~p"/products/#{product_id}")}
+  end
+
+  @impl true
+  def handle_event("add_to_wishlist", %{"product-id" => product_id}, socket) do
+    user = Map.get(socket.assigns, :current_user)
+
+    cond do
+      is_nil(user) ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "You must be logged in to add items to your wishlist.")
+         |> push_navigate(to: "/users/log_in")}
+
+      true ->
+        case WishlistItems.add_to_wishlist(user.id, product_id) do
+          {:ok, _wishlist_item} ->
+            # Update the product's wishlist status in the current list
+            updated_products =
+              Enum.map(socket.assigns.products, fn product ->
+                if product.id == product_id do
+                  Map.put(product, :is_in_wishlist, true)
+                else
+                  product
+                end
+              end)
+
+            {:noreply,
+             socket
+             |> assign(products: updated_products)
+             |> put_flash(:info, "Added to wishlist!")}
+
+          {:error, _changeset} ->
+            {:noreply, put_flash(socket, :error, "Failed to add item to wishlist.")}
+        end
+    end
+  end
+
+  @impl true
+  def handle_event("remove_from_wishlist", %{"product-id" => product_id}, socket) do
+    user = Map.get(socket.assigns, :current_user)
+
+    cond do
+      is_nil(user) ->
+        {:noreply, put_flash(socket, :error, "You must be logged in to manage your wishlist.")}
+
+      true ->
+        case WishlistItems.remove_from_wishlist(user.id, product_id) do
+          {:ok, :deleted} ->
+            # Update the product's wishlist status in the current list
+            updated_products =
+              Enum.map(socket.assigns.products, fn product ->
+                if product.id == product_id do
+                  Map.put(product, :is_in_wishlist, false)
+                else
+                  product
+                end
+              end)
+
+            {:noreply,
+             socket
+             |> assign(products: updated_products)
+             |> put_flash(:info, "Removed from wishlist!")}
+
+          {:error, :not_found} ->
+            {:noreply, put_flash(socket, :error, "Item not found in wishlist.")}
+        end
+    end
   end
 
   @impl true

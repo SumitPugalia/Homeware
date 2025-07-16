@@ -77,7 +77,10 @@
         <!-- Desktop Icons -->
         <div class="hidden md:flex items-center space-x-6">
           <!-- Wishlist -->
-          <button class="text-gray-400 hover:text-pink-400 transition-colors duration-300 group relative">
+          <.link
+            navigate={~p"/wishlist"}
+            class="text-gray-400 hover:text-pink-400 transition-colors duration-300 group relative"
+          >
             <svg
               class="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
               fill="none"
@@ -92,9 +95,9 @@
               />
             </svg>
             <span class="absolute -top-2 -right-2 w-4 h-4 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center">
-              3....
+              <%= @wishlist_count %>
             </span>
-          </button>
+          </.link>
           <!-- Cart -->
           <.link
             navigate={~p"/checkout"}
@@ -235,7 +238,10 @@
                 />
               </svg>
             </button>
-            <button class="text-gray-400 hover:text-pink-400 transition-colors duration-300 p-2 relative">
+            <.link
+              navigate={~p"/wishlist"}
+              class="text-gray-400 hover:text-pink-400 transition-colors duration-300 p-2 relative"
+            >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -245,9 +251,9 @@
                 />
               </svg>
               <span class="absolute -top-1 -right-1 w-4 h-4 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center">
-                3
+                <%= @wishlist_count %>
               </span>
-            </button>
+            </.link>
             <.link
               navigate={~p"/checkout"}
               class="text-gray-400 hover:text-teal-400 transition-colors duration-300 p-2 relative"

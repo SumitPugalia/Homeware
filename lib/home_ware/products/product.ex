@@ -34,6 +34,7 @@ defmodule HomeWare.Products.Product do
     has_many :order_items, HomeWare.Orders.OrderItem
     has_many :product_reviews, HomeWare.ProductReview
     has_many :cart_items, HomeWare.CartItem
+    has_many :wishlist_items, HomeWare.WishlistItem
 
     timestamps(type: :utc_datetime)
   end

@@ -56,6 +56,7 @@ defmodule HomeWare.Factory do
       is_featured: false,
       category_id: category_id
     }
+    |> Map.merge(%{is_in_wishlist: false})
     |> Map.merge(attrs)
   end
 
