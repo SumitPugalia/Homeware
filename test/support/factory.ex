@@ -154,6 +154,22 @@ defmodule HomeWare.Factory do
     |> Map.merge(attrs)
   end
 
+  def build(:product_variant, attrs) do
+    product_id = Map.get(attrs, :product_id) || HomeWare.Factory.insert(:product).id
+    unique_id = System.unique_integer()
+
+    %HomeWare.Products.ProductVariant{
+      id: Ecto.UUID.generate(),
+      option_name: "Test Variant #{unique_id}",
+      sku: "SKU-#{unique_id}",
+      price_override: Decimal.new("99.99"),
+      quantity: 10,
+      is_active: true,
+      product_id: product_id
+    }
+    |> Map.merge(attrs)
+  end
+
   # Helper function to create and insert records
   def insert(factory, attrs \\ %{}) do
     build(factory, attrs)

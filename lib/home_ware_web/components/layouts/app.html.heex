@@ -76,22 +76,6 @@
         </div>
         <!-- Desktop Icons -->
         <div class="hidden md:flex items-center space-x-6">
-          <!-- Search -->
-          <button class="text-gray-400 hover:text-purple-400 transition-colors duration-300 group">
-            <svg
-              class="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
           <!-- Wishlist -->
           <button class="text-gray-400 hover:text-pink-400 transition-colors duration-300 group relative">
             <svg
@@ -108,11 +92,11 @@
               />
             </svg>
             <span class="absolute -top-2 -right-2 w-4 h-4 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center">
-              3
+              3....
             </span>
           </button>
           <!-- Cart -->
-          <button class="text-gray-400 hover:text-teal-400 transition-colors duration-300 group relative">
+          <.link navigate={~p"/checkout"} class="text-gray-400 hover:text-teal-400 transition-colors duration-300 group relative">
             <svg
               class="w-5 h-5 group-hover:scale-110 transition-transform duration-300"
               fill="none"
@@ -127,9 +111,9 @@
               />
             </svg>
             <span class="absolute -top-2 -right-2 w-4 h-4 bg-teal-500 text-white text-xs rounded-full flex items-center justify-center">
-              2
+              <%= @cart_count %>
             </span>
-          </button>
+          </.link>
           <!-- User Account -->
           <%= if @current_user do %>
             <a
@@ -261,7 +245,7 @@
                 3
               </span>
             </button>
-            <button class="text-gray-400 hover:text-teal-400 transition-colors duration-300 p-2 relative">
+            <.link navigate={~p"/checkout"} class="text-gray-400 hover:text-teal-400 transition-colors duration-300 p-2 relative">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -271,9 +255,9 @@
                 />
               </svg>
               <span class="absolute -top-1 -right-1 w-4 h-4 bg-teal-500 text-white text-xs rounded-full flex items-center justify-center">
-                2
+                <%= @cart_count %>
               </span>
-            </button>
+            </.link>
             <%= if @current_user do %>
               <a
                 href="/profile"

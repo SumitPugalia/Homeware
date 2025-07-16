@@ -13,6 +13,7 @@ defmodule HomeWare.CartItems do
     CartItem
     |> where(user_id: ^user_id)
     |> preload(:product)
+    |> preload(:product_variant)
     |> Repo.all()
   end
 
@@ -85,5 +86,26 @@ defmodule HomeWare.CartItems do
 
   defp maybe_variant_id_filter(query, variant_id) do
     query |> where([ci], ci.product_variant_id == ^variant_id)
+  end
+
+  @doc """
+  Gets the count of unique items in a user's cart.
+  This counts unique product_id and product_variant_id combinations.
+  """
+  def get_user_cart_count(user_id) do
+    CartItem
+    |> where(user_id: ^user_id)
+    |> select([ci], count(ci.id))
+    |> Repo.one() || 0
+  end
+
+  @doc """
+  Gets the total quantity of all items in a user's cart.
+  """
+  def get_user_cart_total_quantity(user_id) do
+    CartItem
+    |> where(user_id: ^user_id)
+    |> select([ci], sum(ci.quantity))
+    |> Repo.one() || 0
   end
 end
