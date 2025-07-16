@@ -32,9 +32,9 @@ defmodule HomeWareWeb.CheckoutLiveTest do
         |> log_in_user(user)
         |> live(~p"/checkout")
 
-      assert has_element?(view, "p", "SKU: #{product_variant.sku}")
+      assert has_element?(view, "div", "SKU: #{product_variant.sku}")
       assert has_element?(view, "a", product.name)
-      assert has_element?(view, "p", product.brand)
+      assert has_element?(view, "div", product.brand)
     end
 
     test "handles cart items without product variants gracefully", %{user: user} do
@@ -58,8 +58,32 @@ defmodule HomeWareWeb.CheckoutLiveTest do
         |> live(~p"/checkout")
 
       assert has_element?(view, "a", product2.name)
-      assert has_element?(view, "p", product2.brand)
-      refute has_element?(view, "p", "SKU:")
+      assert has_element?(view, "div", product2.brand)
+      refute has_element?(view, "div", "SKU:")
+    end
+
+    test "updates cart item quantity when changed in UI", %{
+      user: user,
+      cart_item: cart_item,
+      product: _product,
+      product_variant: _product_variant
+    } do
+      {:ok, view, _html} =
+        build_conn()
+        |> log_in_user(user)
+        |> live(~p"/checkout")
+
+      # Simulate changing the quantity to 5
+      view
+      |> element("select[phx-change=update_quantity][phx-value-cart-item-id='#{cart_item.id}']")
+      |> render_change(%{"value" => "5", "cart-item-id" => cart_item.id})
+
+      # Reload cart item from DB
+      updated_cart_item = HomeWare.CartItems.get_cart_item!(cart_item.id)
+      assert updated_cart_item.quantity == 5
+
+      # Assert UI reflects new quantity
+      assert has_element?(view, "option[selected][value='5']")
     end
   end
 

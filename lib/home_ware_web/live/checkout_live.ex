@@ -78,13 +78,26 @@ defmodule HomeWareWeb.CheckoutLive do
               <h2 class="text-xl font-bold mb-4 text-purple-400">Review Your Cart</h2>
               <%= if Enum.empty?(@cart_items) do %>
                 <div class="text-center py-12">
-                  <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                  <svg
+                    class="mx-auto h-12 w-12 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                    />
                   </svg>
                   <h3 class="mt-2 text-sm font-medium text-gray-300">Your cart is empty</h3>
                   <p class="mt-1 text-sm text-gray-500">Start shopping to add items to your cart.</p>
                   <div class="mt-6">
-                    <a href="/products" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-black bg-gradient-to-r from-purple-500 to-teal-400 hover:from-purple-600 hover:to-teal-500">
+                    <a
+                      href="/products"
+                      class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-black bg-gradient-to-r from-purple-500 to-teal-400 hover:from-purple-600 hover:to-teal-500"
+                    >
                       Continue Shopping
                     </a>
                   </div>
@@ -93,14 +106,19 @@ defmodule HomeWareWeb.CheckoutLive do
                 <div class="space-y-4">
                   <%= for item <- @cart_items do %>
                     <div class="flex items-center p-4 bg-gray-800 rounded-xl border border-gray-700">
-                      <img src={item.product.featured_image || "https://via.placeholder.com/80x80"} alt={item.product.name}
+                      <img
+                        src={item.product.featured_image || "https://via.placeholder.com/80x80"}
+                        alt={item.product.name}
                         class="w-20 h-20 rounded-xl object-cover border-2 border-gray-700 shadow-lg mr-4"
                       />
                       <div class="flex-1">
                         <div class="flex justify-between items-center">
                           <div>
                             <div class="font-semibold text-lg text-white">
-                              <a href={~p"/products/#{item.product.id}"} class="hover:text-purple-400 transition-colors">
+                              <a
+                                href={~p"/products/#{item.product.id}"}
+                                class="hover:text-purple-400 transition-colors"
+                              >
                                 <%= item.product.name %>
                               </a>
                             </div>
@@ -112,7 +130,12 @@ defmodule HomeWareWeb.CheckoutLive do
                             </div>
                           </div>
                           <div class="text-right">
-                            <span class="text-teal-400 font-bold text-lg">₹<%= Number.Delimit.number_to_delimited(Decimal.mult(item.product.selling_price, Decimal.new(item.quantity)), precision: 2) %></span>
+                            <span class="text-teal-400 font-bold text-lg">
+                              ₹<%= Number.Delimit.number_to_delimited(
+                                Decimal.mult(item.product.selling_price, Decimal.new(item.quantity)),
+                                precision: 2
+                              ) %>
+                            </span>
                           </div>
                         </div>
                         <div class="flex items-center justify-between mt-2">
@@ -122,12 +145,19 @@ defmodule HomeWareWeb.CheckoutLive do
                               phx-change="update_quantity"
                               phx-value-cart-item-id={item.id}
                               class="rounded-lg bg-black/80 border border-gray-600 text-white px-2 py-1 text-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-500/40 outline-none"
+                              onchange="console.log('Select changed:', this.value, 'Cart item ID:', this.getAttribute('phx-value-cart-item-id'))"
                             >
                               <%= for qty <- 1..10 do %>
-                                <option value={qty} selected={qty == item.quantity}><%= qty %></option>
+                                <option value={qty} selected={qty == item.quantity}>
+                                  <%= qty %>
+                                </option>
                               <% end %>
                             </select>
-                            <span class="text-gray-500 text-sm">₹<%= Number.Delimit.number_to_delimited(item.product.selling_price, precision: 2) %> each</span>
+                            <span class="text-gray-500 text-sm">
+                              ₹<%= Number.Delimit.number_to_delimited(item.product.selling_price,
+                                precision: 2
+                              ) %> each
+                            </span>
                           </div>
                           <button
                             phx-click="remove_item"
@@ -189,8 +219,16 @@ defmodule HomeWareWeb.CheckoutLive do
                         </div>
                         <div class="ml-4">
                           <%= if @selected_shipping_address_id == address.id do %>
-                            <svg class="h-5 w-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            <svg
+                              class="h-5 w-5 text-purple-400"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd"
+                              />
                             </svg>
                           <% end %>
                         </div>
@@ -204,7 +242,6 @@ defmodule HomeWareWeb.CheckoutLive do
                   </a>
                 </div>
               </div>
-
               <!-- Billing Address -->
               <div class="mb-8">
                 <h3 class="text-lg font-medium text-gray-300 mb-4">Billing Address</h3>
@@ -249,8 +286,16 @@ defmodule HomeWareWeb.CheckoutLive do
                           </div>
                           <div class="ml-4">
                             <%= if @selected_billing_address_id == address.id do %>
-                              <svg class="h-5 w-5 text-teal-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                              <svg
+                                class="h-5 w-5 text-teal-400"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                  clip-rule="evenodd"
+                                />
                               </svg>
                             <% end %>
                           </div>
@@ -347,7 +392,11 @@ defmodule HomeWareWeb.CheckoutLive do
 
                 <div>
                   <label class="block text-gray-400 mb-2">Special handling or delivery notes</label>
-                  <textarea name="notes" rows="2" class="w-full rounded-xl bg-black/80 border-2 border-gray-700 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/40 text-white px-4 py-3 text-lg shadow transition-all duration-200 outline-none"></textarea>
+                  <textarea
+                    name="notes"
+                    rows="2"
+                    class="w-full rounded-xl bg-black/80 border-2 border-gray-700 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/40 text-white px-4 py-3 text-lg shadow transition-all duration-200 outline-none"
+                  ></textarea>
                 </div>
 
                 <div class="flex justify-between">
@@ -369,14 +418,15 @@ defmodule HomeWareWeb.CheckoutLive do
             </div>
           <% end %>
         </div>
-
         <!-- RIGHT: Order Summary -->
         <div class="bg-gray-950 rounded-3xl shadow-2xl p-8 space-y-8">
           <h2 class="text-xl font-bold mb-6 text-purple-400">Order Summary</h2>
-          <%!-- <div class="divide-y divide-gray-800">
+          <div class="divide-y divide-gray-800">
             <%= for item <- @cart_items do %>
               <div class="flex items-center py-4">
-                <img src={item.product.featured_image || "https://via.placeholder.com/80x80"} alt={item.product.name}
+                <img
+                  src={item.product.featured_image || "https://via.placeholder.com/80x80"}
+                  alt={item.product.name}
                   class="w-20 h-20 rounded-xl object-cover border-2 border-gray-800 shadow-lg mr-4"
                 />
                 <div class="flex-1">
@@ -391,7 +441,11 @@ defmodule HomeWareWeb.CheckoutLive do
                       </div>
                     </div>
                     <div class="text-right">
-                      <span class="text-teal-400 font-bold text-lg">₹<%= Number.Delimit.number_to_delimited(item.product.selling_price, precision: 2) %></span>
+                      <span class="text-teal-400 font-bold text-lg">
+                        ₹<%= Number.Delimit.number_to_delimited(item.product.selling_price,
+                          precision: 2
+                        ) %>
+                      </span>
                     </div>
                   </div>
                   <div class="flex items-center mt-2 space-x-2">
@@ -400,11 +454,17 @@ defmodule HomeWareWeb.CheckoutLive do
                 </div>
               </div>
             <% end %>
-          </div> --%>
+          </div>
           <!-- Promo Code -->
           <div class="flex items-center mt-6">
-            <input type="text" placeholder="Promo code" class="flex-1 rounded-xl bg-black/80 border-2 border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/40 text-white px-4 py-3 text-lg shadow transition-all duration-200 outline-none" />
-            <button class="ml-3 px-5 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-teal-400 text-black font-bold shadow-lg hover:from-purple-600 hover:to-teal-500 transition-all">Apply</button>
+            <input
+              type="text"
+              placeholder="Promo code"
+              class="flex-1 rounded-xl bg-black/80 border-2 border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/40 text-white px-4 py-3 text-lg shadow transition-all duration-200 outline-none"
+            />
+            <button class="ml-3 px-5 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-teal-400 text-black font-bold shadow-lg hover:from-purple-600 hover:to-teal-500 transition-all">
+              Apply
+            </button>
           </div>
           <!-- Totals -->
           <div class="mt-8 space-y-2 text-lg">
@@ -436,15 +496,53 @@ defmodule HomeWareWeb.CheckoutLive do
           <!-- Trust Badges -->
           <div class="flex items-center justify-center space-x-6 mt-8">
             <div class="flex items-center space-x-2">
-              <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-2 2-2 2-2-.896-2-2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z"/></svg>
+              <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-2 2-2 2-2-.896-2-2z"
+                /><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 19c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z"
+                />
+              </svg>
               <span class="text-xs text-gray-400">Secure Payment</span>
             </div>
             <div class="flex items-center space-x-2">
-              <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+              <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" /><circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  fill="none"
+                />
+              </svg>
               <span class="text-xs text-gray-400">18+ Only</span>
             </div>
             <div class="flex items-center space-x-2">
-              <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8h8v8H8z"/></svg>
+              <svg
+                class="w-6 h-6 text-purple-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 4h16v16H4z"
+                /><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 8h8v8H8z"
+                />
+              </svg>
               <span class="text-xs text-gray-400">Discreet Shipping</span>
             </div>
           </div>
@@ -453,59 +551,64 @@ defmodule HomeWareWeb.CheckoutLive do
     </div>
 
     <style>
-    .input-glow {
-      @apply w-full rounded-xl bg-black/80 border-2 border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/40 text-white px-4 py-3 text-lg shadow transition-all duration-200 outline-none;
-      box-shadow: 0 0 0 0 transparent;
-    }
-    .input-glow:focus {
-      box-shadow: 0 0 8px 2px #a21caf55, 0 0 0 2px #14b8a6aa;
-    }
-    .payment-btn {
-      @apply w-full py-3 rounded-xl font-bold text-lg bg-gray-800 text-gray-300 border-2 border-gray-700 shadow transition-all duration-200;
-    }
-    .payment-btn.selected, .payment-btn:focus {
-      @apply bg-gradient-to-r from-purple-500 to-teal-400 text-black border-purple-500 shadow-lg;
-      box-shadow: 0 0 12px 2px #a21caf88, 0 0 0 2px #14b8a6aa;
-    }
-    .animate-glow {
-      animation: glow 1.5s infinite alternate;
-    }
-    @keyframes glow {
-      from { box-shadow: 0 0 8px 2px #a21caf88, 0 0 0 2px #14b8a6aa; }
-      to   { box-shadow: 0 0 24px 6px #a21cafcc, 0 0 0 4px #14b8a6cc; }
-    }
+      .input-glow {
+        @apply w-full rounded-xl bg-black/80 border-2 border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/40 text-white px-4 py-3 text-lg shadow transition-all duration-200 outline-none;
+        box-shadow: 0 0 0 0 transparent;
+      }
+      .input-glow:focus {
+        box-shadow: 0 0 8px 2px #a21caf55, 0 0 0 2px #14b8a6aa;
+      }
+      .payment-btn {
+        @apply w-full py-3 rounded-xl font-bold text-lg bg-gray-800 text-gray-300 border-2 border-gray-700 shadow transition-all duration-200;
+      }
+      .payment-btn.selected, .payment-btn:focus {
+        @apply bg-gradient-to-r from-purple-500 to-teal-400 text-black border-purple-500 shadow-lg;
+        box-shadow: 0 0 12px 2px #a21caf88, 0 0 0 2px #14b8a6aa;
+      }
+      .animate-glow {
+        animation: glow 1.5s infinite alternate;
+      }
+      @keyframes glow {
+        from { box-shadow: 0 0 8px 2px #a21caf88, 0 0 0 2px #14b8a6aa; }
+        to   { box-shadow: 0 0 24px 6px #a21cafcc, 0 0 0 4px #14b8a6cc; }
+      }
     </style>
     """
   end
 
   @impl true
-  def handle_event(
-        "update_quantity",
-        %{"value" => quantity, "cart-item-id" => cart_item_id},
-        socket
-      ) do
-    cart_item = CartItems.get_cart_item!(cart_item_id)
+  def handle_event("update_quantity", params, socket) do
+    IO.inspect(params, label: "update_quantity params")
 
-    {:ok, _updated_cart_item} =
-      CartItems.update_cart_item(cart_item, %{quantity: String.to_integer(quantity)})
+    case params do
+      %{"value" => quantity, "cart-item-id" => cart_item_id} ->
+        cart_item = CartItems.get_cart_item!(cart_item_id)
 
-    user = socket.assigns.current_user
-    cart_items = CartItems.list_user_cart_items(user.id)
-    total = calculate_subtotal(cart_items)
-    shipping = calculate_shipping(cart_items)
-    total_plus_shipping = Decimal.add(total, shipping)
-    tax = calculate_tax(total_plus_shipping)
-    grand_total = Decimal.add(total_plus_shipping, tax)
+        {:ok, _updated_cart_item} =
+          CartItems.update_cart_item(cart_item, %{quantity: String.to_integer(quantity)})
 
-    {:noreply,
-     assign(socket,
-       cart_items: cart_items,
-       total: total,
-       shipping: shipping,
-       tax: tax,
-       grand_total: grand_total,
-       cart_count: CartItems.get_user_cart_count(user.id)
-     )}
+        user = socket.assigns.current_user
+        cart_items = CartItems.list_user_cart_items(user.id)
+        total = calculate_subtotal(cart_items)
+        shipping = calculate_shipping(cart_items)
+        total_plus_shipping = Decimal.add(total, shipping)
+        tax = calculate_tax(total_plus_shipping)
+        grand_total = Decimal.add(total_plus_shipping, tax)
+
+        {:noreply,
+         assign(socket,
+           cart_items: cart_items,
+           total: total,
+           shipping: shipping,
+           tax: tax,
+           grand_total: grand_total,
+           cart_count: CartItems.get_user_cart_count(user.id)
+         )}
+
+      _ ->
+        IO.inspect(params, label: "Unexpected params format")
+        {:noreply, socket}
+    end
   end
 
   @impl true
