@@ -13,7 +13,7 @@ defmodule HomeWareWeb.Admin.Shared do
       </div>
       <nav class=\"mt-8\">
         <div class=\"px-4 space-y-2\">
-          #{sidebar_links(current_path, vertical: true)}
+          #{sidebar_links(current_path, [vertical: true], assigns)}
         </div>
       </nav>
     </div>
@@ -24,7 +24,7 @@ defmodule HomeWareWeb.Admin.Shared do
       <div class=\"flex items-center space-x-4\">
         <h1 class=\"text-lg font-bold text-blue-600\">Admin</h1>
         <nav class=\"flex space-x-1\">
-          #{sidebar_links(current_path, vertical: false)}
+          #{sidebar_links(current_path, [vertical: false], assigns)}
         </nav>
       </div>
     </div>
@@ -34,7 +34,7 @@ defmodule HomeWareWeb.Admin.Shared do
     Phoenix.HTML.raw(sidebar <> topbar)
   end
 
-  defp sidebar_links(current_path, opts) do
+  defp sidebar_links(current_path, opts, assigns) do
     vertical = Keyword.get(opts, :vertical, true)
 
     link_class = fn active ->
@@ -80,10 +80,14 @@ defmodule HomeWareWeb.Admin.Shared do
 
     logout_html = """
     <div class=\"#{if vertical, do: "pt-4 mt-4 border-t border-gray-200", else: "ml-2"}\">
-      <a href=\"/users/log_out\" class=\"flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg\">
-        <svg class=\"w-5 h-5 mr-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1\"></path></svg>
-        <span class=\"#{if vertical, do: "", else: "hidden sm:inline"}\">Logout</span>
-      </a>
+      <form action=\"/users/log_out\" method=\"post\" style=\"display: inline;\">
+        <input type=\"hidden\" name=\"_method\" value=\"delete\" />
+        <input type=\"hidden\" name=\"_csrf_token\" value=\"#{assigns[:csrf_token] || ""}\" />
+        <button type=\"submit\" class=\"flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg w-full text-left\">
+          <svg class=\"w-5 h-5 mr-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1\"></path></svg>
+          <span class=\"#{if vertical, do: "", else: "hidden sm:inline"}\">Logout</span>
+        </button>
+      </form>
     </div>
     """
 
