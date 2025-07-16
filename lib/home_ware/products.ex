@@ -122,15 +122,30 @@ defmodule HomeWare.Products do
   defp apply_price_filters(query, _, _), do: query
 
   def paginated_products(page, per_page, filters \\ %{}) do
+    parsed_filters = Map.update(filters, :min_price, nil, &parse_price/1)
+    parsed_filters = Map.update(parsed_filters, :max_price, nil, &parse_price/1)
+
     Product
     |> where(is_active: true)
-    |> apply_filters(filters)
+    |> apply_filters(parsed_filters)
     |> preload(:category)
     |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
     |> order_by([p], desc: p.inserted_at)
     |> Repo.paginate(page: page, page_size: per_page)
     |> Map.update!(:entries, fn entries -> Enum.map(entries, &set_availability/1) end)
   end
+
+  defp parse_price(nil), do: nil
+  defp parse_price(""), do: nil
+
+  defp parse_price(price) when is_binary(price) do
+    case Float.parse(price) do
+      {num, _} -> num
+      :error -> nil
+    end
+  end
+
+  defp parse_price(price) when is_number(price), do: price
 
   def get_product!(id) do
     Product
@@ -255,6 +270,7 @@ defmodule HomeWare.Products do
     query
     |> apply_search_filter(filters[:search])
     |> apply_category_filter(filters[:category_id])
+    |> apply_brand_filter(filters[:brand])
     |> apply_price_filters(filters[:min_price], filters[:max_price])
   end
 

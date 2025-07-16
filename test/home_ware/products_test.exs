@@ -132,8 +132,19 @@ defmodule HomeWare.ProductsTest do
     end
 
     test "paginated_products/3 with filters applies filters correctly" do
-      _product1 = Factory.insert(:product, %{brand: "Brand A", price: Decimal.new("50.0")})
-      _product2 = Factory.insert(:product, %{brand: "Brand B", price: Decimal.new("100.0")})
+      _product1 =
+        Factory.insert(:product, %{
+          brand: "Brand A",
+          price: Decimal.new("50.0"),
+          selling_price: Decimal.new("50.0")
+        })
+
+      _product2 =
+        Factory.insert(:product, %{
+          brand: "Brand B",
+          price: Decimal.new("100.0"),
+          selling_price: Decimal.new("100.0")
+        })
 
       filtered_page = Products.paginated_products(1, 10, %{brand: "Brand A"})
       assert length(filtered_page.entries) == 1

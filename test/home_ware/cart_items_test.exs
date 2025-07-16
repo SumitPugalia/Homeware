@@ -9,7 +9,7 @@ defmodule HomeWare.CartItemsTest do
   describe "cart items" do
     test "list_user_cart_items sets availability correctly" do
       # Create a user
-      user =
+      {:ok, user} =
         Accounts.register_user(%{
           email: "test@example.com",
           password: "password123",
@@ -65,7 +65,7 @@ defmodule HomeWare.CartItemsTest do
 
     test "cart items with available products have correct availability" do
       # Create a user
-      user =
+      {:ok, user} =
         Accounts.register_user(%{
           email: "test2@example.com",
           password: "password123",
