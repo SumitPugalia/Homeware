@@ -12,6 +12,9 @@ defmodule HomeWare.Products.ProductVariant do
     field :quantity, :integer, default: 0
     field :is_active, :boolean, default: true
 
+    # Virtual field for availability
+    field :available?, :boolean, virtual: true
+
     belongs_to :product, HomeWare.Products.Product
 
     timestamps(type: :utc_datetime)
@@ -25,4 +28,17 @@ defmodule HomeWare.Products.ProductVariant do
     |> validate_number(:price_override, greater_than: 0)
     |> foreign_key_constraint(:product_id)
   end
+
+  # Set the available? field based on quantity and is_active
+  def set_availability(variant) when is_map(variant) do
+    is_active = Map.get(variant, :is_active) || Map.get(variant, "is_active")
+    quantity = Map.get(variant, :quantity) || Map.get(variant, "quantity")
+    available = is_active && quantity > 0
+    Map.put(variant, :available?, available)
+  end
+
+  def set_availability([]), do: []
+
+  def set_availability(variants) when is_list(variants),
+    do: Enum.map(variants, &set_availability/1)
 end

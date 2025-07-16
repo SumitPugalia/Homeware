@@ -140,12 +140,19 @@ defmodule HomeWare.Products do
   end
 
   def get_product_with_variants!(id) do
-    Product
-    |> where(id: ^id)
-    |> preload(:category)
-    |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
-    |> Repo.one!()
-    |> set_availability()
+    product =
+      Product
+      |> where(id: ^id)
+      |> preload(:category)
+      |> preload(
+        variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true)
+      )
+      |> Repo.one!()
+      |> set_availability()
+
+    # Set available? on all variants
+    variants = HomeWare.Products.ProductVariant.set_availability(product.variants)
+    %{product | variants: variants}
   end
 
   def create_product(attrs \\ %{}) do

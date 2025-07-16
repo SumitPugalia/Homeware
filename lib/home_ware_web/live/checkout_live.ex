@@ -16,7 +16,12 @@ defmodule HomeWareWeb.CheckoutLive do
     # Remove out-of-stock items from the cart
     {available_items, out_of_stock_items} =
       Enum.split_with(cart_items, fn item ->
-        item.product.available?
+        # Check variant availability if item has a variant, otherwise check product availability
+        if item.product_variant do
+          item.product_variant.available?
+        else
+          item.product.available?
+        end
       end)
 
     Enum.each(out_of_stock_items, fn item ->
@@ -30,7 +35,10 @@ defmodule HomeWareWeb.CheckoutLive do
 
         removed_names =
           Enum.map_join(out_of_stock_items, ", ", fn item ->
-            item.product.name
+            variant_name =
+              if item.product_variant, do: " (#{item.product_variant.option_name})", else: ""
+
+            "#{item.product.name}#{variant_name}"
           end)
 
         socket
@@ -159,6 +167,11 @@ defmodule HomeWareWeb.CheckoutLive do
                               <%= item.product.brand %>
                               <%= if item.product_variant do %>
                                 | <%= item.product_variant.option_name %> (SKU: <%= item.product_variant.sku %>)
+                                <%= unless item.product_variant.available? do %>
+                                  <span class="bg-red-600 text-white text-xs font-medium px-2 py-1 rounded ml-2">
+                                    Out of Stock
+                                  </span>
+                                <% end %>
                               <% end %>
                             </div>
                           </div>
@@ -180,6 +193,7 @@ defmodule HomeWareWeb.CheckoutLive do
                                 phx-value-cart-item-id={item.id}
                                 type="button"
                                 class="w-8 h-8 rounded bg-gray-700 text-white hover:bg-gray-600 flex items-center justify-center"
+                                disabled={item.product_variant && !item.product_variant.available?}
                               >
                                 -
                               </button>
@@ -191,6 +205,7 @@ defmodule HomeWareWeb.CheckoutLive do
                                 phx-value-cart-item-id={item.id}
                                 type="button"
                                 class="w-8 h-8 rounded bg-gray-700 text-white hover:bg-gray-600 flex items-center justify-center"
+                                disabled={item.product_variant && !item.product_variant.available?}
                               >
                                 +
                               </button>
@@ -244,11 +259,12 @@ defmodule HomeWareWeb.CheckoutLive do
                 <div class="grid grid-cols-1 gap-4">
                   <%= for address <- @addresses do %>
                     <div
-                      class="border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:border-purple-500"
                       class={
                         if @selected_shipping_address_id == address.id,
-                          do: "border-purple-500 bg-purple-500/10",
-                          else: "border-gray-700 bg-gray-800"
+                          do:
+                            "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-purple-500 bg-purple-500/10",
+                          else:
+                            "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-gray-700 bg-gray-800 hover:border-purple-500"
                       }
                       phx-click="select_shipping_address"
                       phx-value-address-id={address.id}
@@ -311,11 +327,12 @@ defmodule HomeWareWeb.CheckoutLive do
                   <div class="grid grid-cols-1 gap-4">
                     <%= for address <- @addresses do %>
                       <div
-                        class="border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:border-teal-500"
                         class={
                           if @selected_billing_address_id == address.id,
-                            do: "border-teal-500 bg-teal-500/10",
-                            else: "border-gray-700 bg-gray-800"
+                            do:
+                              "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-teal-500 bg-teal-500/10",
+                            else:
+                              "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-gray-700 bg-gray-800 hover:border-teal-500"
                         }
                         phx-click="select_billing_address"
                         phx-value-address-id={address.id}

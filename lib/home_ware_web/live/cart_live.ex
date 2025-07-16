@@ -14,7 +14,12 @@ defmodule HomeWareWeb.CartLive do
     # Check availability for each cart item and remove out-of-stock items
     {available_items, out_of_stock_items} =
       Enum.split_with(cart_items, fn item ->
-        item.product.available?
+        # Check variant availability if item has a variant, otherwise check product availability
+        if item.product_variant do
+          item.product_variant.available?
+        else
+          item.product.available?
+        end
       end)
 
     # Remove out-of-stock items from the database
@@ -25,7 +30,14 @@ defmodule HomeWareWeb.CartLive do
     # Add availability flag to remaining items
     cart_items_with_availability =
       Enum.map(available_items, fn item ->
-        Map.put(item, :is_available, true)
+        is_available =
+          if item.product_variant do
+            item.product_variant.available?
+          else
+            item.product.available?
+          end
+
+        Map.put(item, :is_available, is_available)
       end)
 
     total = calculate_total(cart_items_with_availability)
@@ -37,7 +49,10 @@ defmodule HomeWareWeb.CartLive do
 
         removed_names =
           Enum.map_join(out_of_stock_items, ", ", fn item ->
-            item.product.name
+            variant_name =
+              if item.product_variant, do: " (#{item.product_variant.option_name})", else: ""
+
+            "#{item.product.name}#{variant_name}"
           end)
 
         socket
@@ -185,6 +200,18 @@ defmodule HomeWareWeb.CartLive do
                             </p>
                           </div>
                           <p class="mt-1 text-sm text-gray-500"><%= item.product.brand %></p>
+                          <%= if item.product_variant do %>
+                            <div class="mt-1 flex items-center space-x-2">
+                              <span class="text-sm text-gray-600">
+                                Variant: <%= item.product_variant.option_name %>
+                              </span>
+                              <%= unless item.product_variant.available? do %>
+                                <span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded">
+                                  Out of Stock
+                                </span>
+                              <% end %>
+                            </div>
+                          <% end %>
                         </div>
                         <div class="flex-1 flex items-end justify-between text-sm">
                           <div class="flex items-center">
@@ -193,7 +220,11 @@ defmodule HomeWareWeb.CartLive do
                               id="quantity"
                               phx-change="update_quantity"
                               phx-value-product-id={item.product.id}
+                              phx-value-variant-id={
+                                if item.product_variant, do: item.product_variant.id, else: nil
+                              }
                               class="rounded-md border-gray-300 py-1 px-2 text-base leading-5 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                              disabled={item.product_variant && !item.product_variant.available?}
                             >
                               <%= for qty <- 1..10 do %>
                                 <option value={qty} selected={qty == item.quantity}>
@@ -207,6 +238,9 @@ defmodule HomeWareWeb.CartLive do
                             <button
                               phx-click="remove_item"
                               phx-value-product-id={item.product.id}
+                              phx-value-variant-id={
+                                if item.product_variant, do: item.product_variant.id, else: nil
+                              }
                               type="button"
                               class="font-medium text-indigo-600 hover:text-indigo-500"
                             >

@@ -126,24 +126,48 @@ defmodule HomeWareWeb.ProductDetailLive do
             <!-- Price Section -->
             <div class="space-y-4">
               <%= if @variants != [] do %>
-                <div class="mb-4">
-                  <label class="block text-gray-300 font-semibold mb-2">Select Variant:</label>
-                  <select
-                    name="variant"
-                    id="variant-select"
-                    phx-change="select_variant"
-                    phx-value-product-id={@product.id}
-                    class="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
-                  >
+                <div class="mb-6">
+                  <label class="block text-gray-300 font-semibold mb-3">Select Variant:</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <%= for variant <- @variants do %>
-                      <option value={variant.id} selected={@selected_variant_id == variant.id}>
-                        <%= variant.option_name %> (<%= variant.sku %>) <%= if variant.price_override,
-                          do:
-                            " - ₹#{Number.Delimit.number_to_delimited(variant.price_override, precision: 2)}",
-                          else: "" %>
-                      </option>
+                      <button
+                        phx-click="select_variant"
+                        phx-value-variant={variant.id}
+                        phx-value-product-id={@product.id}
+                        class={"relative p-4 rounded-xl border-2 transition-all duration-300 text-left #{if @selected_variant_id == variant.id, do: "border-purple-500 bg-purple-500/10", else: "border-gray-600 bg-gray-700 hover:border-gray-500 hover:bg-gray-600"} #{unless variant.available?, do: "opacity-50 cursor-not-allowed"} #{unless variant.available?, do: "disabled"}"}
+                      >
+                        <div class="flex items-center justify-between mb-2">
+                          <span class="font-semibold text-white"><%= variant.option_name %></span>
+                          <%= if @selected_variant_id == variant.id do %>
+                            <svg
+                              class="w-5 h-5 text-purple-400"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                          <% end %>
+                        </div>
+                        <div class="text-sm text-gray-400 mb-1">SKU: <%= variant.sku %></div>
+                        <%= if variant.price_override do %>
+                          <div class="text-purple-400 font-semibold">
+                            ₹<%= Number.Delimit.number_to_delimited(variant.price_override,
+                              precision: 2
+                            ) %>
+                          </div>
+                        <% end %>
+                        <%= unless variant.available? do %>
+                          <div class="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                            Out of Stock
+                          </div>
+                        <% end %>
+                      </button>
                     <% end %>
-                  </select>
+                  </div>
                 </div>
               <% end %>
               <div class="flex items-center space-x-4">
@@ -220,7 +244,8 @@ defmodule HomeWareWeb.ProductDetailLive do
               </div>
 
               <div class="flex items-center space-x-4">
-                <%= if @product.available? do %>
+                <% selected_variant = Enum.find(@variants, &(&1.id == @selected_variant_id)) %>
+                <%= if selected_variant && selected_variant.available? do %>
                   <button
                     phx-click="add_to_cart"
                     phx-value-product-id={@product.id}
