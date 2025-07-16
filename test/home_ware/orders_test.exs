@@ -74,4 +74,40 @@ defmodule HomeWare.OrdersTest do
       assert %Ecto.Changeset{} = Orders.change_order(order)
     end
   end
+
+  describe "calculate_subtotal/1" do
+    test "handles cart items with nil price_override" do
+      # Create a cart item with nil price_override
+      cart_item = %{
+        quantity: 2,
+        product: %{selling_price: Decimal.new("10.00")},
+        product_variant: %{price_override: nil}
+      }
+
+      # This should not raise an error
+      result = Orders.calculate_subtotal([cart_item])
+      assert Decimal.eq?(result, Decimal.new("20.00"))
+    end
+
+    test "handles cart items with valid price_override" do
+      cart_item = %{
+        quantity: 2,
+        product: %{selling_price: Decimal.new("10.00")},
+        product_variant: %{price_override: Decimal.new("15.00")}
+      }
+
+      result = Orders.calculate_subtotal([cart_item])
+      assert Decimal.eq?(result, Decimal.new("30.00"))
+    end
+
+    test "handles cart items without product_variant" do
+      cart_item = %{
+        quantity: 2,
+        product: %{selling_price: Decimal.new("10.00")}
+      }
+
+      result = Orders.calculate_subtotal([cart_item])
+      assert Decimal.eq?(result, Decimal.new("20.00"))
+    end
+  end
 end

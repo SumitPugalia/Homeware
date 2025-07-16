@@ -9,7 +9,14 @@ defmodule HomeWareWeb.CategoryShowLive do
 
   @impl true
   def mount(%{"id" => category_id}, session, socket) do
-    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
+    socket =
+      if Map.has_key?(socket.assigns, :current_user),
+        do: socket,
+        else: %{
+          socket
+          | assigns: Map.put(socket.assigns, :current_user, get_user_from_session(session))
+        }
+
     category = Categories.get_category!(category_id)
     products = Products.list_products_by_category(category_id)
     brands = Products.list_brands_by_category(category_id)

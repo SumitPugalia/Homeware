@@ -4,11 +4,12 @@ defmodule HomeWareWeb.WishlistLive do
   on_mount {HomeWareWeb.NavCountsLive, :default}
 
   alias HomeWare.WishlistItems
+  alias HomeWareWeb.SessionUtils
 
   @impl true
   def mount(_params, session, socket) do
     # Assign current_user for layout compatibility
-    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
+    socket = SessionUtils.assign_current_user(socket, session)
 
     wishlist_items = WishlistItems.list_user_wishlist_items(socket.assigns.current_user.id)
     wishlist_count = WishlistItems.get_user_wishlist_count(socket.assigns.current_user.id)
@@ -144,20 +145,5 @@ defmodule HomeWareWeb.WishlistLive do
   def handle_event("add_to_cart", %{"product-id" => _product_id}, socket) do
     # TODO: Implement add to cart functionality
     {:noreply, put_flash(socket, :info, "Product added to cart")}
-  end
-
-  defp get_user_from_session(session) do
-    token = session["user_token"]
-
-    case token do
-      nil ->
-        nil
-
-      token ->
-        case HomeWare.Guardian.resource_from_token(token) do
-          {:ok, user, _claims} -> user
-          {:error, _reason} -> nil
-        end
-    end
   end
 end

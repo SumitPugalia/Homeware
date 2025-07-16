@@ -1,39 +1,55 @@
 defmodule HomeWareWeb.LiveAuth do
   @moduledoc """
-  Provides authentication for LiveView routes.
+  Authentication helpers for LiveViews.
   """
-  use HomeWareWeb, :verified_routes
-  import Phoenix.Component
+
   import Phoenix.LiveView
-  alias HomeWare.Guardian
 
   def on_mount(:ensure_authenticated, _params, session, socket) do
-    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
+    socket =
+      if Map.has_key?(socket.assigns, :current_user),
+        do: socket,
+        else: %{
+          socket
+          | assigns: Map.put(socket.assigns, :current_user, get_user_from_session(session))
+        }
 
     if socket.assigns.current_user do
       {:cont, socket}
     else
-      {:halt, redirect(socket, to: ~p"/users/log_in")}
+      {:halt, redirect(socket, to: "/users/log_in")}
     end
   end
 
   def on_mount(:redirect_if_authenticated, _params, session, socket) do
-    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
+    socket =
+      if Map.has_key?(socket.assigns, :current_user),
+        do: socket,
+        else: %{
+          socket
+          | assigns: Map.put(socket.assigns, :current_user, get_user_from_session(session))
+        }
 
     if socket.assigns.current_user do
-      {:halt, redirect(socket, to: ~p"/")}
+      {:halt, redirect(socket, to: "/")}
     else
       {:cont, socket}
     end
   end
 
   def on_mount(:ensure_admin, _params, session, socket) do
-    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
+    socket =
+      if Map.has_key?(socket.assigns, :current_user),
+        do: socket,
+        else: %{
+          socket
+          | assigns: Map.put(socket.assigns, :current_user, get_user_from_session(session))
+        }
 
     if socket.assigns.current_user && socket.assigns.current_user.role == :admin do
       {:cont, socket}
     else
-      {:halt, redirect(socket, to: ~p"/")}
+      {:halt, redirect(socket, to: "/")}
     end
   end
 
@@ -45,7 +61,7 @@ defmodule HomeWareWeb.LiveAuth do
         nil
 
       token ->
-        case Guardian.resource_from_token(token) do
+        case HomeWare.Guardian.resource_from_token(token) do
           {:ok, user, _claims} -> user
           {:error, _reason} -> nil
         end

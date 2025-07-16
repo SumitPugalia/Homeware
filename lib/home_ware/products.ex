@@ -164,11 +164,13 @@ defmodule HomeWare.Products do
         variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true)
       )
       |> Repo.one!()
-      |> set_availability()
 
-    # Set available? on all variants
+    # Set available? on all variants first
     variants = HomeWare.Products.ProductVariant.set_availability(product.variants)
-    %{product | variants: variants}
+    product_with_variants = %{product | variants: variants}
+
+    # Then set the product's availability (which depends on variants)
+    set_availability(product_with_variants)
   end
 
   def create_product(attrs \\ %{}) do
@@ -276,9 +278,19 @@ defmodule HomeWare.Products do
 
   @doc """
   Sets the available? field for a product based on its status and inventory.
+  If the product has variants, it's considered available if any variant is available.
   """
   def set_availability(%Product{} = product) do
-    available = product.is_active && product.inventory_quantity > 0
+    # If product has variants, check if any variant is available
+    available =
+      if product.variants && is_list(product.variants) && length(product.variants) > 0 do
+        # Product is available if any variant is available
+        product.is_active && Enum.any?(product.variants, & &1.available?)
+      else
+        # Product is available if it's active and has inventory
+        product.is_active && product.inventory_quantity > 0
+      end
+
     %{product | available?: available}
   end
 

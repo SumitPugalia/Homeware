@@ -8,6 +8,10 @@ defmodule HomeWareWeb.ProductCatalogLive do
   alias HomeWare.Categories.Category
   alias HomeWare.CartItems
   alias HomeWare.WishlistItems
+  alias HomeWareWeb.SessionUtils
+
+  # Import components
+  import HomeWareWeb.ProductCard, only: [product_card: 1]
 
   # Product catalog should be publicly accessible
   # on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
@@ -15,7 +19,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
   @impl true
   def mount(params, session, socket) do
     # Assign current_user for layout compatibility (can be nil for unauthenticated users)
-    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
+    socket = SessionUtils.assign_current_user(socket, session)
 
     categories = Repo.all(Category)
 
@@ -241,107 +245,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
               phx-click="navigate_to_product"
               phx-value-product-id={product.id}
             >
-              <div class="relative overflow-hidden rounded-xl mb-4">
-                <img
-                  src={product.featured_image}
-                  class="w-full h-64 object-cover rounded-xl group-hover:scale-110 transition-transform duration-700"
-                  alt={product.name}
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                </div>
-                <%= if product.is_featured do %>
-                  <div class="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                    Featured
-                  </div>
-                <% end %>
-                <!-- Availability Badge -->
-                <div class="absolute top-4 left-4">
-                  <span class={"px-3 py-1.5 rounded-full text-xs font-bold shadow-lg #{HomeWare.Products.Product.availability_color(product)}"}>
-                    <%= HomeWare.Products.Product.availability_status(product) %>
-                  </span>
-                </div>
-                <!-- Wishlist Button -->
-                <button
-                  phx-click={
-                    if Map.get(product, :is_in_wishlist, false), do: "remove_from_wishlist", else: "add_to_wishlist"
-                  }
-                  phx-value-product-id={product.id}
-                  phx-stop-propagation
-                  class={"absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full shadow-md transition-all duration-300 #{if Map.get(product, :is_in_wishlist, false), do: "bg-pink-500 hover:bg-pink-600", else: "bg-gray-800/80 hover:bg-gray-700/80"}"}
-                  title={
-                    if Map.get(product, :is_in_wishlist, false), do: "Remove from wishlist", else: "Add to wishlist"
-                  }
-                >
-                  <svg
-                    class={"w-4 h-4 #{if Map.get(product, :is_in_wishlist, false), do: "text-white", else: "text-gray-400"}"}
-                    fill={if Map.get(product, :is_in_wishlist, false), do: "currentColor", else: "none"}
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    >
-                    </path>
-                  </svg>
-                </button>
-                <!-- Out of Stock Overlay -->
-                <%= if !product.available? do %>
-                  <div class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
-                    <div class="text-center">
-                      <svg
-                        class="w-12 h-12 text-white mx-auto mb-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                        />
-                      </svg>
-                      <span class="text-white font-bold text-lg">Out of Stock</span>
-                    </div>
-                  </div>
-                <% end %>
-              </div>
-              <h3 class="text-xl font-bold mb-2 text-white group-hover:text-purple-400 transition-colors">
-                <%= product.name %>
-              </h3>
-              <p class="text-gray-400 text-sm mb-4 line-clamp-2">
-                <%= product.description %>
-              </p>
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center space-x-2">
-                  <span class="text-gray-400 line-through text-sm">
-                    ₹<%= Number.Delimit.number_to_delimited(product.price, precision: 2) %>
-                  </span>
-                  <span class="text-2xl font-bold text-purple-400">
-                    ₹<%= Number.Delimit.number_to_delimited(product.selling_price, precision: 2) %>
-                  </span>
-                </div>
-                <%= if product.available? do %>
-                  <button
-                    phx-click="add_to_cart"
-                    phx-value-product-id={product.id}
-                    phx-stop-propagation
-                    class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
-                  >
-                    +
-                  </button>
-                <% else %>
-                  <button
-                    disabled
-                    class="bg-gray-500 text-gray-300 px-3 py-1.5 rounded-full text-sm font-medium cursor-not-allowed"
-                  >
-                    +
-                  </button>
-                <% end %>
-              </div>
+              <.product_card product={product} />
             </div>
           <% end %>
         </div>
@@ -614,20 +518,5 @@ defmodule HomeWareWeb.ProductCatalogLive do
   # Helper function to get unique brands from products
   defp get_brands() do
     Repo.all(from p in Product, distinct: true, select: p.brand)
-  end
-
-  defp get_user_from_session(session) do
-    token = session["user_token"]
-
-    case token do
-      nil ->
-        nil
-
-      token ->
-        case HomeWare.Guardian.resource_from_token(token) do
-          {:ok, user, _claims} -> user
-          {:error, _reason} -> nil
-        end
-    end
   end
 end

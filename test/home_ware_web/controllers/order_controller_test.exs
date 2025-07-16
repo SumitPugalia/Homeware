@@ -45,5 +45,29 @@ defmodule HomeWareWeb.OrderControllerTest do
 
       assert html_response(conn, 200) =~ "Order Details"
     end
+
+    test "GET /orders/:id shows order summary with zero shipping and tax", %{conn: conn} do
+      user = Factory.insert(:user)
+
+      order =
+        Factory.insert(:order, %{
+          user_id: user.id,
+          shipping_amount: Decimal.new("0.00"),
+          tax_amount: Decimal.new("0.00")
+        })
+
+      {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{token}")
+        |> get(~p"/orders/#{order.id}")
+
+      html = html_response(conn, 200)
+      assert html =~ "Order Details"
+      assert html =~ "Shipping"
+      assert html =~ "Tax"
+      assert html =~ "₹0.00"
+    end
   end
 end
