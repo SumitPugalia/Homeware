@@ -247,6 +247,33 @@ defmodule HomeWareWeb.ProductCatalogLive do
                     Featured
                   </div>
                 <% end %>
+                <!-- Availability Badge -->
+                <div class="absolute top-4 left-4">
+                  <span class={"px-3 py-1.5 rounded-full text-xs font-bold shadow-lg #{HomeWare.Products.Product.availability_color(product)}"}>
+                    <%= HomeWare.Products.Product.availability_status(product) %>
+                  </span>
+                </div>
+                <!-- Out of Stock Overlay -->
+                <%= if !product.available? do %>
+                  <div class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
+                    <div class="text-center">
+                      <svg
+                        class="w-12 h-12 text-white mx-auto mb-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                        />
+                      </svg>
+                      <span class="text-white font-bold text-lg">Out of Stock</span>
+                    </div>
+                  </div>
+                <% end %>
               </div>
               <h3 class="text-xl font-bold mb-2 text-white group-hover:text-purple-400 transition-colors">
                 <%= product.name %>
@@ -263,14 +290,23 @@ defmodule HomeWareWeb.ProductCatalogLive do
                     ₹<%= Number.Delimit.number_to_delimited(product.selling_price, precision: 2) %>
                   </span>
                 </div>
-                <button
-                  phx-click="add_to_cart"
-                  phx-value-product-id={product.id}
-                  phx-stop-propagation
-                  class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
-                >
-                  +
-                </button>
+                <%= if product.available? do %>
+                  <button
+                    phx-click="add_to_cart"
+                    phx-value-product-id={product.id}
+                    phx-stop-propagation
+                    class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+                  >
+                    +
+                  </button>
+                <% else %>
+                  <button
+                    disabled
+                    class="bg-gray-500 text-gray-300 px-3 py-1.5 rounded-full text-sm font-medium cursor-not-allowed"
+                  >
+                    +
+                  </button>
+                <% end %>
               </div>
             </div>
           <% end %>
@@ -384,8 +420,24 @@ defmodule HomeWareWeb.ProductCatalogLive do
          |> push_navigate(to: "/users/log_in")}
 
       true ->
-        CartItems.add_to_cart(user.id, product_id, nil, 1)
-        {:noreply, put_flash(socket, :info, "Added to cart!")}
+        # Check if product exists and is available
+        case HomeWare.Products.get_product!(product_id) do
+          nil ->
+            {:noreply, put_flash(socket, :error, "Product not found.")}
+
+          product ->
+            if product.available? do
+              case CartItems.add_to_cart(user.id, product_id, nil, 1) do
+                {:ok, _cart_item} ->
+                  {:noreply, put_flash(socket, :info, "Added to cart!")}
+
+                {:error, _reason} ->
+                  {:noreply, put_flash(socket, :error, "Failed to add item to cart.")}
+              end
+            else
+              {:noreply, put_flash(socket, :error, "This product is currently out of stock.")}
+            end
+        end
     end
   end
 
@@ -437,63 +489,30 @@ defmodule HomeWareWeb.ProductCatalogLive do
 
   # Helper function to get filtered products
   defp get_filtered_products(filters) do
-    query = Product |> preload(:category)
+    # Map filter parameters to match Products context expectations
+    mapped_filters = %{
+      category_id: filters[:category],
+      brand: filters[:brand],
+      min_price: parse_price(filters[:min_price]),
+      max_price: parse_price(filters[:max_price])
+    }
 
-    query
-    |> apply_category_filter(filters[:category])
-    |> apply_brand_filter(filters[:brand])
-    |> apply_price_filters(filters[:min_price], filters[:max_price])
-    |> Repo.all()
+    # Use the Products context to ensure availability is set
+    HomeWare.Products.list_products_with_filters(mapped_filters)
   end
 
-  # Apply category filter
-  defp apply_category_filter(query, nil), do: query
-  defp apply_category_filter(query, ""), do: query
+  defp parse_price(nil), do: nil
+  defp parse_price(""), do: nil
 
-  defp apply_category_filter(query, category_id) do
-    query |> where([p], p.category_id == ^category_id)
-  end
-
-  # Apply brand filter
-  defp apply_brand_filter(query, nil), do: query
-  defp apply_brand_filter(query, ""), do: query
-
-  defp apply_brand_filter(query, brand) do
-    search_pattern = "%#{brand}%"
-    query |> where([p], ilike(p.brand, ^search_pattern))
-  end
-
-  # Apply price filters
-  defp apply_price_filters(query, nil, nil), do: query
-
-  defp apply_price_filters(query, min_price, nil) when is_binary(min_price) and min_price != "" do
-    case Integer.parse(min_price) do
-      {price, _} ->
-        query |> where([p], p.selling_price >= ^price)
-
-      :error ->
-        query
+  defp parse_price(price) when is_binary(price) do
+    case Integer.parse(price) do
+      {price_int, _} -> price_int
+      :error -> nil
     end
   end
 
-  defp apply_price_filters(query, nil, max_price) when is_binary(max_price) and max_price != "" do
-    case Integer.parse(max_price) do
-      {price, _} ->
-        query |> where([p], p.selling_price <= ^price)
-
-      :error ->
-        query
-    end
-  end
-
-  defp apply_price_filters(query, min_price, max_price)
-       when is_binary(min_price) and is_binary(max_price) do
-    query
-    |> apply_price_filters(min_price, nil)
-    |> apply_price_filters(nil, max_price)
-  end
-
-  defp apply_price_filters(query, _, _), do: query
+  defp parse_price(price) when is_integer(price), do: price
+  defp parse_price(_), do: nil
 
   # Helper function to get unique brands from products
   defp get_brands() do

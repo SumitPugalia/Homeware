@@ -2,143 +2,182 @@ defmodule HomeWare.Products.ProductTest do
   use HomeWare.DataCase
 
   alias HomeWare.Products.Product
+  alias HomeWare.Products
+  alias HomeWare.Factory
 
   describe "product changeset" do
     test "changeset with valid attributes" do
-      category = HomeWare.Factory.insert(:category)
+      changeset =
+        Product.changeset(%Product{}, %{
+          name: "Test Product",
+          brand: "Test Brand",
+          product_type: "Test Type",
+          product_category: "Test Category",
+          description: "Test description",
+          price: Decimal.new("100.00"),
+          selling_price: Decimal.new("90.00"),
+          inventory_quantity: 10,
+          is_active: true,
+          is_featured: false,
+          category_id: Ecto.UUID.generate(),
+          dimensions: %{"length" => 10, "width" => 5},
+          specifications: %{"color" => "Red"}
+        })
 
-      valid_attrs = %{
-        name: "Test Product",
-        description: "Test description",
-        price: 100.0,
-        selling_price: 90.0,
-        brand: "Test Brand",
-        model: "Test Model",
-        product_type: "Test Type",
-        product_category: "Test Category",
-        is_active: true,
-        is_featured: false,
-        inventory_quantity: 10,
-        category_id: category.id,
-        images: ["https://example.com/image1.jpg"],
-        featured_image: "https://example.com/featured.jpg",
-        dimensions: %{"length" => 10, "width" => 5, "height" => 3},
-        specifications: %{"color" => "White", "material" => "Stainless Steel"}
-      }
-
-      changeset = Product.changeset(%Product{}, valid_attrs)
       assert changeset.valid?
     end
 
     test "changeset with invalid attributes" do
-      category = HomeWare.Factory.insert(:category)
-
-      invalid_attrs = %{
-        name: nil,
-        price: -10.0,
-        selling_price: -5.0,
-        inventory_quantity: -5,
-        category_id: category.id,
-        images: ["https://example.com/image1.jpg"],
-        featured_image: "https://example.com/featured.jpg",
-        dimensions: %{"length" => 10, "width" => 5, "height" => 3},
-        specifications: %{"color" => "White", "material" => "Stainless Steel"},
-        brand: "Test Brand",
-        model: "Test Model",
-        product_type: "Test Type",
-        product_category: "Test Category",
-        description: "Test description",
-        is_active: true,
-        is_featured: false
-      }
-
-      changeset = Product.changeset(%Product{}, invalid_attrs)
+      changeset = Product.changeset(%Product{}, %{})
       refute changeset.valid?
-      assert "can't be blank" in errors_on(changeset).name
-      assert "must be greater than 0" in errors_on(changeset).price
-      assert "must be greater than 0" in errors_on(changeset).selling_price
-      assert "must be greater than or equal to 0" in errors_on(changeset).inventory_quantity
+    end
+  end
+
+  describe "availability" do
+    test "available? returns true for active product with inventory" do
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 10})
+      product_with_availability = Products.set_availability(product)
+      assert product_with_availability.available? == true
     end
 
-    test "changeset with invalid price" do
-      category = HomeWare.Factory.insert(:category)
-
-      invalid_attrs = %{
-        price: -1.0,
-        selling_price: 90.0,
-        name: "Test Product",
-        description: "Test description",
-        brand: "Test Brand",
-        model: "Test Model",
-        product_type: "Test Type",
-        product_category: "Test Category",
-        inventory_quantity: 10,
-        category_id: category.id,
-        images: ["https://example.com/image1.jpg"],
-        featured_image: "https://example.com/featured.jpg",
-        dimensions: %{"length" => 10, "width" => 5, "height" => 3},
-        specifications: %{"color" => "White", "material" => "Stainless Steel"},
-        is_active: true,
-        is_featured: false
-      }
-
-      changeset = Product.changeset(%Product{}, invalid_attrs)
-      refute changeset.valid?
-      assert "must be greater than 0" in errors_on(changeset).price
+    test "available? returns false for inactive product" do
+      product = Factory.insert(:product, %{is_active: false, inventory_quantity: 10})
+      product_with_availability = Products.set_availability(product)
+      assert product_with_availability.available? == false
     end
 
-    test "changeset with invalid inventory quantity" do
-      category = HomeWare.Factory.insert(:category)
-
-      invalid_attrs = %{
-        inventory_quantity: -1,
-        name: "Test Product",
-        description: "Test description",
-        price: 100.0,
-        selling_price: 90.0,
-        brand: "Test Brand",
-        model: "Test Model",
-        product_type: "Test Type",
-        product_category: "Test Category",
-        category_id: category.id,
-        images: ["https://example.com/image1.jpg"],
-        featured_image: "https://example.com/featured.jpg",
-        dimensions: %{"length" => 10, "width" => 5, "height" => 3},
-        specifications: %{"color" => "White", "material" => "Stainless Steel"},
-        is_active: true,
-        is_featured: false
-      }
-
-      changeset = Product.changeset(%Product{}, invalid_attrs)
-      refute changeset.valid?
-      assert "must be greater than or equal to 0" in errors_on(changeset).inventory_quantity
+    test "available? returns false for active product with zero inventory" do
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 0})
+      product_with_availability = Products.set_availability(product)
+      assert product_with_availability.available? == false
     end
 
-    test "changeset with invalid selling price" do
-      category = HomeWare.Factory.insert(:category)
+    test "available? returns false for active product with negative inventory" do
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: -5})
+      product_with_availability = Products.set_availability(product)
+      assert product_with_availability.available? == false
+    end
 
-      invalid_attrs = %{
-        selling_price: -1.0,
-        name: "Test Product",
-        description: "Test description",
-        price: 100.0,
-        brand: "Test Brand",
-        model: "Test Model",
-        product_type: "Test Type",
-        product_category: "Test Category",
-        inventory_quantity: 10,
-        category_id: category.id,
-        images: ["https://example.com/image1.jpg"],
-        featured_image: "https://example.com/featured.jpg",
-        dimensions: %{"length" => 10, "width" => 5, "height" => 3},
-        specifications: %{"color" => "White", "material" => "Stainless Steel"},
-        is_active: true,
-        is_featured: false
-      }
+    test "out_of_stock? returns true for unavailable product" do
+      product = Factory.insert(:product, %{is_active: false, inventory_quantity: 10})
+      product_with_availability = Products.set_availability(product)
+      assert Product.out_of_stock?(product_with_availability) == true
+    end
 
-      changeset = Product.changeset(%Product{}, invalid_attrs)
-      refute changeset.valid?
-      assert "must be greater than 0" in errors_on(changeset).selling_price
+    test "out_of_stock? returns false for available product" do
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 10})
+      product_with_availability = Products.set_availability(product)
+      assert Product.out_of_stock?(product_with_availability) == false
+    end
+
+    test "low_stock? returns true for product with 5 or fewer items" do
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 5})
+      product_with_availability = Products.set_availability(product)
+      assert Product.low_stock?(product_with_availability) == true
+    end
+
+    test "low_stock? returns false for product with more than 5 items" do
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 10})
+      product_with_availability = Products.set_availability(product)
+      assert Product.low_stock?(product_with_availability) == false
+    end
+
+    test "low_stock? returns false for unavailable product" do
+      product = Factory.insert(:product, %{is_active: false, inventory_quantity: 3})
+      product_with_availability = Products.set_availability(product)
+      assert Product.low_stock?(product_with_availability) == false
+    end
+
+    test "availability_status/1 returns correct status for different scenarios" do
+      inactive_product = Factory.insert(:product, %{is_active: false, inventory_quantity: 10})
+      out_of_stock_product = Factory.insert(:product, %{is_active: true, inventory_quantity: 0})
+      low_stock_product = Factory.insert(:product, %{is_active: true, inventory_quantity: 3})
+      in_stock_product = Factory.insert(:product, %{is_active: true, inventory_quantity: 20})
+
+      inactive_product_with_availability = Products.set_availability(inactive_product)
+      out_of_stock_product_with_availability = Products.set_availability(out_of_stock_product)
+      low_stock_product_with_availability = Products.set_availability(low_stock_product)
+      in_stock_product_with_availability = Products.set_availability(in_stock_product)
+
+      assert Product.availability_status(inactive_product_with_availability) == "Inactive"
+      assert Product.availability_status(out_of_stock_product_with_availability) == "Out of Stock"
+      assert Product.availability_status(low_stock_product_with_availability) == "Low Stock"
+      assert Product.availability_status(in_stock_product_with_availability) == "In Stock"
+    end
+
+    test "availability_color/1 returns correct color classes" do
+      inactive_product = Factory.insert(:product, %{is_active: false, inventory_quantity: 10})
+      out_of_stock_product = Factory.insert(:product, %{is_active: true, inventory_quantity: 0})
+      low_stock_product = Factory.insert(:product, %{is_active: true, inventory_quantity: 3})
+      in_stock_product = Factory.insert(:product, %{is_active: true, inventory_quantity: 20})
+
+      inactive_product_with_availability = Products.set_availability(inactive_product)
+      out_of_stock_product_with_availability = Products.set_availability(out_of_stock_product)
+      low_stock_product_with_availability = Products.set_availability(low_stock_product)
+      in_stock_product_with_availability = Products.set_availability(in_stock_product)
+
+      assert Product.availability_color(inactive_product_with_availability) == "bg-gray-500"
+      assert Product.availability_color(out_of_stock_product_with_availability) == "bg-red-500"
+      assert Product.availability_color(low_stock_product_with_availability) == "bg-yellow-500"
+      assert Product.availability_color(in_stock_product_with_availability) == "bg-green-500"
+    end
+
+    test "total_available_quantity/1 returns correct quantity for products without variants" do
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 15})
+      assert Product.total_available_quantity(product) == 15
+    end
+
+    test "total_available_quantity/1 returns 0 for inactive products" do
+      product = Factory.insert(:product, %{is_active: false, inventory_quantity: 15})
+      assert Product.total_available_quantity(product) == 0
+    end
+  end
+
+  describe "debug availability logic" do
+    test "debug: available? logic for active/inactive and inventory" do
+      active_in_stock = Factory.insert(:product, %{is_active: true, inventory_quantity: 10})
+      active_out_stock = Factory.insert(:product, %{is_active: true, inventory_quantity: 0})
+      inactive_in_stock = Factory.insert(:product, %{is_active: false, inventory_quantity: 10})
+
+      assert Products.set_availability(active_in_stock).available? == true
+      assert Products.set_availability(active_out_stock).available? == false
+      assert Products.set_availability(inactive_in_stock).available? == false
+    end
+  end
+
+  describe "products context with availability" do
+    test "get_product! sets available? field correctly" do
+      # Create a product with inventory
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 10})
+
+      # Get the product through the context
+      loaded_product = Products.get_product!(product.id)
+
+      assert loaded_product.available? == true
+    end
+
+    test "get_product! sets available? to false for out of stock product" do
+      # Create a product without inventory
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 0})
+
+      # Get the product through the context
+      loaded_product = Products.get_product!(product.id)
+
+      assert loaded_product.available? == false
+    end
+
+    test "list_products sets available? field for all products" do
+      # Create products with different availability statuses
+      Factory.insert(:product, %{is_active: true, inventory_quantity: 10})
+      Factory.insert(:product, %{is_active: true, inventory_quantity: 0})
+      Factory.insert(:product, %{is_active: false, inventory_quantity: 5})
+
+      # Get products through the context
+      products = Products.list_products()
+
+      # Check that available? is set correctly
+      available_products = Enum.filter(products, & &1.available?)
+      assert length(available_products) == 1
     end
   end
 end

@@ -76,41 +76,74 @@ defmodule HomeWare.Products.Product do
     |> validate_number(:price, greater_than: 0)
     |> validate_number(:selling_price, greater_than: 0)
     |> validate_number(:inventory_quantity, greater_than_or_equal_to: 0)
+    |> put_available_status()
   end
 
   @doc """
-  Checks if a product is available for purchase.
-  For products without variants, checks total inventory quantity.
-  For products with variants, checks if any variant has quantity > 0.
+  Sets the available? virtual field based on product status and inventory.
   """
-  def available?(%__MODULE__{variants: []} = product) do
-    product.inventory_quantity > 0
+  defp put_available_status(changeset) do
+    case get_field(changeset, :is_active) do
+      false ->
+        put_change(changeset, :available?, false)
+
+      true ->
+        inventory = get_field(changeset, :inventory_quantity) || 0
+        put_change(changeset, :available?, inventory > 0)
+
+      _ ->
+        changeset
+    end
   end
 
-  def available?(%__MODULE__{variants: variants}) do
-    Enum.any?(variants, &(&1.quantity > 0))
+  @doc """
+  Gets the availability status text for display.
+  """
+  def availability_status(%__MODULE__{} = product) do
+    cond do
+      !product.is_active -> "Inactive"
+      !product.available? -> "Out of Stock"
+      product.inventory_quantity <= 5 -> "Low Stock"
+      true -> "In Stock"
+    end
+  end
+
+  @doc """
+  Gets the availability status color class for display.
+  """
+  def availability_color(%__MODULE__{} = product) do
+    cond do
+      !product.is_active -> "bg-gray-500"
+      !product.available? -> "bg-red-500"
+      product.inventory_quantity <= 5 -> "bg-yellow-500"
+      true -> "bg-green-500"
+    end
+  end
+
+  @doc """
+  Checks if a product is out of stock.
+  """
+  def out_of_stock?(%__MODULE__{} = product) do
+    !product.available?
+  end
+
+  @doc """
+  Checks if a product has low stock (5 or fewer items).
+  """
+  def low_stock?(%__MODULE__{} = product) do
+    product.available? && product.inventory_quantity <= 5
   end
 
   @doc """
   Gets the total available quantity for a product.
-  For products without variants, returns inventory_quantity.
-  For products with variants, returns the sum of all variant quantities.
   """
-  def total_available_quantity(%__MODULE__{variants: []} = product) do
-    product.inventory_quantity
-  end
-
-  def total_available_quantity(%__MODULE__{variants: variants}) do
-    variants
-    |> Enum.filter(& &1.is_active)
-    |> Enum.map(& &1.quantity)
-    |> Enum.sum()
+  def total_available_quantity(%__MODULE__{} = product) do
+    if product.is_active, do: product.inventory_quantity, else: 0
   end
 
   @doc """
   Checks if a product has variants.
   """
-  def has_variants?(%__MODULE__{variants: variants}) do
-    length(variants) > 0
-  end
+  def has_variants?(%__MODULE__{variants: %Ecto.Association.NotLoaded{}}), do: false
+  def has_variants?(%__MODULE__{variants: variants}), do: length(variants) > 0
 end

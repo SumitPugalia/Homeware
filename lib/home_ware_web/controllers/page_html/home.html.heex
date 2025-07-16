@@ -55,6 +55,33 @@
                 <div class="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
                   Featured
                 </div>
+                <!-- Availability Badge -->
+                <div class="absolute top-4 left-4">
+                  <span class={"px-3 py-1.5 rounded-full text-xs font-bold shadow-lg #{HomeWare.Products.Product.availability_color(product)}"}>
+                    <%= HomeWare.Products.Product.availability_status(product) %>
+                  </span>
+                </div>
+                <!-- Out of Stock Overlay -->
+                <%= if !product.available? do %>
+                  <div class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
+                    <div class="text-center">
+                      <svg
+                        class="w-12 h-12 text-white mx-auto mb-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                        />
+                      </svg>
+                      <span class="text-white font-bold text-lg">Out of Stock</span>
+                    </div>
+                  </div>
+                <% end %>
               </div>
               <h3 class="text-xl font-bold mb-2 text-white group-hover:text-purple-400 transition-colors">
                 <%= product.name %>
@@ -71,17 +98,26 @@
                     ₹<%= Number.Delimit.number_to_delimited(product.selling_price, precision: 2) %>
                   </span>
                 </div>
-                <.form for={%{}} action={~p"/cart/add"} method="post" class="inline">
-                  <input type="hidden" name="product_id" value={product.id} />
-                  <input type="hidden" name="variant_id" value="" />
-                  <input type="hidden" name="quantity" value="1" />
+                <%= if product.available? do %>
+                  <.form for={%{}} action={~p"/cart/add"} method="post" class="inline">
+                    <input type="hidden" name="product_id" value={product.id} />
+                    <input type="hidden" name="variant_id" value="" />
+                    <input type="hidden" name="quantity" value="1" />
+                    <button
+                      type="submit"
+                      class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+                    >
+                      +
+                    </button>
+                  </.form>
+                <% else %>
                   <button
-                    type="submit"
-                    class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+                    disabled
+                    class="bg-gray-500 text-gray-300 px-3 py-1.5 rounded-full text-sm font-medium cursor-not-allowed"
                   >
                     +
                   </button>
-                </.form>
+                <% end %>
               </div>
             </div>
           </.link>

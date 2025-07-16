@@ -3,15 +3,55 @@ defmodule HomeWareWeb.CartLive do
 
   on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
 
+  alias HomeWare.CartItems
+  alias HomeWare.Products
+
   @impl true
   def mount(_params, _session, socket) do
-    # TODO: Get cart items from session or database
-    cart_items = []
-    total = calculate_total(cart_items)
+    user = socket.assigns.current_user
+    cart_items = CartItems.list_user_cart_items(user.id)
+
+    # Check availability for each cart item and remove out-of-stock items
+    {available_items, out_of_stock_items} =
+      Enum.split_with(cart_items, fn item ->
+        item.product.available?
+      end)
+
+    # Remove out-of-stock items from the database
+    Enum.each(out_of_stock_items, fn item ->
+      CartItems.delete_cart_item(item)
+    end)
+
+    # Add availability flag to remaining items
+    cart_items_with_availability =
+      Enum.map(available_items, fn item ->
+        Map.put(item, :is_available, true)
+      end)
+
+    total = calculate_total(cart_items_with_availability)
+
+    # Show notification if items were removed
+    socket =
+      if length(out_of_stock_items) > 0 do
+        removed_count = length(out_of_stock_items)
+
+        removed_names =
+          Enum.map_join(out_of_stock_items, ", ", fn item ->
+            item.product.name
+          end)
+
+        socket
+        |> put_flash(
+          :warning,
+          "#{removed_count} item(s) removed from cart: #{removed_names} - no longer available"
+        )
+      else
+        socket
+      end
 
     {:ok,
      assign(socket,
-       cart_items: cart_items,
+       cart_items: cart_items_with_availability,
        total: total,
        shipping: 0,
        tax: 0
@@ -123,7 +163,7 @@ defmodule HomeWareWeb.CartLive do
                     <div class="py-6 flex">
                       <div class="flex-shrink-0 w-24 h-24">
                         <img
-                          src="https://via.placeholder.com/96x96"
+                          src={item.product.featured_image || "https://via.placeholder.com/96x96"}
                           alt={item.product.name}
                           class="w-full h-full object-center object-cover rounded-md"
                         />
@@ -133,9 +173,16 @@ defmodule HomeWareWeb.CartLive do
                         <div>
                           <div class="flex justify-between text-base font-medium text-gray-900">
                             <h3>
-                              <a href={~p"/products/#{item.product.id}"}><%= item.product.name %></a>
+                              <a href={~p"/products/#{item.product.id}"}>
+                                <%= item.product.name %>
+                              </a>
                             </h3>
-                            <p class="ml-4">$<%= item.product.price * item.quantity %></p>
+                            <p class="ml-4">
+                              ₹<%= Number.Delimit.number_to_delimited(
+                                item.product.selling_price * item.quantity,
+                                precision: 2
+                              ) %>
+                            </p>
                           </div>
                           <p class="mt-1 text-sm text-gray-500"><%= item.product.brand %></p>
                         </div>
@@ -180,31 +227,48 @@ defmodule HomeWareWeb.CartLive do
                   <dl class="mt-6 space-y-4">
                     <div class="flex items-center justify-between">
                       <dt class="text-sm text-gray-600">Subtotal</dt>
-                      <dd class="text-sm font-medium text-gray-900">$<%= @total %></dd>
+                      <dd class="text-sm font-medium text-gray-900">
+                        ₹<%= Number.Delimit.number_to_delimited(@total, precision: 2) %>
+                      </dd>
                     </div>
                     <div class="flex items-center justify-between border-t border-gray-200 pt-4">
                       <dt class="text-sm text-gray-600">Shipping</dt>
-                      <dd class="text-sm font-medium text-gray-900">$<%= @shipping %></dd>
+                      <dd class="text-sm font-medium text-gray-900">
+                        ₹<%= Number.Delimit.number_to_delimited(@shipping, precision: 2) %>
+                      </dd>
                     </div>
                     <div class="flex items-center justify-between border-t border-gray-200 pt-4">
                       <dt class="text-sm text-gray-600">Tax</dt>
-                      <dd class="text-sm font-medium text-gray-900">$<%= @tax %></dd>
+                      <dd class="text-sm font-medium text-gray-900">
+                        ₹<%= Number.Delimit.number_to_delimited(@tax, precision: 2) %>
+                      </dd>
                     </div>
                     <div class="flex items-center justify-between border-t border-gray-200 pt-4">
                       <dt class="text-base font-medium text-gray-900">Total</dt>
                       <dd class="text-base font-medium text-gray-900">
-                        $<%= @total + @shipping + @tax %>
+                        ₹<%= Number.Delimit.number_to_delimited(@total + @shipping + @tax,
+                          precision: 2
+                        ) %>
                       </dd>
                     </div>
                   </dl>
 
                   <div class="mt-6">
-                    <a
-                      href="/checkout"
-                      class="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      Proceed to Checkout
-                    </a>
+                    <%= if Enum.empty?(@cart_items) do %>
+                      <button
+                        disabled
+                        class="w-full bg-gray-400 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-gray-300 cursor-not-allowed"
+                      >
+                        Cart is Empty
+                      </button>
+                    <% else %>
+                      <a
+                        href="/checkout"
+                        class="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Proceed to Checkout
+                      </a>
+                    <% end %>
                   </div>
 
                   <div class="mt-6 flex justify-center text-sm text-center text-gray-500">
@@ -242,8 +306,10 @@ defmodule HomeWareWeb.CartLive do
   end
 
   defp calculate_total(cart_items) do
-    Enum.reduce(cart_items, 0, fn item, acc ->
-      acc + item.product.price * item.quantity
+    cart_items
+    |> Enum.reduce(Decimal.new(0), fn item, acc ->
+      Decimal.add(acc, Decimal.mult(item.product.selling_price, Decimal.new(item.quantity)))
     end)
+    |> Decimal.to_float()
   end
 end

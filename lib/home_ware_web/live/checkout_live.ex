@@ -12,17 +12,47 @@ defmodule HomeWareWeb.CheckoutLive do
   def mount(_params, _session, socket) do
     user = socket.assigns.current_user
     cart_items = CartItems.list_user_cart_items(user.id)
+
+    # Remove out-of-stock items from the cart
+    {available_items, out_of_stock_items} =
+      Enum.split_with(cart_items, fn item ->
+        item.product.available?
+      end)
+
+    Enum.each(out_of_stock_items, fn item ->
+      CartItems.delete_cart_item(item)
+    end)
+
+    # Show notification if items were removed
+    socket =
+      if length(out_of_stock_items) > 0 do
+        removed_count = length(out_of_stock_items)
+
+        removed_names =
+          Enum.map_join(out_of_stock_items, ", ", fn item ->
+            item.product.name
+          end)
+
+        socket
+        |> put_flash(
+          :warning,
+          "#{removed_count} item(s) removed from cart: #{removed_names} - no longer available"
+        )
+      else
+        socket
+      end
+
     addresses = Addresses.list_user_addresses(user.id)
 
-    total = calculate_subtotal(cart_items)
-    shipping = calculate_shipping(cart_items)
+    total = calculate_subtotal(available_items)
+    shipping = calculate_shipping(available_items)
     total_plus_shipping = Decimal.add(total, shipping)
     tax = calculate_tax(total_plus_shipping)
     grand_total = Decimal.add(total_plus_shipping, tax)
 
     {:ok,
      assign(socket,
-       cart_items: cart_items,
+       cart_items: available_items,
        addresses: addresses,
        total: total,
        shipping: shipping,
@@ -133,7 +163,7 @@ defmodule HomeWareWeb.CheckoutLive do
                             </div>
                           </div>
                           <div class="text-right">
-                            <span class="text-teal-400 font-bold text-lg">
+                            <span class="font-bold text-lg text-teal-400">
                               ₹<%= Number.Delimit.number_to_delimited(
                                 Decimal.mult(item.product.selling_price, Decimal.new(item.quantity)),
                                 precision: 2

@@ -15,6 +15,11 @@ defmodule HomeWare.CartItems do
     |> preload(:product)
     |> preload(:product_variant)
     |> Repo.all()
+    |> Enum.map(fn cart_item ->
+      # Set availability for the product
+      product_with_availability = HomeWare.Products.set_availability(cart_item.product)
+      %{cart_item | product: product_with_availability}
+    end)
   end
 
   def get_cart_item!(id), do: Repo.get!(CartItem, id)

@@ -15,6 +15,7 @@ defmodule HomeWare.Products do
         |> where(is_active: true)
         |> preload(:category)
         |> Repo.all()
+        |> Enum.map(&set_availability/1)
 
       _ ->
         page = params["page"] || 1
@@ -25,6 +26,7 @@ defmodule HomeWare.Products do
         |> preload(:category)
         |> order_by([p], desc: p.inserted_at)
         |> Repo.paginate(%{page: page, per_page: per_page})
+        |> Map.update!(:entries, fn entries -> Enum.map(entries, &set_availability/1) end)
     end
   end
 
@@ -33,6 +35,7 @@ defmodule HomeWare.Products do
     |> preload(:category)
     |> order_by([p], desc: p.inserted_at)
     |> Repo.all()
+    |> Enum.map(&set_availability/1)
   end
 
   def list_featured_products do
@@ -41,6 +44,7 @@ defmodule HomeWare.Products do
     |> preload(:category)
     |> limit(8)
     |> Repo.all()
+    |> Enum.map(&set_availability/1)
   end
 
   def list_products_with_variants do
@@ -49,6 +53,7 @@ defmodule HomeWare.Products do
     |> preload(:category)
     |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
     |> Repo.all()
+    |> Enum.map(&set_availability/1)
   end
 
   def list_products_with_filters(filters \\ %{}) do
@@ -56,11 +61,13 @@ defmodule HomeWare.Products do
     |> where(is_active: true)
     |> apply_search_filter(filters[:search])
     |> apply_category_filter(filters[:category_id])
+    |> apply_brand_filter(filters[:brand])
     |> apply_price_filters(filters[:min_price], filters[:max_price])
     |> preload(:category)
     |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
     |> order_by([p], desc: p.inserted_at)
     |> Repo.all()
+    |> Enum.map(&set_availability/1)
   end
 
   defp apply_search_filter(query, nil), do: query
@@ -83,6 +90,14 @@ defmodule HomeWare.Products do
   defp apply_category_filter(query, category_id) do
     query
     |> where([p], p.category_id == ^category_id)
+  end
+
+  defp apply_brand_filter(query, nil), do: query
+  defp apply_brand_filter(query, ""), do: query
+
+  defp apply_brand_filter(query, brand) do
+    search_pattern = "%#{brand}%"
+    query |> where([p], ilike(p.brand, ^search_pattern))
   end
 
   defp apply_price_filters(query, nil, nil), do: query
@@ -113,6 +128,7 @@ defmodule HomeWare.Products do
     |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
     |> order_by([p], desc: p.inserted_at)
     |> Repo.paginate(page: page, page_size: per_page)
+    |> Map.update!(:entries, fn entries -> Enum.map(entries, &set_availability/1) end)
   end
 
   def get_product!(id) do
@@ -120,6 +136,16 @@ defmodule HomeWare.Products do
     |> where(id: ^id)
     |> preload(:category)
     |> Repo.one!()
+    |> set_availability()
+  end
+
+  def get_product_with_variants!(id) do
+    Product
+    |> where(id: ^id)
+    |> preload(:category)
+    |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
+    |> Repo.one!()
+    |> set_availability()
   end
 
   def create_product(attrs \\ %{}) do
@@ -186,6 +212,7 @@ defmodule HomeWare.Products do
     |> where(category_id: ^category_id, is_active: true)
     |> preload(:category)
     |> Repo.all()
+    |> Enum.map(&set_availability/1)
   end
 
   def list_related_products(product) do
@@ -195,126 +222,39 @@ defmodule HomeWare.Products do
     |> preload(:category)
     |> limit(4)
     |> Repo.all()
+    |> Enum.map(&set_availability/1)
   end
 
   def search_products(query) do
-    search_term = "%#{query}%"
-
     Product
     |> where(is_active: true)
-    |> where([p], ilike(p.name, ^search_term) or ilike(p.description, ^search_term))
+    |> where([p], ilike(p.name, ^"%#{query}%") or ilike(p.description, ^"%#{query}%"))
     |> preload(:category)
     |> Repo.all()
+    |> Enum.map(&set_availability/1)
   end
 
-  def list_product_reviews(_product_id) do
-    # This would need to be implemented when ProductReview is available
-    []
-  end
-
-  def list_brands_by_category(category_id) do
-    Product
-    |> where(category_id: ^category_id, is_active: true)
-    |> distinct([p], p.brand)
-    |> select([p], p.brand)
-    |> where([p], not is_nil(p.brand))
-    |> Repo.all()
-  end
-
-  def list_featured_products_by_category(category_id, limit \\ 1) do
+  def list_featured_products_by_category(category_id, limit \\ 4) do
     Product
     |> where(category_id: ^category_id, is_active: true, is_featured: true)
     |> preload(:category)
     |> limit(^limit)
     |> Repo.all()
-  end
-
-  def count_products do
-    import Ecto.Query
-    alias HomeWare.Products.Product
-    HomeWare.Repo.one(from p in Product, select: count(p.id))
-  end
-
-  # Product Variant functions
-  alias HomeWare.Products.ProductVariant
-
-  def get_product_with_variants!(id) do
-    Product
-    |> where(id: ^id)
-    |> preload(:category)
-    |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
-    |> Repo.one!()
-  end
-
-  def create_product_variant(attrs \\ %{}) do
-    %ProductVariant{}
-    |> ProductVariant.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  def update_product_variant(%ProductVariant{} = variant, attrs) do
-    variant
-    |> ProductVariant.changeset(attrs)
-    |> Repo.update()
-  end
-
-  def delete_product_variant(%ProductVariant{} = variant) do
-    variant
-    |> ProductVariant.changeset(%{is_active: false})
-    |> Repo.update()
-  end
-
-  def get_product_variant!(id) do
-    ProductVariant
-    |> Repo.get!(id)
-  end
-
-  def list_product_variants(product_id) do
-    ProductVariant
-    |> where(product_id: ^product_id, is_active: true)
-    |> Repo.all()
-  end
-
-  def change_product_variant(%ProductVariant{} = variant, attrs \\ %{}) do
-    ProductVariant.changeset(variant, attrs)
-  end
-
-  def top_selling_products(n) do
-    import Ecto.Query
-    alias HomeWare.Products.Product
-    # This is a stub: add a random sales_count for demo
-    products = HomeWare.Repo.all(from p in Product, limit: ^n)
-    Enum.map(products, fn p -> Map.put(p, :sales_count, Enum.random(100..1000)) end)
+    |> Enum.map(&set_availability/1)
   end
 
   defp apply_filters(query, filters) do
-    Enum.reduce(filters, query, fn {key, value}, acc ->
-      case key do
-        :category ->
-          acc |> where([p], p.category_id == ^value)
+    query
+    |> apply_search_filter(filters[:search])
+    |> apply_category_filter(filters[:category_id])
+    |> apply_price_filters(filters[:min_price], filters[:max_price])
+  end
 
-        :brand ->
-          acc |> where([p], p.brand == ^value)
-
-        :min_price ->
-          acc |> where([p], p.price >= ^value)
-
-        :max_price ->
-          acc |> where([p], p.price <= ^value)
-
-        :rating ->
-          acc |> where([p], p.average_rating >= ^value)
-
-        :availability ->
-          case value do
-            "in_stock" -> acc |> where([p], p.inventory_quantity > 0)
-            "out_of_stock" -> acc |> where([p], p.inventory_quantity == 0)
-            _ -> acc
-          end
-
-        _ ->
-          acc
-      end
-    end)
+  @doc """
+  Sets the available? field for a product based on its status and inventory.
+  """
+  def set_availability(%Product{} = product) do
+    available = product.is_active && product.inventory_quantity > 0
+    %{product | available?: available}
   end
 end
