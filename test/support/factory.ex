@@ -147,11 +147,9 @@ defmodule HomeWare.Factory do
     %HomeWare.CartItem{
       id: Ecto.UUID.generate(),
       quantity: 3,
-      unit_price: Decimal.new("49.99"),
-      total_price: Decimal.new("149.97"),
-      notes: "Gift for mom",
       user_id: Ecto.UUID.generate(),
-      product_id: Ecto.UUID.generate()
+      product_id: Ecto.UUID.generate(),
+      product_variant_id: nil,
     }
     |> Map.merge(attrs)
   end

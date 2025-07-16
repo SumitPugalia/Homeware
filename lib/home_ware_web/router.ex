@@ -54,7 +54,7 @@ defmodule HomeWareWeb.Router do
 
   # Protected LiveView routes
   scope "/", HomeWareWeb do
-    pipe_through :browser
+    pipe_through [:browser, :require_auth]
 
     live "/products", ProductCatalogLive, :index
     live "/products/:id", ProductDetailLive, :show

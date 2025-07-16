@@ -17,24 +17,12 @@ defmodule HomeWare.CartItemTest do
       assert "must be greater than 0" in errors_on(changeset).quantity
     end
 
-    test "changeset with invalid unit_price" do
-      changeset = CartItem.changeset(%CartItem{}, %{unit_price: Decimal.new("-5.00")})
-      refute changeset.valid?
-      assert "must be greater than 0" in errors_on(changeset).unit_price
-    end
-
-    test "changeset with invalid total_price" do
-      changeset = CartItem.changeset(%CartItem{}, %{total_price: Decimal.new("-15.00")})
-      refute changeset.valid?
-      assert "must be greater than 0" in errors_on(changeset).total_price
-    end
-
     test "changeset with missing required fields" do
       changeset = CartItem.changeset(%CartItem{}, %{})
       refute changeset.valid?
       assert "can't be blank" in errors_on(changeset).quantity
-      assert "can't be blank" in errors_on(changeset).unit_price
-      assert "can't be blank" in errors_on(changeset).total_price
+      assert "can't be blank" in errors_on(changeset).user_id
+      assert "can't be blank" in errors_on(changeset).product_id
     end
   end
 end

@@ -56,8 +56,8 @@ defmodule HomeWare.CartItems do
     query = maybe_variant_id_filter(base_query, variant_id)
 
     with cart_item <- Repo.one(query),
-         {:product, product} <- {:product, Repo.get(Product, product_id)},
-         {:variant, variant} <-
+         {:product, _product} <- {:product, Repo.get(Product, product_id)},
+         {:variant, _variant} <-
            {:variant, if(variant_id, do: Repo.get(ProductVariant, variant_id), else: nil)} do
       cond do
         is_nil(cart_item) ->

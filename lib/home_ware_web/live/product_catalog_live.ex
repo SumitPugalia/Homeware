@@ -376,8 +376,6 @@ defmodule HomeWareWeb.ProductCatalogLive do
          |> push_navigate(to: "/users/log_in")}
 
       true ->
-        IO.inspect(user.id)
-        IO.inspect(product_id)
         CartItems.add_to_cart(user.id, product_id, nil, 1)
         {:noreply, put_flash(socket, :info, "Added to cart!")}
     end
