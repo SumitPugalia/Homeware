@@ -36,8 +36,8 @@ defmodule HomeWareWeb.ProductDetailLive do
        variants: variants,
        selected_variant_id: selected_variant_id,
        related_products: related_products,
-       quantity: 1,
-       cart_count: cart_count
+       cart_count: cart_count,
+       quantity: 1
      )}
   end
 

@@ -64,7 +64,6 @@ defmodule HomeWareWeb.Router do
     live "/search", SearchLive, :index
 
     # Cart and checkout
-    live "/cart", CartLive, :index
     live "/checkout", CheckoutLive, :index
   end
 
