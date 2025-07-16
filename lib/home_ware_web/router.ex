@@ -77,6 +77,9 @@ defmodule HomeWareWeb.Router do
     get "/orders/:id", OrderController, :show
     live "/wishlist", WishlistLive, :index
     live "/account", AccountLive, :index
+
+    # Addresses
+    resources "/addresses", AddressController
   end
 
   # Admin routes

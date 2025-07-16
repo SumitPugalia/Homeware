@@ -141,18 +141,27 @@ defmodule HomeWareWeb.CheckoutLive do
                         <div class="flex items-center justify-between mt-2">
                           <div class="flex items-center space-x-2">
                             <label class="text-gray-400 text-sm">Qty</label>
-                            <select
-                              phx-change="update_quantity"
-                              phx-value-cart-item-id={item.id}
-                              class="rounded-lg bg-black/80 border border-gray-600 text-white px-2 py-1 text-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-500/40 outline-none"
-                              onchange="console.log('Select changed:', this.value, 'Cart item ID:', this.getAttribute('phx-value-cart-item-id'))"
-                            >
-                              <%= for qty <- 1..10 do %>
-                                <option value={qty} selected={qty == item.quantity}>
-                                  <%= qty %>
-                                </option>
-                              <% end %>
-                            </select>
+                            <div class="flex items-center space-x-1">
+                              <button
+                                phx-click="decrease_quantity"
+                                phx-value-cart-item-id={item.id}
+                                type="button"
+                                class="w-8 h-8 rounded bg-gray-700 text-white hover:bg-gray-600 flex items-center justify-center"
+                              >
+                                -
+                              </button>
+                              <span class="px-3 py-1 bg-gray-800 text-white rounded min-w-[2rem] text-center">
+                                <%= item.quantity %>
+                              </span>
+                              <button
+                                phx-click="increase_quantity"
+                                phx-value-cart-item-id={item.id}
+                                type="button"
+                                class="w-8 h-8 rounded bg-gray-700 text-white hover:bg-gray-600 flex items-center justify-center"
+                              >
+                                +
+                              </button>
+                            </div>
                             <span class="text-gray-500 text-sm">
                               ₹<%= Number.Delimit.number_to_delimited(item.product.selling_price,
                                 precision: 2
@@ -163,9 +172,17 @@ defmodule HomeWareWeb.CheckoutLive do
                             phx-click="remove_item"
                             phx-value-cart-item-id={item.id}
                             type="button"
-                            class="text-red-400 hover:text-red-300 font-medium text-sm transition-colors"
+                            class="text-red-400 hover:text-red-300 transition-colors p-2 rounded-lg hover:bg-red-500/10"
+                            title="Remove item"
                           >
-                            Remove
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
+                            </svg>
                           </button>
                         </div>
                       </div>
@@ -421,40 +438,6 @@ defmodule HomeWareWeb.CheckoutLive do
         <!-- RIGHT: Order Summary -->
         <div class="bg-gray-950 rounded-3xl shadow-2xl p-8 space-y-8">
           <h2 class="text-xl font-bold mb-6 text-purple-400">Order Summary</h2>
-          <div class="divide-y divide-gray-800">
-            <%= for item <- @cart_items do %>
-              <div class="flex items-center py-4">
-                <img
-                  src={item.product.featured_image || "https://via.placeholder.com/80x80"}
-                  alt={item.product.name}
-                  class="w-20 h-20 rounded-xl object-cover border-2 border-gray-800 shadow-lg mr-4"
-                />
-                <div class="flex-1">
-                  <div class="flex justify-between items-center">
-                    <div>
-                      <div class="font-semibold text-lg text-white"><%= item.product.name %></div>
-                      <div class="text-sm text-gray-400">
-                        <%= item.product.brand %>
-                        <%= if item.product_variant do %>
-                          | <%= item.product_variant.option_name %> (SKU: <%= item.product_variant.sku %>)
-                        <% end %>
-                      </div>
-                    </div>
-                    <div class="text-right">
-                      <span class="text-teal-400 font-bold text-lg">
-                        ₹<%= Number.Delimit.number_to_delimited(item.product.selling_price,
-                          precision: 2
-                        ) %>
-                      </span>
-                    </div>
-                  </div>
-                  <div class="flex items-center mt-2 space-x-2">
-                    <span class="text-gray-400 text-sm">Qty: <%= item.quantity %></span>
-                  </div>
-                </div>
-              </div>
-            <% end %>
-          </div>
           <!-- Promo Code -->
           <div class="flex items-center mt-6">
             <input
@@ -577,15 +560,85 @@ defmodule HomeWareWeb.CheckoutLive do
   end
 
   @impl true
+  def handle_event("test_event", _params, socket) do
+    IO.inspect("TEST EVENT RECEIVED!")
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("increase_quantity", %{"cart-item-id" => cart_item_id}, socket) do
+    IO.inspect("INCREASE QUANTITY for cart item: #{cart_item_id}")
+
+    cart_item = CartItems.get_cart_item!(cart_item_id)
+    new_quantity = cart_item.quantity + 1
+
+    {:ok, _updated_cart_item} =
+      CartItems.update_cart_item(cart_item, %{quantity: new_quantity})
+
+    user = socket.assigns.current_user
+    cart_items = CartItems.list_user_cart_items(user.id)
+    total = calculate_subtotal(cart_items)
+    shipping = calculate_shipping(cart_items)
+    total_plus_shipping = Decimal.add(total, shipping)
+    tax = calculate_tax(total_plus_shipping)
+    grand_total = Decimal.add(total_plus_shipping, tax)
+
+    {:noreply,
+     assign(socket,
+       cart_items: cart_items,
+       total: total,
+       shipping: shipping,
+       tax: tax,
+       grand_total: grand_total,
+       cart_count: CartItems.get_user_cart_count(user.id)
+     )}
+  end
+
+  @impl true
+  def handle_event("decrease_quantity", %{"cart-item-id" => cart_item_id}, socket) do
+    IO.inspect("DECREASE QUANTITY for cart item: #{cart_item_id}")
+
+    cart_item = CartItems.get_cart_item!(cart_item_id)
+    new_quantity = max(1, cart_item.quantity - 1)
+
+    {:ok, _updated_cart_item} =
+      CartItems.update_cart_item(cart_item, %{quantity: new_quantity})
+
+    user = socket.assigns.current_user
+    cart_items = CartItems.list_user_cart_items(user.id)
+    total = calculate_subtotal(cart_items)
+    shipping = calculate_shipping(cart_items)
+    total_plus_shipping = Decimal.add(total, shipping)
+    tax = calculate_tax(total_plus_shipping)
+    grand_total = Decimal.add(total_plus_shipping, tax)
+
+    {:noreply,
+     assign(socket,
+       cart_items: cart_items,
+       total: total,
+       shipping: shipping,
+       tax: tax,
+       grand_total: grand_total,
+       cart_count: CartItems.get_user_cart_count(user.id)
+     )}
+  end
+
+  @impl true
   def handle_event("update_quantity", params, socket) do
     IO.inspect(params, label: "update_quantity params")
+    IO.inspect(socket.assigns, label: "socket assigns before update")
 
     case params do
       %{"value" => quantity, "cart-item-id" => cart_item_id} ->
-        cart_item = CartItems.get_cart_item!(cart_item_id)
+        IO.inspect("Processing quantity update: #{quantity} for cart item: #{cart_item_id}")
 
-        {:ok, _updated_cart_item} =
+        cart_item = CartItems.get_cart_item!(cart_item_id)
+        IO.inspect(cart_item, label: "Original cart item")
+
+        {:ok, updated_cart_item} =
           CartItems.update_cart_item(cart_item, %{quantity: String.to_integer(quantity)})
+
+        IO.inspect(updated_cart_item, label: "Updated cart item")
 
         user = socket.assigns.current_user
         cart_items = CartItems.list_user_cart_items(user.id)
@@ -594,6 +647,9 @@ defmodule HomeWareWeb.CheckoutLive do
         total_plus_shipping = Decimal.add(total, shipping)
         tax = calculate_tax(total_plus_shipping)
         grand_total = Decimal.add(total_plus_shipping, tax)
+
+        IO.inspect(cart_items, label: "Updated cart items")
+        IO.inspect(total, label: "New total")
 
         {:noreply,
          assign(socket,
