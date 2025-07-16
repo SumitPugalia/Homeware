@@ -42,47 +42,49 @@
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         <%= for product <- @featured_products do %>
-          <div class="group relative bg-gray-800 rounded-2xl p-6 hover:bg-gray-700 transition-all duration-500 transform hover:-translate-y-2 cursor-pointer block">
-            <div class="relative overflow-hidden rounded-xl mb-4">
-              <img
-                src={product.featured_image}
-                class="w-full h-64 object-cover rounded-xl group-hover:scale-110 transition-transform duration-700"
-                alt={product.name}
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <.link navigate={~p"/products/#{product.id}"} class="block">
+            <div class="group relative bg-gray-800 rounded-2xl p-6 hover:bg-gray-700 transition-all duration-500 transform hover:-translate-y-2 cursor-pointer block">
+              <div class="relative overflow-hidden rounded-xl mb-4">
+                <img
+                  src={product.featured_image}
+                  class="w-full h-64 object-cover rounded-xl group-hover:scale-110 transition-transform duration-700"
+                  alt={product.name}
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                  Featured
+                </div>
               </div>
-              <div class="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                Featured
+              <h3 class="text-xl font-bold mb-2 text-white group-hover:text-purple-400 transition-colors">
+                <%= product.name %>
+              </h3>
+              <p class="text-gray-400 text-sm mb-4 line-clamp-2">
+                <%= product.description || "Premium quality product for your lifestyle" %>
+              </p>
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center space-x-2">
+                  <span class="text-gray-400 line-through text-sm">
+                    ₹<%= Number.Delimit.number_to_delimited(product.price, precision: 2) %>
+                  </span>
+                  <span class="text-2xl font-bold text-purple-400">
+                    ₹<%= Number.Delimit.number_to_delimited(product.selling_price, precision: 2) %>
+                  </span>
+                </div>
+                <.form for={%{}} action={~p"/cart/add"} method="post" class="inline">
+                  <input type="hidden" name="product_id" value={product.id} />
+                  <input type="hidden" name="variant_id" value="" />
+                  <input type="hidden" name="quantity" value="1" />
+                  <button
+                    type="submit"
+                    class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+                  >
+                    +
+                  </button>
+                </.form>
               </div>
             </div>
-            <h3 class="text-xl font-bold mb-2 text-white group-hover:text-purple-400 transition-colors">
-              <%= product.name %>
-            </h3>
-            <p class="text-gray-400 text-sm mb-4 line-clamp-2">
-              <%= product.description || "Premium quality product for your lifestyle" %>
-            </p>
-            <div class="flex items-center justify-between gap-4">
-              <div class="flex items-center space-x-2">
-                <span class="text-gray-400 line-through text-sm">
-                  ₹<%= Number.Delimit.number_to_delimited(product.price, precision: 2) %>
-                </span>
-                <span class="text-2xl font-bold text-purple-400">
-                  ₹<%= Number.Delimit.number_to_delimited(product.selling_price, precision: 2) %>
-                </span>
-              </div>
-              <.form for={%{}} action={~p"/cart/add"} method="post" class="inline">
-                <input type="hidden" name="product_id" value={product.id} />
-                <input type="hidden" name="variant_id" value="" />
-                <input type="hidden" name="quantity" value="1" />
-                <button
-                  type="submit"
-                  class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
-                >
-                  +
-                </button>
-              </.form>
-            </div>
-          </div>
+          </.link>
         <% end %>
       </div>
     </div>

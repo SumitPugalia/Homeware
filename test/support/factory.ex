@@ -149,7 +149,7 @@ defmodule HomeWare.Factory do
       quantity: 3,
       user_id: Ecto.UUID.generate(),
       product_id: Ecto.UUID.generate(),
-      product_variant_id: nil,
+      product_variant_id: nil
     }
     |> Map.merge(attrs)
   end
