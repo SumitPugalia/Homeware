@@ -6,6 +6,8 @@ defmodule HomeWareWeb.CheckoutLive do
   alias HomeWare.CartItems
   alias HomeWare.Addresses
 
+  require Logger
+
   @impl true
   def mount(_params, _session, socket) do
     user = socket.assigns.current_user
@@ -31,7 +33,8 @@ defmodule HomeWareWeb.CheckoutLive do
        selected_shipping_address_id: nil,
        selected_billing_address_id: nil,
        payment_method: "credit_card",
-       order_summary: %{}
+       order_summary: %{},
+       notes: ""
      )}
   end
 
@@ -346,73 +349,34 @@ defmodule HomeWareWeb.CheckoutLive do
             <!-- Payment Information -->
             <div>
               <h2 class="text-xl font-bold mb-4 text-red-500">Payment Method</h2>
-              <div class="grid grid-cols-2 gap-4 mb-6">
-                <button class="payment-btn selected">Card</button>
-                <button class="payment-btn">UPI</button>
-                <button class="payment-btn">Wallet</button>
-                <button class="payment-btn">Cash on Delivery</button>
+              <div class="mb-6">
+                <div class="flex items-center p-4 bg-gray-800/50 border-2 border-purple-500/30 rounded-xl">
+                  <svg
+                    class="w-6 h-6 text-purple-400 mr-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                    />
+                  </svg>
+                  <span class="text-white font-medium">Cash on Delivery</span>
+                </div>
               </div>
 
               <form phx-submit="save_payment" class="space-y-6">
                 <div>
-                  <label for="card_number" class="block text-sm font-medium text-gray-300 mb-2">
-                    Card Number
-                  </label>
-                  <input
-                    type="text"
-                    name="card_number"
-                    id="card_number"
-                    required
-                    class="input-glow"
-                    placeholder="1234 5678 9012 3456"
-                  />
-                </div>
-
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
-                  <div>
-                    <label for="expiry" class="block text-sm font-medium text-gray-300 mb-2">
-                      Expiry Date
-                    </label>
-                    <input
-                      type="text"
-                      name="expiry"
-                      id="expiry"
-                      required
-                      class="input-glow"
-                      placeholder="MM/YY"
-                    />
-                  </div>
-                  <div>
-                    <label for="cvv" class="block text-sm font-medium text-gray-300 mb-2">CVV</label>
-                    <input
-                      type="text"
-                      name="cvv"
-                      id="cvv"
-                      required
-                      class="input-glow"
-                      placeholder="123"
-                    />
-                  </div>
-                  <div>
-                    <label for="name_on_card" class="block text-sm font-medium text-gray-300 mb-2">
-                      Name on Card
-                    </label>
-                    <input
-                      type="text"
-                      name="name_on_card"
-                      id="name_on_card"
-                      required
-                      class="input-glow"
-                    />
-                  </div>
-                </div>
-
-                <div>
                   <label class="block text-gray-400 mb-2">Special handling or delivery notes</label>
                   <textarea
                     name="notes"
+                    phx-keyup="update_notes"
                     rows="2"
                     class="w-full rounded-xl bg-black/80 border-2 border-gray-700 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/40 text-white px-4 py-3 text-lg shadow transition-all duration-200 outline-none"
+                    placeholder="Any special instructions for delivery..."
                   ></textarea>
                 </div>
 
@@ -423,12 +387,6 @@ defmodule HomeWareWeb.CheckoutLive do
                     class="bg-gray-700 text-gray-300 px-6 py-2 rounded-xl hover:bg-gray-600 transition-colors"
                   >
                     Back
-                  </button>
-                  <button
-                    type="submit"
-                    class="bg-gradient-to-r from-purple-500 to-teal-400 text-black px-6 py-2 rounded-xl font-bold hover:from-purple-600 hover:to-teal-500 transition-all"
-                  >
-                    Place Order
                   </button>
                 </div>
               </form>
@@ -473,7 +431,11 @@ defmodule HomeWareWeb.CheckoutLive do
             <span>Estimated delivery: 3-5 business days</span>
           </div>
           <!-- CTA -->
-          <button class="w-full mt-8 py-4 rounded-2xl bg-gradient-to-r from-purple-500 via-red-500 to-teal-400 text-black font-extrabold text-xl shadow-xl hover:from-purple-600 hover:via-red-600 hover:to-teal-500 transition-all animate-glow focus:outline-none focus:ring-4 focus:ring-purple-500/40">
+          <button
+            phx-click="complete_order"
+            disabled={is_nil(@notes) || @notes == ""}
+            class={"w-full mt-8 py-4 rounded-2xl font-extrabold text-xl shadow-xl transition-all focus:outline-none focus:ring-4 focus:ring-purple-500/40 #{if is_nil(@notes) || @notes == "", do: "bg-gray-600 text-gray-400 cursor-not-allowed", else: "bg-gradient-to-r from-purple-500 via-red-500 to-teal-400 text-black hover:from-purple-600 hover:via-red-600 hover:to-teal-500 animate-glow"}"}
+          >
             <span class="drop-shadow-lg">Complete My Order</span>
           </button>
           <!-- Trust Badges -->
@@ -737,6 +699,76 @@ defmodule HomeWareWeb.CheckoutLive do
   def handle_event("save_payment", _params, socket) do
     # TODO: Process payment and create order
     {:noreply, redirect(socket, to: ~p"/orders/confirmation")}
+  end
+
+  @impl true
+  def handle_event("update_notes", %{"value" => notes}, socket) do
+    {:noreply, assign(socket, notes: notes)}
+  end
+
+  defp generate_order_number do
+    ("ORD-" <> :crypto.strong_rand_bytes(6))
+    |> Base.url_encode64(padding: false)
+    |> binary_part(0, 8)
+  end
+
+  @impl true
+  def handle_event("complete_order", _params, socket) do
+    user = socket.assigns.current_user
+    cart_items = socket.assigns.cart_items
+    shipping_address_id = socket.assigns.selected_shipping_address_id
+    billing_address_id = socket.assigns.selected_billing_address_id
+    notes = socket.assigns[:notes] || ""
+
+    # Get the actual address objects
+    shipping_address =
+      Enum.find(socket.assigns.addresses, fn addr -> addr.id == shipping_address_id end)
+
+    billing_address =
+      Enum.find(socket.assigns.addresses, fn addr -> addr.id == billing_address_id end)
+
+    # Generate order number
+    order_number = generate_order_number()
+
+    # Create the order
+    order_params = %{
+      user_id: user.id,
+      shipping_address_id: shipping_address.id,
+      billing_address_id: billing_address.id,
+      order_number: order_number,
+      subtotal: socket.assigns.total,
+      total_amount: socket.assigns.grand_total,
+      payment_method: "cash_on_delivery",
+      status: "pending",
+      notes: notes
+    }
+
+    case HomeWare.Orders.create_order(order_params) do
+      {:ok, order} ->
+        # Create order items from cart items
+        Enum.each(cart_items, fn cart_item ->
+          HomeWare.Orders.create_order_item(%{
+            order_id: order.id,
+            product_id: cart_item.product_id,
+            product_variant_id: cart_item.product_variant_id,
+            quantity: cart_item.quantity,
+            unit_price: cart_item.product.selling_price,
+            total_price: Decimal.mult(cart_item.product.selling_price, cart_item.quantity)
+          })
+        end)
+
+        # Clear the cart
+        HomeWare.CartItems.clear_user_cart(user.id)
+
+        {:noreply,
+         socket
+         |> put_flash(:info, "Order placed successfully!")
+         |> push_navigate(to: "/orders")}
+
+      {:error, reason} ->
+        Logger.error("Error creating order: #{inspect(reason)}")
+        {:noreply, put_flash(socket, :error, "Could not place order. Please try again.")}
+    end
   end
 
   defp calculate_subtotal(cart_items) do
