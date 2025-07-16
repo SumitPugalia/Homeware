@@ -30,13 +30,21 @@ defmodule HomeWareWeb.ProductDetailLive do
       )
       |> Repo.all()
 
+    # Get cart count for the current user
+    cart_count =
+      case socket.assigns[:current_user] do
+        nil -> 0
+        user -> CartItems.get_user_cart_count(user.id)
+      end
+
     {:ok,
      assign(socket,
        product: product,
        variants: variants,
        selected_variant_id: selected_variant_id,
        related_products: related_products,
-       quantity: 1
+       quantity: 1,
+       cart_count: cart_count
      )}
   end
 

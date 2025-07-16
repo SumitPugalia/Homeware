@@ -132,11 +132,10 @@ defmodule HomeWare.Factory do
       id: Ecto.UUID.generate(),
       rating: 5,
       title: "Great Product!",
-      content: "This is an excellent product that exceeded my expectations. Highly recommended!",
+      comment: "This is an excellent product that exceeded my expectations. Highly recommended!",
       status: :approved,
       is_verified_purchase: true,
       helpful_votes: 10,
-      unhelpful_votes: 2,
       user_id: user_id,
       product_id: product_id
     }

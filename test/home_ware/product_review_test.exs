@@ -35,10 +35,10 @@ defmodule HomeWare.ProductReviewTest do
       assert "should be at least 3 character(s)" in errors_on(changeset).title
     end
 
-    test "changeset with short content" do
-      changeset = ProductReview.changeset(%ProductReview{}, %{content: "Short"})
+    test "changeset with short comment" do
+      changeset = ProductReview.changeset(%ProductReview{}, %{comment: "Short"})
       refute changeset.valid?
-      assert "should be at least 10 character(s)" in errors_on(changeset).content
+      assert "should be at least 10 character(s)" in errors_on(changeset).comment
     end
 
     test "changeset with missing required fields" do
@@ -46,7 +46,7 @@ defmodule HomeWare.ProductReviewTest do
       refute changeset.valid?
       assert "can't be blank" in errors_on(changeset).rating
       assert "can't be blank" in errors_on(changeset).title
-      assert "can't be blank" in errors_on(changeset).content
+      assert "can't be blank" in errors_on(changeset).comment
     end
   end
 end
