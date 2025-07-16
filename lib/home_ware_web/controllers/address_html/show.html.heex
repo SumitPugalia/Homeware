@@ -1,0 +1,62 @@
+<div class="max-w-2xl mx-auto px-4 py-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-white">Address Details</h1>
+  </div>
+
+  <div class="bg-gray-900 rounded-xl p-6 border border-gray-700">
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <h2 class="text-xl font-semibold text-white">
+          <%= @address.first_name %> <%= @address.last_name %>
+        </h2>
+        <%= if @address.address_type do %>
+          <span class="inline-block bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded-full mt-2">
+            <%= String.capitalize(Atom.to_string(@address.address_type)) %>
+          </span>
+        <% end %>
+      </div>
+      <div class="flex space-x-2">
+        <.link
+          navigate={~p"/addresses/#{@address}/edit"}
+          class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all"
+        >
+          Edit
+        </.link>
+        <.link
+          navigate={~p"/addresses"}
+          class="bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-600 transition-all"
+        >
+          Back to List
+        </.link>
+      </div>
+    </div>
+
+    <div class="space-y-4 text-gray-300">
+      <%= if @address.company && @address.company != "" do %>
+        <div>
+          <span class="font-medium text-gray-400">Company:</span>
+          <span class="ml-2"><%= @address.company %></span>
+        </div>
+      <% end %>
+
+      <div>
+        <span class="font-medium text-gray-400">Address:</span>
+        <div class="ml-2 mt-1">
+          <p><%= @address.address_line_1 %></p>
+          <%= if @address.address_line_2 && @address.address_line_2 != "" do %>
+            <p><%= @address.address_line_2 %></p>
+          <% end %>
+          <p><%= @address.city %>, <%= @address.state %> <%= @address.postal_code %></p>
+          <p><%= @address.country %></p>
+        </div>
+      </div>
+
+      <%= if @address.phone && @address.phone != "" do %>
+        <div>
+          <span class="font-medium text-gray-400">Phone:</span>
+          <span class="ml-2"><%= @address.phone %></span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
