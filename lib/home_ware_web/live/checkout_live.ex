@@ -753,17 +753,6 @@ defmodule HomeWareWeb.CheckoutLive do
     {:noreply, assign(socket, notes: notes)}
   end
 
-  defp generate_order_number do
-    today = Date.utc_today()
-
-    day_month =
-      String.pad_leading(Integer.to_string(today.day), 2, "0") <>
-        String.pad_leading(Integer.to_string(today.month), 2, "0")
-
-    random_number = :crypto.strong_rand_bytes(4) |> Base.encode16() |> binary_part(0, 8)
-    "VIBE-#{day_month}-#{random_number}"
-  end
-
   @impl true
   def handle_event("complete_order", _params, socket) do
     user = socket.assigns.current_user
@@ -821,6 +810,17 @@ defmodule HomeWareWeb.CheckoutLive do
         Logger.error("Error creating order: #{inspect(reason)}")
         {:noreply, put_flash(socket, :error, "Could not place order. Please try again.")}
     end
+  end
+
+  defp generate_order_number do
+    today = Date.utc_today()
+
+    day_month =
+      String.pad_leading(Integer.to_string(today.day), 2, "0") <>
+        String.pad_leading(Integer.to_string(today.month), 2, "0")
+
+    random_number = :crypto.strong_rand_bytes(4) |> Base.encode16() |> binary_part(0, 8)
+    "VIBE-#{day_month}-#{random_number}"
   end
 
   defp calculate_subtotal(cart_items) do

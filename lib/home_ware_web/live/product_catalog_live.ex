@@ -421,22 +421,18 @@ defmodule HomeWareWeb.ProductCatalogLive do
 
       true ->
         # Check if product exists and is available
-        case HomeWare.Products.get_product!(product_id) do
-          nil ->
-            {:noreply, put_flash(socket, :error, "Product not found.")}
+        product = HomeWare.Products.get_product!(product_id)
 
-          product ->
-            if product.available? do
-              case CartItems.add_to_cart(user.id, product_id, nil, 1) do
-                {:ok, _cart_item} ->
-                  {:noreply, put_flash(socket, :info, "Added to cart!")}
+        if product.available? do
+          case CartItems.add_to_cart(user.id, product_id, nil, 1) do
+            {:ok, _cart_item} ->
+              {:noreply, put_flash(socket, :info, "Added to cart!")}
 
-                {:error, _reason} ->
-                  {:noreply, put_flash(socket, :error, "Failed to add item to cart.")}
-              end
-            else
-              {:noreply, put_flash(socket, :error, "This product is currently out of stock.")}
-            end
+            {:error, _reason} ->
+              {:noreply, put_flash(socket, :error, "Failed to add item to cart.")}
+          end
+        else
+          {:noreply, put_flash(socket, :error, "This product is currently out of stock.")}
         end
     end
   end

@@ -4,7 +4,6 @@ defmodule HomeWareWeb.CartLive do
   on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
 
   alias HomeWare.CartItems
-  alias HomeWare.Products
 
   @impl true
   def mount(_params, _session, socket) do

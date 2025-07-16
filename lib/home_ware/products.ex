@@ -7,6 +7,7 @@ defmodule HomeWare.Products do
   alias HomeWare.Repo
   alias HomeWare.Products.Product
   alias HomeWare.Categories.Category
+  alias HomeWare.Products.ProductVariant
 
   def list_products(params \\ %{}) do
     case params do
@@ -263,5 +264,60 @@ defmodule HomeWare.Products do
   def set_availability(%Product{} = product) do
     available = product.is_active && product.inventory_quantity > 0
     %{product | available?: available}
+  end
+
+  # Product Variant functions for admin
+  def create_product_variant(attrs \\ %{}) do
+    %ProductVariant{}
+    |> ProductVariant.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def get_product_variant!(id) do
+    ProductVariant
+    |> Repo.get!(id)
+    |> ProductVariant.set_availability()
+  end
+
+  def update_product_variant(%ProductVariant{} = variant, attrs) do
+    variant
+    |> ProductVariant.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_product_variant(%ProductVariant{} = variant) do
+    variant
+    |> ProductVariant.changeset(%{is_active: false})
+    |> Repo.update()
+  end
+
+  def change_product_variant(%ProductVariant{} = variant, attrs \\ %{}) do
+    ProductVariant.changeset(variant, attrs)
+  end
+
+  # Admin dashboard functions
+  def count_products do
+    Product
+    |> where(is_active: true)
+    |> select([p], count(p.id))
+    |> Repo.one()
+  end
+
+  def top_selling_products(limit \\ 5) do
+    # This is a placeholder - in a real app you'd query order_items to get top sellers
+    Product
+    |> where(is_active: true)
+    |> limit(^limit)
+    |> Repo.all()
+    |> Enum.map(&set_availability/1)
+  end
+
+  def list_brands_by_category(category_id) do
+    Product
+    |> where(category_id: ^category_id, is_active: true)
+    |> distinct([p], p.brand)
+    |> select([p], p.brand)
+    |> where([p], not is_nil(p.brand))
+    |> Repo.all()
   end
 end

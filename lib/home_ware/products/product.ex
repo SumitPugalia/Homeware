@@ -79,20 +79,10 @@ defmodule HomeWare.Products.Product do
     |> put_available_status()
   end
 
-  @doc """
-  Sets the available? virtual field based on product status and inventory.
-  """
   defp put_available_status(changeset) do
-    case get_field(changeset, :is_active) do
-      false ->
-        put_change(changeset, :available?, false)
-
-      true ->
-        inventory = get_field(changeset, :inventory_quantity) || 0
-        put_change(changeset, :available?, inventory > 0)
-
-      _ ->
-        changeset
+    case get_change(changeset, :inventory_quantity) do
+      nil -> changeset
+      quantity -> put_change(changeset, :available?, quantity > 0)
     end
   end
 
