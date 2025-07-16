@@ -28,6 +28,13 @@ defmodule HomeWareWeb.ProductCatalogLive do
     # Get filtered products
     products = get_filtered_products(filters)
 
+    cart_count =
+      if socket.assigns.current_user do
+        CartItems.get_user_cart_count(socket.assigns.current_user.id)
+      else
+        0
+      end
+
     {:ok,
      assign(socket,
        page: 1,
@@ -36,7 +43,8 @@ defmodule HomeWareWeb.ProductCatalogLive do
        products: products,
        total_count: length(products),
        categories: categories,
-       brands: get_brands()
+       brands: get_brands(),
+       cart_count: cart_count
      )}
   end
 

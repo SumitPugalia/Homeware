@@ -49,7 +49,11 @@ defmodule HomeWareWeb.CheckoutLive do
                   1
                 </span>
               </div>
-              <div class={if @step >= 1, do: "text-indigo-600 ml-2 text-sm font-medium", else: "text-gray-400 ml-2 text-sm font-medium"}>
+              <div class={
+                if @step >= 1,
+                  do: "text-indigo-600 ml-2 text-sm font-medium",
+                  else: "text-gray-400 ml-2 text-sm font-medium"
+              }>
                 Cart Review
               </div>
             </div>
@@ -59,7 +63,11 @@ defmodule HomeWareWeb.CheckoutLive do
                   2
                 </span>
               </div>
-              <div class={if @step >= 2, do: "text-indigo-600 ml-2 text-sm font-medium", else: "text-gray-400 ml-2 text-sm font-medium"}>
+              <div class={
+                if @step >= 2,
+                  do: "text-indigo-600 ml-2 text-sm font-medium",
+                  else: "text-gray-400 ml-2 text-sm font-medium"
+              }>
                 Address
               </div>
             </div>
@@ -69,14 +77,17 @@ defmodule HomeWareWeb.CheckoutLive do
                   3
                 </span>
               </div>
-              <div class={if @step >= 3, do: "text-indigo-600 ml-2 text-sm font-medium", else: "text-gray-400 ml-2 text-sm font-medium"}>
+              <div class={
+                if @step >= 3,
+                  do: "text-indigo-600 ml-2 text-sm font-medium",
+                  else: "text-gray-400 ml-2 text-sm font-medium"
+              }>
                 Payment
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <!-- Checkout Content -->
       <div class="bg-white">
         <div class="max-w-14xl mx-auto py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
@@ -90,13 +101,28 @@ defmodule HomeWareWeb.CheckoutLive do
 
                   <%= if Enum.empty?(@cart_items) do %>
                     <div class="text-center py-12">
-                      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                      <svg
+                        class="mx-auto h-12 w-12 text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                        />
                       </svg>
                       <h3 class="mt-2 text-sm font-medium text-gray-900">Your cart is empty</h3>
-                      <p class="mt-1 text-sm text-gray-500">Start shopping to add items to your cart.</p>
+                      <p class="mt-1 text-sm text-gray-500">
+                        Start shopping to add items to your cart.
+                      </p>
                       <div class="mt-6">
-                        <a href="/products" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                        <a
+                          href="/products"
+                          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                        >
                           Continue Shopping
                         </a>
                       </div>
@@ -116,13 +142,25 @@ defmodule HomeWareWeb.CheckoutLive do
                             <div>
                               <div class="flex justify-between text-base font-medium text-gray-900">
                                 <h3>
-                                  <a href={~p"/products/#{item.product.id}"}><%= item.product.name %></a>
+                                  <a href={~p"/products/#{item.product.id}"}>
+                                    <%= item.product.name %>
+                                  </a>
                                 </h3>
-                                <p class="ml-4">₹<%= Number.Delimit.number_to_delimited(Decimal.mult(item.product.selling_price, Decimal.new(item.quantity)), precision: 2) %></p>
+                                <p class="ml-4">
+                                  ₹<%= Number.Delimit.number_to_delimited(
+                                    Decimal.mult(
+                                      item.product.selling_price,
+                                      Decimal.new(item.quantity)
+                                    ),
+                                    precision: 2
+                                  ) %>
+                                </p>
                               </div>
                               <p class="mt-1 text-sm text-gray-500"><%= item.product.brand %></p>
                               <%= if item.product_variant do %>
-                                <p class="mt-1 text-sm text-gray-500">SKU: <%= item.product_variant.sku %></p>
+                                <p class="mt-1 text-sm text-gray-500">
+                                  SKU: <%= item.product_variant.sku %>
+                                </p>
                               <% end %>
                             </div>
                             <div class="flex-1 flex items-end justify-between text-sm">
@@ -140,7 +178,11 @@ defmodule HomeWareWeb.CheckoutLive do
                                     </option>
                                   <% end %>
                                 </select>
-                                <span class="text-gray-500">₹<%= Number.Delimit.number_to_delimited(item.product.selling_price, precision: 2) %> each</span>
+                                <span class="text-gray-500">
+                                  ₹<%= Number.Delimit.number_to_delimited(item.product.selling_price,
+                                    precision: 2
+                                  ) %> each
+                                </span>
                               </div>
                               <div class="flex">
                                 <button
@@ -174,16 +216,21 @@ defmodule HomeWareWeb.CheckoutLive do
                 <!-- Address Selection -->
                 <div>
                   <h2 class="text-2xl font-bold text-gray-900 mb-6">Select Addresses</h2>
-
                   <!-- Shipping Address -->
                   <div class="mb-8">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Shipping Address</h3>
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <%= for address <- @addresses do %>
-                        <div class="border rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors"
-                             class={if @selected_shipping_address_id == address.id, do: "border-indigo-500 bg-indigo-50", else: "border-gray-300"}
-                             phx-click="select_shipping_address"
-                             phx-value-address-id={address.id}>
+                        <div
+                          class="border rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors"
+                          class={
+                            if @selected_shipping_address_id == address.id,
+                              do: "border-indigo-500 bg-indigo-50",
+                              else: "border-gray-300"
+                          }
+                          phx-click="select_shipping_address"
+                          phx-value-address-id={address.id}
+                        >
                           <div class="flex items-start justify-between">
                             <div class="flex-1">
                               <p class="font-medium text-gray-900">
@@ -200,8 +247,16 @@ defmodule HomeWareWeb.CheckoutLive do
                             </div>
                             <div class="ml-4">
                               <%= if @selected_shipping_address_id == address.id do %>
-                                <svg class="h-5 w-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                <svg
+                                  class="h-5 w-5 text-indigo-600"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"
+                                  />
                                 </svg>
                               <% end %>
                             </div>
@@ -211,12 +266,14 @@ defmodule HomeWareWeb.CheckoutLive do
                     </div>
 
                     <div class="mt-4">
-                      <a href="/addresses/new" class="text-indigo-600 hover:text-indigo-500 font-medium">
+                      <a
+                        href="/addresses/new"
+                        class="text-indigo-600 hover:text-indigo-500 font-medium"
+                      >
                         + Add New Address
                       </a>
                     </div>
                   </div>
-
                   <!-- Billing Address -->
                   <div class="mb-8">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Billing Address</h3>
@@ -235,10 +292,16 @@ defmodule HomeWareWeb.CheckoutLive do
                     <%= if @selected_shipping_address_id && @selected_billing_address_id != @selected_shipping_address_id do %>
                       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <%= for address <- @addresses do %>
-                          <div class="border rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors"
-                               class={if @selected_billing_address_id == address.id, do: "border-indigo-500 bg-indigo-50", else: "border-gray-300"}
-                               phx-click="select_billing_address"
-                               phx-value-address-id={address.id}>
+                          <div
+                            class="border rounded-lg p-4 cursor-pointer hover:border-indigo-500 transition-colors"
+                            class={
+                              if @selected_billing_address_id == address.id,
+                                do: "border-indigo-500 bg-indigo-50",
+                                else: "border-gray-300"
+                            }
+                            phx-click="select_billing_address"
+                            phx-value-address-id={address.id}
+                          >
                             <div class="flex items-start justify-between">
                               <div class="flex-1">
                                 <p class="font-medium text-gray-900">
@@ -255,8 +318,16 @@ defmodule HomeWareWeb.CheckoutLive do
                               </div>
                               <div class="ml-4">
                                 <%= if @selected_billing_address_id == address.id do %>
-                                  <svg class="h-5 w-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                  <svg
+                                    class="h-5 w-5 text-indigo-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                      clip-rule="evenodd"
+                                    />
                                   </svg>
                                 <% end %>
                               </div>
@@ -364,7 +435,6 @@ defmodule HomeWareWeb.CheckoutLive do
                 </div>
               <% end %>
             </div>
-
             <!-- Order Summary -->
             <div class="mt-16 lg:mt-0 lg:col-span-4">
               <div class="bg-gray-50 rounded-lg px-4 py-6 sm:p-6 lg:p-8">
@@ -373,15 +443,21 @@ defmodule HomeWareWeb.CheckoutLive do
                 <dl class="mt-6 space-y-4">
                   <div class="flex items-center justify-between">
                     <dt class="text-sm text-gray-600">Subtotal</dt>
-                    <dd class="text-sm font-medium text-gray-900">₹<%= Number.Delimit.number_to_delimited(@total, precision: 2) %></dd>
+                    <dd class="text-sm font-medium text-gray-900">
+                      ₹<%= Number.Delimit.number_to_delimited(@total, precision: 2) %>
+                    </dd>
                   </div>
                   <div class="flex items-center justify-between border-t border-gray-200 pt-4">
                     <dt class="text-sm text-gray-600">Shipping</dt>
-                    <dd class="text-sm font-medium text-gray-900">₹<%= Number.Delimit.number_to_delimited(@shipping, precision: 2) %></dd>
+                    <dd class="text-sm font-medium text-gray-900">
+                      ₹<%= Number.Delimit.number_to_delimited(@shipping, precision: 2) %>
+                    </dd>
                   </div>
                   <div class="flex items-center justify-between border-t border-gray-200 pt-4">
                     <dt class="text-sm text-gray-600">Tax</dt>
-                    <dd class="text-sm font-medium text-gray-900">₹<%= Number.Delimit.number_to_delimited(@tax, precision: 2) %></dd>
+                    <dd class="text-sm font-medium text-gray-900">
+                      ₹<%= Number.Delimit.number_to_delimited(@tax, precision: 2) %>
+                    </dd>
                   </div>
                   <div class="flex items-center justify-between border-t border-gray-200 pt-4">
                     <dt class="text-base font-medium text-gray-900">Total</dt>
@@ -400,9 +476,15 @@ defmodule HomeWareWeb.CheckoutLive do
   end
 
   @impl true
-  def handle_event("update_quantity", %{"value" => quantity, "cart-item-id" => cart_item_id}, socket) do
+  def handle_event(
+        "update_quantity",
+        %{"value" => quantity, "cart-item-id" => cart_item_id},
+        socket
+      ) do
     cart_item = CartItems.get_cart_item!(cart_item_id)
-    {:ok, _updated_cart_item} = CartItems.update_cart_item(cart_item, %{quantity: String.to_integer(quantity)})
+
+    {:ok, _updated_cart_item} =
+      CartItems.update_cart_item(cart_item, %{quantity: String.to_integer(quantity)})
 
     user = socket.assigns.current_user
     cart_items = CartItems.list_user_cart_items(user.id)
@@ -412,7 +494,15 @@ defmodule HomeWareWeb.CheckoutLive do
     tax = calculate_tax(total_plus_shipping)
     grand_total = Decimal.add(total_plus_shipping, tax)
 
-    {:noreply, assign(socket, cart_items: cart_items, total: total, shipping: shipping, tax: tax, grand_total: grand_total, cart_count: CartItems.get_user_cart_count(user.id))}
+    {:noreply,
+     assign(socket,
+       cart_items: cart_items,
+       total: total,
+       shipping: shipping,
+       tax: tax,
+       grand_total: grand_total,
+       cart_count: CartItems.get_user_cart_count(user.id)
+     )}
   end
 
   @impl true
@@ -428,7 +518,15 @@ defmodule HomeWareWeb.CheckoutLive do
     tax = calculate_tax(total_plus_shipping)
     grand_total = Decimal.add(total_plus_shipping, tax)
 
-    {:noreply, assign(socket, cart_items: cart_items, total: total, shipping: shipping, tax: tax, grand_total: grand_total, cart_count: CartItems.get_user_cart_count(user.id))}
+    {:noreply,
+     assign(socket,
+       cart_items: cart_items,
+       total: total,
+       shipping: shipping,
+       tax: tax,
+       grand_total: grand_total,
+       cart_count: CartItems.get_user_cart_count(user.id)
+     )}
   end
 
   @impl true
@@ -448,11 +546,12 @@ defmodule HomeWareWeb.CheckoutLive do
 
   @impl true
   def handle_event("toggle_billing_same_as_shipping", _params, socket) do
-    billing_address_id = if socket.assigns.selected_billing_address_id == socket.assigns.selected_shipping_address_id do
-      nil
-    else
-      socket.assigns.selected_shipping_address_id
-    end
+    billing_address_id =
+      if socket.assigns.selected_billing_address_id == socket.assigns.selected_shipping_address_id do
+        nil
+      else
+        socket.assigns.selected_shipping_address_id
+      end
 
     {:noreply, assign(socket, selected_billing_address_id: billing_address_id)}
   end
