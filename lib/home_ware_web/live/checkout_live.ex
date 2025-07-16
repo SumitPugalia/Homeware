@@ -707,9 +707,14 @@ defmodule HomeWareWeb.CheckoutLive do
   end
 
   defp generate_order_number do
-    ("ORD-" <> :crypto.strong_rand_bytes(6))
-    |> Base.url_encode64(padding: false)
-    |> binary_part(0, 8)
+    today = Date.utc_today()
+
+    day_month =
+      String.pad_leading(Integer.to_string(today.day), 2, "0") <>
+        String.pad_leading(Integer.to_string(today.month), 2, "0")
+
+    random_number = :crypto.strong_rand_bytes(4) |> Base.encode16() |> binary_part(0, 8)
+    "VIBE-#{day_month}-#{random_number}"
   end
 
   @impl true
