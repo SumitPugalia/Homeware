@@ -118,8 +118,7 @@ defmodule HomeWare.Factory do
       id: Ecto.UUID.generate(),
       quantity: 2,
       unit_price: Decimal.new("49.99"),
-      total_price: Decimal.new("99.98"),
-      notes: "Test order item"
+      total_price: Decimal.new("99.98")
     }
     |> Map.merge(attrs)
   end

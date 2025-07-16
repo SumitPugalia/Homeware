@@ -73,17 +73,22 @@ defmodule HomeWareWeb.CheckoutLiveTest do
         |> log_in_user(user)
         |> live(~p"/checkout")
 
-      # Simulate changing the quantity to 5
-      view
-      |> element("select[phx-change=update_quantity][phx-value-cart-item-id='#{cart_item.id}']")
-      |> render_change(%{"value" => "5", "cart-item-id" => cart_item.id})
+      # Simulate clicking the increase quantity button multiple times to get to 5
+      # Start with quantity 2, need 3 more clicks to get to 5
+      for _ <- 1..3 do
+        view
+        |> element(
+          "button[phx-click=increase_quantity][phx-value-cart-item-id='#{cart_item.id}']"
+        )
+        |> render_click()
+      end
 
       # Reload cart item from DB
       updated_cart_item = HomeWare.CartItems.get_cart_item!(cart_item.id)
       assert updated_cart_item.quantity == 5
 
       # Assert UI reflects new quantity
-      assert has_element?(view, "option[selected][value='5']")
+      assert has_element?(view, "span", "5")
     end
   end
 
