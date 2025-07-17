@@ -10,6 +10,7 @@ defmodule HomeWareWeb.ProductDetailLive do
   alias HomeWare.WishlistItems
   alias HomeWareWeb.SessionUtils
   alias HomeWareWeb.Formatters
+  require Logger
 
   # Import components
   import HomeWareWeb.ProductCard, only: [product_card: 1]
@@ -424,9 +425,14 @@ defmodule HomeWareWeb.ProductDetailLive do
   @impl true
   def handle_event(
         "add_to_cart",
-        %{"product-id" => product_id, "variant-id" => variant_id, "quantity" => quantity},
+        %{"product-id" => product_id, "variant-id" => variant_id, "quantity" => quantity} =
+          params,
         socket
       ) do
+    Logger.debug(
+      "[add_to_cart] With variant: params=#{inspect(params)}, assigns=#{inspect(socket.assigns)}"
+    )
+
     user = Map.get(socket.assigns, :current_user)
 
     cond do
@@ -460,7 +466,15 @@ defmodule HomeWareWeb.ProductDetailLive do
   end
 
   @impl true
-  def handle_event("add_to_cart", %{"product-id" => product_id, "quantity" => quantity}, socket) do
+  def handle_event(
+        "add_to_cart",
+        %{"product-id" => product_id, "quantity" => quantity} = params,
+        socket
+      ) do
+    Logger.debug(
+      "[add_to_cart] No variant: params=#{inspect(params)}, assigns=#{inspect(socket.assigns)}"
+    )
+
     user = Map.get(socket.assigns, :current_user)
 
     cond do
@@ -489,8 +503,11 @@ defmodule HomeWareWeb.ProductDetailLive do
   end
 
   @impl true
-  def handle_event("add_to_cart", %{"product-id" => product_id}, socket) do
-    # Fallback for when quantity is not provided, use the current quantity from socket
+  def handle_event("add_to_cart", %{"product-id" => product_id} = params, socket) do
+    Logger.debug(
+      "[add_to_cart] Fallback: params=#{inspect(params)}, assigns=#{inspect(socket.assigns)}"
+    )
+
     handle_event(
       "add_to_cart",
       %{"product-id" => product_id, "quantity" => socket.assigns.quantity},

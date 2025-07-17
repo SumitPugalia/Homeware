@@ -349,19 +349,27 @@ defmodule HomeWareWeb.CheckoutLive do
           <div class="mt-8 space-y-2 text-lg">
             <div class="flex justify-between">
               <span class="text-gray-400">Subtotal</span>
-              <span>₹<%= Number.Delimit.number_to_delimited(@total, precision: 2) %></span>
+              <span data-testid="subtotal">
+                ₹<%= Number.Delimit.number_to_delimited(@total, precision: 2) %>
+              </span>
             </div>
             <div class="flex justify-between">
               <span class="text-gray-400">Shipping</span>
-              <span>₹<%= Number.Delimit.number_to_delimited(@shipping, precision: 2) %></span>
+              <span data-testid="shipping">
+                ₹<%= Number.Delimit.number_to_delimited(@shipping, precision: 2) %>
+              </span>
             </div>
             <div class="flex justify-between">
               <span class="text-gray-400">Tax</span>
-              <span>₹<%= Number.Delimit.number_to_delimited(@tax, precision: 2) %></span>
+              <span data-testid="tax">
+                ₹<%= Number.Delimit.number_to_delimited(@tax, precision: 2) %>
+              </span>
             </div>
             <div class="flex justify-between font-bold text-xl">
               <span class="text-purple-400">Total</span>
-              <span>₹<%= Number.Delimit.number_to_delimited(@grand_total, precision: 2) %></span>
+              <span data-testid="grand-total">
+                ₹<%= Number.Delimit.number_to_delimited(@grand_total, precision: 2) %>
+              </span>
             </div>
           </div>
           <!-- Estimated Delivery -->
@@ -521,6 +529,25 @@ defmodule HomeWareWeb.CheckoutLive do
 
   @impl true
   def handle_event("remove_item", %{"cart-item-id" => cart_item_id}, socket) do
+    cart_item = CartItems.get_cart_item!(cart_item_id)
+    CartItems.delete_cart_item(cart_item)
+
+    user = socket.assigns.current_user
+    cart_items = CartItems.list_user_cart_items(user.id)
+    totals = Orders.calculate_order_totals(cart_items)
+
+    {:noreply,
+     assign(socket,
+       cart_items: cart_items,
+       total: totals.subtotal,
+       shipping: totals.shipping,
+       tax: totals.tax,
+       grand_total: totals.grand_total
+     )}
+  end
+
+  @impl true
+  def handle_event("remove_from_cart", %{"cart-item-id" => cart_item_id}, socket) do
     cart_item = CartItems.get_cart_item!(cart_item_id)
     CartItems.delete_cart_item(cart_item)
 
