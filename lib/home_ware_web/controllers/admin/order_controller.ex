@@ -10,6 +10,8 @@ defmodule HomeWareWeb.Admin.OrderController do
     page = params["page"] |> to_int() |> max(1)
     status_filter = params["status"]
     search_query = params["search"]
+    start_date = params["start_date"]
+    end_date = params["end_date"]
 
     # Build query with filters
     orders =
@@ -17,13 +19,17 @@ defmodule HomeWareWeb.Admin.OrderController do
         page: page,
         per_page: @per_page,
         status: status_filter,
-        search: search_query
+        search: search_query,
+        start_date: start_date,
+        end_date: end_date
       })
 
     total_entries =
       Orders.count_all_orders_with_filters(%{
         status: status_filter,
-        search: search_query
+        search: search_query,
+        start_date: start_date,
+        end_date: end_date
       })
 
     total_pages = ceil(total_entries / @per_page)
@@ -47,7 +53,9 @@ defmodule HomeWareWeb.Admin.OrderController do
       per_page: @per_page,
       current_path: conn.request_path,
       status_filter: status_filter,
-      search_query: search_query
+      search_query: search_query,
+      start_date: start_date,
+      end_date: end_date
     )
   end
 
