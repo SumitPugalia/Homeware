@@ -34,6 +34,7 @@ defmodule HomeWare.Accounts do
     case Phoenix.Token.verify(HomeWareWeb.Endpoint, "user auth", token, max_age: 2_592_000) do
       {:ok, user_id} -> get_user!(user_id)
       :error -> nil
+      {:error, _reason} -> nil
     end
   end
 
@@ -63,6 +64,13 @@ defmodule HomeWare.Accounts do
 
   def list_users do
     Repo.all(User)
+  end
+
+  def count_customers do
+    User
+    |> where(role: :customer)
+    |> where(is_active: true)
+    |> Repo.aggregate(:count, :id)
   end
 
   def deliver_user_confirmation_instructions(_user, confirmation_fun)

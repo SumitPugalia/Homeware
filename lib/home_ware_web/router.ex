@@ -85,7 +85,7 @@ defmodule HomeWareWeb.Router do
   scope "/admin", HomeWareWeb.Admin, as: :admin do
     pipe_through [:browser, :require_admin]
 
-    resources "/dashboard", DashboardController, only: [:index]
+    live "/dashboard", DashboardLive, :index
 
     get "/products/:id/confirm_delete", ProductController, :confirm_delete,
       as: :product_confirm_delete
