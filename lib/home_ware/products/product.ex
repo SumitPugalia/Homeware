@@ -77,14 +77,6 @@ defmodule HomeWare.Products.Product do
     |> validate_number(:price, greater_than: 0)
     |> validate_number(:selling_price, greater_than: 0)
     |> validate_number(:inventory_quantity, greater_than_or_equal_to: 0)
-    |> put_available_status()
-  end
-
-  defp put_available_status(changeset) do
-    case get_change(changeset, :inventory_quantity) do
-      nil -> changeset
-      quantity -> put_change(changeset, :available?, quantity > 0)
-    end
   end
 
   @doc """
@@ -94,6 +86,7 @@ defmodule HomeWare.Products.Product do
     cond do
       !product.is_active -> "Inactive"
       !product.available? -> "Out of Stock"
+      has_available_variants?(product) -> "In Stock"
       product.inventory_quantity <= 5 -> "Low Stock"
       true -> "In Stock"
     end
@@ -106,6 +99,7 @@ defmodule HomeWare.Products.Product do
     cond do
       !product.is_active -> "bg-gray-500"
       !product.available? -> "bg-red-500"
+      has_available_variants?(product) -> "bg-green-500"
       product.inventory_quantity <= 5 -> "bg-yellow-500"
       true -> "bg-green-500"
     end
@@ -137,4 +131,15 @@ defmodule HomeWare.Products.Product do
   """
   def has_variants?(%__MODULE__{variants: %Ecto.Association.NotLoaded{}}), do: false
   def has_variants?(%__MODULE__{variants: variants}), do: length(variants) > 0
+
+  @doc """
+  Checks if a product has any available variants.
+  """
+  def has_available_variants?(%__MODULE__{variants: %Ecto.Association.NotLoaded{}}), do: false
+
+  def has_available_variants?(%__MODULE__{variants: variants}) when is_list(variants) do
+    Enum.any?(variants, & &1.available?)
+  end
+
+  def has_available_variants?(_), do: false
 end

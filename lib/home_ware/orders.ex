@@ -6,6 +6,7 @@ defmodule HomeWare.Orders do
   import Ecto.Query, warn: false
   alias HomeWare.Repo
   alias HomeWare.Orders.Order
+  alias Decimal
 
   def list_user_orders(user_id) do
     Order
@@ -116,5 +117,104 @@ defmodule HomeWare.Orders do
     months = Enum.map(0..(n - 1), fn i -> Date.add(now, -30 * i) end)
     # This is a stub, you may want to use fragment for real month grouping
     Enum.map(months, fn date -> {Date.to_string(date), Enum.random(1000..5000)} end)
+  end
+
+  @doc """
+  Calculates the subtotal for a list of cart items.
+  """
+  def calculate_subtotal(cart_items) do
+    cart_items
+    |> Enum.reduce(Decimal.new("0"), fn item, acc ->
+      price = get_item_price(item)
+      item_total = Decimal.mult(price, Decimal.new(Integer.to_string(item.quantity)))
+      Decimal.add(acc, item_total)
+    end)
+  end
+
+  @doc """
+  Calculates shipping cost based on cart items.
+  """
+  def calculate_shipping(cart_items) do
+    # Simple shipping calculation - can be made more sophisticated
+    case length(cart_items) do
+      0 -> Decimal.new("0")
+      # Flat rate shipping
+      _ -> Decimal.new("10.00")
+    end
+  end
+
+  @doc """
+  Calculates tax based on subtotal plus shipping.
+  """
+  def calculate_tax(subtotal_plus_shipping) do
+    # 8.875% tax rate
+    Decimal.mult(subtotal_plus_shipping, Decimal.new("0.08875"))
+  end
+
+  @doc """
+  Calculates the complete order totals including subtotal, shipping, tax, and grand total.
+  """
+  def calculate_order_totals(cart_items) do
+    subtotal = calculate_subtotal(cart_items)
+    shipping = calculate_shipping(cart_items)
+    total_plus_shipping = Decimal.add(subtotal, shipping)
+    tax = calculate_tax(total_plus_shipping)
+    grand_total = Decimal.add(total_plus_shipping, tax)
+
+    %{
+      subtotal: subtotal,
+      shipping: shipping,
+      tax: tax,
+      grand_total: grand_total
+    }
+  end
+
+  @doc """
+  Removes out-of-stock items from cart and returns available items.
+  """
+  def filter_available_items(cart_items) do
+    Enum.split_with(cart_items, fn item ->
+      if item.product_variant do
+        item.product_variant.available?
+      else
+        item.product.available?
+      end
+    end)
+  end
+
+  @doc """
+  Creates a formatted message for removed out-of-stock items.
+  """
+  def format_removed_items_message(out_of_stock_items) do
+    if length(out_of_stock_items) > 0 do
+      removed_count = length(out_of_stock_items)
+
+      removed_names =
+        Enum.map_join(out_of_stock_items, ", ", fn item ->
+          variant_name =
+            if item.product_variant, do: " (#{item.product_variant.option_name})", else: ""
+
+          "#{item.product.name}#{variant_name}"
+        end)
+
+      "#{removed_count} item(s) removed from cart: #{removed_names} - no longer available"
+    else
+      nil
+    end
+  end
+
+  # Private helper functions
+
+  defp get_item_price(%{product_variant: variant, product: product}) when not is_nil(variant) do
+    # If price_override is nil, fall back to product selling_price
+    if is_nil(variant.price_override) do
+      product.selling_price
+    else
+      variant.price_override
+    end
+  end
+
+  defp get_item_price(%{product: product}) do
+    product.selling_price
   end
 end

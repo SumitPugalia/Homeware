@@ -9,7 +9,13 @@ defmodule HomeWareWeb.SearchLive do
 
   @impl true
   def mount(_params, session, socket) do
-    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
+    socket =
+      if Map.has_key?(socket.assigns, :current_user),
+        do: socket,
+        else: %{
+          socket
+          | assigns: Map.put(socket.assigns, :current_user, get_user_from_session(session))
+        }
 
     {:ok,
      assign(socket,

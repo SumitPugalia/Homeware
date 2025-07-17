@@ -8,14 +8,18 @@ defmodule HomeWareWeb.ProductDetailLive do
   alias Decimal
   alias HomeWare.CartItems
   alias HomeWare.WishlistItems
+  alias HomeWareWeb.SessionUtils
+  alias HomeWareWeb.Formatters
+
+  # Import components
+  import HomeWareWeb.ProductCard, only: [product_card: 1]
 
   # Product detail pages should be publicly accessible
   # on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
 
   @impl true
   def mount(%{"id" => id}, session, socket) do
-    # Assign current_user for layout compatibility (can be nil for unauthenticated users)
-    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
+    socket = SessionUtils.assign_current_user(socket, session)
 
     product = Products.get_product_with_variants!(id)
     variants = product.variants || []
@@ -155,9 +159,7 @@ defmodule HomeWareWeb.ProductDetailLive do
                         <div class="text-sm text-gray-400 mb-1">SKU: <%= variant.sku %></div>
                         <%= if variant.price_override do %>
                           <div class="text-purple-400 font-semibold">
-                            ₹<%= Number.Delimit.number_to_delimited(variant.price_override,
-                              precision: 2
-                            ) %>
+                            ₹<%= Formatters.format_currency(variant.price_override) %>
                           </div>
                         <% end %>
                         <%= unless variant.available? do %>
@@ -172,15 +174,13 @@ defmodule HomeWareWeb.ProductDetailLive do
               <% end %>
               <div class="flex items-center space-x-4">
                 <span class="text-gray-400 line-through text-xl">
-                  ₹<%= Number.Delimit.number_to_delimited(
-                    display_price(@product, @variants, @selected_variant_id, :original),
-                    precision: 2
+                  ₹<%= Formatters.format_currency(
+                    display_price(@product, @variants, @selected_variant_id, :original)
                   ) %>
                 </span>
                 <span class="text-4xl font-bold text-purple-400">
-                  ₹<%= Number.Delimit.number_to_delimited(
-                    display_price(@product, @variants, @selected_variant_id, :selling),
-                    precision: 2
+                  ₹<%= Formatters.format_currency(
+                    display_price(@product, @variants, @selected_variant_id, :selling)
                   ) %>
                 </span>
                 <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm font-semibold border border-red-500/30">
@@ -245,45 +245,88 @@ defmodule HomeWareWeb.ProductDetailLive do
 
               <div class="flex items-center space-x-4">
                 <% selected_variant = Enum.find(@variants, &(&1.id == @selected_variant_id)) %>
-                <%= if selected_variant && selected_variant.available? do %>
-                  <button
-                    phx-click="add_to_cart"
-                    phx-value-product-id={@product.id}
-                    phx-value-variant-id={@selected_variant_id}
-                    phx-value-quantity={@quantity}
-                    class="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
-                  >
-                    <div class="flex items-center justify-center space-x-2">
-                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
-                        >
-                        </path>
-                      </svg>
-                      <span>Add to Cart</span>
-                    </div>
-                  </button>
+
+                <%= if @variants && is_list(@variants) && length(@variants) > 0 do %>
+                  <%= if selected_variant && selected_variant.available? do %>
+                    <button
+                      phx-click="add_to_cart"
+                      phx-value-product-id={@product.id}
+                      phx-value-variant-id={@selected_variant_id}
+                      phx-value-quantity={@quantity}
+                      class="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+                    >
+                      <div class="flex items-center justify-center space-x-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                          >
+                          </path>
+                        </svg>
+                        <span>Add to Cart</span>
+                      </div>
+                    </button>
+                  <% else %>
+                    <button
+                      disabled
+                      class="flex-1 bg-gray-500 text-gray-300 px-8 py-4 rounded-2xl font-bold text-lg cursor-not-allowed"
+                    >
+                      <div class="flex items-center justify-center space-x-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                          >
+                          </path>
+                        </svg>
+                        <span>Out of Stock</span>
+                      </div>
+                    </button>
+                  <% end %>
                 <% else %>
-                  <button
-                    disabled
-                    class="flex-1 bg-gray-500 text-gray-300 px-8 py-4 rounded-2xl font-bold text-lg cursor-not-allowed"
-                  >
-                    <div class="flex items-center justify-center space-x-2">
-                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                        >
-                        </path>
-                      </svg>
-                      <span>Out of Stock</span>
-                    </div>
-                  </button>
+                  <%= if @product.available? do %>
+                    <button
+                      phx-click="add_to_cart"
+                      phx-value-product-id={@product.id}
+                      phx-value-quantity={@quantity}
+                      class="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+                    >
+                      <div class="flex items-center justify-center space-x-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                          >
+                          </path>
+                        </svg>
+                        <span>Add to Cart</span>
+                      </div>
+                    </button>
+                  <% else %>
+                    <button
+                      disabled
+                      class="flex-1 bg-gray-500 text-gray-300 px-8 py-4 rounded-2xl font-bold text-lg cursor-not-allowed"
+                    >
+                      <div class="flex items-center justify-center space-x-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                          >
+                          </path>
+                        </svg>
+                        <span>Out of Stock</span>
+                      </div>
+                    </button>
+                  <% end %>
                 <% end %>
                 <button
                   phx-click={if @is_in_wishlist, do: "remove_from_wishlist", else: "add_to_wishlist"}
@@ -357,52 +400,7 @@ defmodule HomeWareWeb.ProductDetailLive do
             <h2 class="text-3xl font-bold text-white mb-8">Related Products</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <%= for product <- @related_products do %>
-                <div
-                  class="group relative bg-gray-800 rounded-2xl p-4 hover:bg-gray-700 transition-all duration-500 transform hover:-translate-y-2 cursor-pointer"
-                  phx-click="navigate_to_product"
-                  phx-value-product-id={product.id}
-                >
-                  <div class="relative overflow-hidden rounded-xl mb-4">
-                    <img
-                      src={product.featured_image}
-                      class="w-full h-48 object-cover rounded-xl group-hover:scale-110 transition-transform duration-700"
-                      alt={product.name}
-                    />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    </div>
-                    <%= if product.is_featured do %>
-                      <div class="absolute top-2 right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-lg">
-                        Featured
-                      </div>
-                    <% end %>
-                  </div>
-                  <h3 class="text-lg font-bold mb-2 text-white group-hover:text-purple-400 transition-colors">
-                    <%= product.name %>
-                  </h3>
-                  <p class="text-gray-400 text-sm mb-3 line-clamp-2">
-                    <%= product.description %>
-                  </p>
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                      <span class="text-gray-400 line-through text-sm">
-                        ₹<%= Number.Delimit.number_to_delimited(product.price, precision: 2) %>
-                      </span>
-                      <span class="text-lg font-bold text-purple-400">
-                        ₹<%= Number.Delimit.number_to_delimited(product.selling_price, precision: 2) %>
-                      </span>
-                    </div>
-                    <button
-                      phx-click="add_to_cart"
-                      phx-value-product-id={product.id}
-                      phx-value-variant-id={nil}
-                      phx-value-quantity="1"
-                      phx-stop-propagation
-                      class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
+                <.product_card product={product} />
               <% end %>
             </div>
           </div>
@@ -572,21 +570,6 @@ defmodule HomeWareWeb.ProductDetailLive do
         case type do
           :original -> variant.price_override || product.price
           :selling -> variant.price_override || product.selling_price
-        end
-    end
-  end
-
-  defp get_user_from_session(session) do
-    token = session["user_token"]
-
-    case token do
-      nil ->
-        nil
-
-      token ->
-        case HomeWare.Guardian.resource_from_token(token) do
-          {:ok, user, _claims} -> user
-          {:error, _reason} -> nil
         end
     end
   end

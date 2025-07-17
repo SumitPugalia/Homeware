@@ -155,4 +155,102 @@ defmodule HomeWare.ProductsTest do
       assert Decimal.compare(hd(price_filtered.entries).price, Decimal.new("75.0")) != :lt
     end
   end
+
+  describe "availability" do
+    test "product with available variants shows as available" do
+      # Create a product with zero inventory
+      product = Factory.insert(:product, %{inventory_quantity: 0})
+
+      # Create an available variant
+      _variant =
+        Factory.insert(:product_variant, %{
+          product_id: product.id,
+          quantity: 5,
+          is_active: true
+        })
+
+      # Get the product with variants
+      product_with_variants = Products.get_product_with_variants!(product.id)
+
+      # Product should be available because it has an available variant
+      assert product_with_variants.available? == true
+      assert length(product_with_variants.variants) == 1
+      assert hd(product_with_variants.variants).available? == true
+    end
+
+    test "product without variants shows as unavailable when inventory is zero" do
+      # Create a product with zero inventory and no variants
+      product = Factory.insert(:product, %{inventory_quantity: 0})
+
+      # Get the product
+      product_with_variants = Products.get_product_with_variants!(product.id)
+
+      # Product should be unavailable because it has no inventory and no variants
+      assert product_with_variants.available? == false
+      assert product_with_variants.variants == []
+    end
+
+    test "product with only unavailable variants shows as unavailable" do
+      # Create a product with zero inventory
+      product = Factory.insert(:product, %{inventory_quantity: 0})
+
+      # Create an unavailable variant
+      _variant =
+        Factory.insert(:product_variant, %{
+          product_id: product.id,
+          quantity: 0,
+          is_active: true
+        })
+
+      # Get the product with variants
+      product_with_variants = Products.get_product_with_variants!(product.id)
+
+      # Product should be unavailable because all variants are unavailable
+      assert product_with_variants.available? == false
+      assert length(product_with_variants.variants) == 1
+      assert hd(product_with_variants.variants).available? == false
+    end
+
+    test "availability_status and availability_color work with variants" do
+      # Create a product with zero inventory
+      product = Factory.insert(:product, %{inventory_quantity: 0})
+
+      # Create an available variant
+      _variant =
+        Factory.insert(:product_variant, %{
+          product_id: product.id,
+          quantity: 5,
+          is_active: true
+        })
+
+      # Get the product with variants
+      product_with_variants = Products.get_product_with_variants!(product.id)
+
+      # Availability status should show "In Stock" because of available variant
+      assert HomeWare.Products.Product.availability_status(product_with_variants) == "In Stock"
+      assert HomeWare.Products.Product.availability_color(product_with_variants) == "bg-green-500"
+    end
+
+    test "availability_status shows Out of Stock when no variants are available" do
+      # Create a product with zero inventory
+      product = Factory.insert(:product, %{inventory_quantity: 0})
+
+      # Create an unavailable variant
+      _variant =
+        Factory.insert(:product_variant, %{
+          product_id: product.id,
+          quantity: 0,
+          is_active: true
+        })
+
+      # Get the product with variants
+      product_with_variants = Products.get_product_with_variants!(product.id)
+
+      # Availability status should show "Out of Stock" because no variants are available
+      assert HomeWare.Products.Product.availability_status(product_with_variants) ==
+               "Out of Stock"
+
+      assert HomeWare.Products.Product.availability_color(product_with_variants) == "bg-red-500"
+    end
+  end
 end

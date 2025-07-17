@@ -6,25 +6,22 @@ defmodule HomeWareWeb.CheckoutLive do
 
   alias HomeWare.CartItems
   alias HomeWare.Addresses
+  alias HomeWare.Orders
+  alias HomeWareWeb.SessionUtils
+
+  # Import components
+  import HomeWareWeb.CartItem, only: [cart_item: 1]
 
   require Logger
 
   @impl true
   def mount(_params, session, socket) do
-    socket = assign_new(socket, :current_user, fn -> get_user_from_session(session) end)
+    socket = SessionUtils.assign_current_user(socket, session)
     user = socket.assigns.current_user
     cart_items = CartItems.list_user_cart_items(user.id)
 
     # Remove out-of-stock items from the cart
-    {available_items, out_of_stock_items} =
-      Enum.split_with(cart_items, fn item ->
-        # Check variant availability if item has a variant, otherwise check product availability
-        if item.product_variant do
-          item.product_variant.available?
-        else
-          item.product.available?
-        end
-      end)
+    {available_items, out_of_stock_items} = Orders.filter_available_items(cart_items)
 
     Enum.each(out_of_stock_items, fn item ->
       CartItems.delete_cart_item(item)
@@ -32,42 +29,23 @@ defmodule HomeWareWeb.CheckoutLive do
 
     # Show notification if items were removed
     socket =
-      if length(out_of_stock_items) > 0 do
-        removed_count = length(out_of_stock_items)
-
-        removed_names =
-          Enum.map_join(out_of_stock_items, ", ", fn item ->
-            variant_name =
-              if item.product_variant, do: " (#{item.product_variant.option_name})", else: ""
-
-            "#{item.product.name}#{variant_name}"
-          end)
-
-        socket
-        |> put_flash(
-          :warning,
-          "#{removed_count} item(s) removed from cart: #{removed_names} - no longer available"
-        )
+      if message = Orders.format_removed_items_message(out_of_stock_items) do
+        put_flash(socket, :warning, message)
       else
         socket
       end
 
     addresses = Addresses.list_user_addresses(user.id)
-
-    total = calculate_subtotal(available_items)
-    shipping = calculate_shipping(available_items)
-    total_plus_shipping = Decimal.add(total, shipping)
-    tax = calculate_tax(total_plus_shipping)
-    grand_total = Decimal.add(total_plus_shipping, tax)
+    totals = Orders.calculate_order_totals(available_items)
 
     {:ok,
      assign(socket,
        cart_items: available_items,
        addresses: addresses,
-       total: total,
-       shipping: shipping,
-       tax: tax,
-       grand_total: grand_total,
+       total: totals.subtotal,
+       shipping: totals.shipping,
+       tax: totals.tax,
+       grand_total: totals.grand_total,
        step: 1,
        selected_shipping_address_id: nil,
        selected_billing_address_id: nil,
@@ -147,95 +125,7 @@ defmodule HomeWareWeb.CheckoutLive do
               <% else %>
                 <div class="space-y-4">
                   <%= for item <- @cart_items do %>
-                    <div class="flex items-center p-4 bg-gray-800 rounded-xl border border-gray-700">
-                      <img
-                        src={item.product.featured_image || "https://via.placeholder.com/80x80"}
-                        alt={item.product.name}
-                        class="w-20 h-20 rounded-xl object-cover border-2 border-gray-700 shadow-lg mr-4"
-                      />
-                      <div class="flex-1">
-                        <div class="flex justify-between items-center">
-                          <div>
-                            <div class="font-semibold text-lg text-white">
-                              <a
-                                href={~p"/products/#{item.product.id}"}
-                                class="hover:text-purple-400 transition-colors"
-                              >
-                                <%= item.product.name %>
-                              </a>
-                            </div>
-                            <div class="text-sm text-gray-400">
-                              <%= item.product.brand %>
-                              <%= if item.product_variant do %>
-                                | <%= item.product_variant.option_name %> (SKU: <%= item.product_variant.sku %>)
-                                <%= unless item.product_variant.available? do %>
-                                  <span class="bg-red-600 text-white text-xs font-medium px-2 py-1 rounded ml-2">
-                                    Out of Stock
-                                  </span>
-                                <% end %>
-                              <% end %>
-                            </div>
-                          </div>
-                          <div class="text-right">
-                            <span class="font-bold text-lg text-teal-400">
-                              ₹<%= Number.Delimit.number_to_delimited(
-                                Decimal.mult(item.product.selling_price, Decimal.new(item.quantity)),
-                                precision: 2
-                              ) %>
-                            </span>
-                          </div>
-                        </div>
-                        <div class="flex items-center justify-between mt-2">
-                          <div class="flex items-center space-x-2">
-                            <label class="text-gray-400 text-sm">Qty</label>
-                            <div class="flex items-center space-x-1">
-                              <button
-                                phx-click="decrease_quantity"
-                                phx-value-cart-item-id={item.id}
-                                type="button"
-                                class="w-8 h-8 rounded bg-gray-700 text-white hover:bg-gray-600 flex items-center justify-center"
-                                disabled={item.product_variant && !item.product_variant.available?}
-                              >
-                                -
-                              </button>
-                              <span class="px-3 py-1 bg-gray-800 text-white rounded min-w-[2rem] text-center">
-                                <%= item.quantity %>
-                              </span>
-                              <button
-                                phx-click="increase_quantity"
-                                phx-value-cart-item-id={item.id}
-                                type="button"
-                                class="w-8 h-8 rounded bg-gray-700 text-white hover:bg-gray-600 flex items-center justify-center"
-                                disabled={item.product_variant && !item.product_variant.available?}
-                              >
-                                +
-                              </button>
-                            </div>
-                            <span class="text-gray-500 text-sm">
-                              ₹<%= Number.Delimit.number_to_delimited(item.product.selling_price,
-                                precision: 2
-                              ) %> each
-                            </span>
-                          </div>
-                          <button
-                            phx-click="remove_item"
-                            phx-value-cart-item-id={item.id}
-                            type="button"
-                            class="text-red-400 hover:text-red-300 transition-colors p-2 rounded-lg hover:bg-red-500/10"
-                            title="Remove item"
-                          >
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                    <.cart_item item={item} />
                   <% end %>
                 </div>
                 <div class="mt-8 flex justify-end">
@@ -495,7 +385,8 @@ defmodule HomeWareWeb.CheckoutLive do
                   stroke-linejoin="round"
                   stroke-width="2"
                   d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-2 2-2 2-2-.896-2-2z"
-                /><path
+                />
+                <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
@@ -506,14 +397,8 @@ defmodule HomeWareWeb.CheckoutLive do
             </div>
             <div class="flex items-center space-x-2">
               <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" /><circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  fill="none"
-                />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
               </svg>
               <span class="text-xs text-gray-400">18+ Only</span>
             </div>
@@ -529,12 +414,8 @@ defmodule HomeWareWeb.CheckoutLive do
                   stroke-linejoin="round"
                   stroke-width="2"
                   d="M4 4h16v16H4z"
-                /><path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 8h8v8H8z"
                 />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8h8v8H8z" />
               </svg>
               <span class="text-xs text-gray-400">Discreet Shipping</span>
             </div>
@@ -570,15 +451,7 @@ defmodule HomeWareWeb.CheckoutLive do
   end
 
   @impl true
-  def handle_event("test_event", _params, socket) do
-    IO.inspect("TEST EVENT RECEIVED!")
-    {:noreply, socket}
-  end
-
-  @impl true
   def handle_event("increase_quantity", %{"cart-item-id" => cart_item_id}, socket) do
-    IO.inspect("INCREASE QUANTITY for cart item: #{cart_item_id}")
-
     cart_item = CartItems.get_cart_item!(cart_item_id)
     new_quantity = cart_item.quantity + 1
 
@@ -587,27 +460,20 @@ defmodule HomeWareWeb.CheckoutLive do
 
     user = socket.assigns.current_user
     cart_items = CartItems.list_user_cart_items(user.id)
-    total = calculate_subtotal(cart_items)
-    shipping = calculate_shipping(cart_items)
-    total_plus_shipping = Decimal.add(total, shipping)
-    tax = calculate_tax(total_plus_shipping)
-    grand_total = Decimal.add(total_plus_shipping, tax)
+    totals = Orders.calculate_order_totals(cart_items)
 
     {:noreply,
      assign(socket,
        cart_items: cart_items,
-       total: total,
-       shipping: shipping,
-       tax: tax,
-       grand_total: grand_total,
-       cart_count: CartItems.get_user_cart_count(user.id)
+       total: totals.subtotal,
+       shipping: totals.shipping,
+       tax: totals.tax,
+       grand_total: totals.grand_total
      )}
   end
 
   @impl true
   def handle_event("decrease_quantity", %{"cart-item-id" => cart_item_id}, socket) do
-    IO.inspect("DECREASE QUANTITY for cart item: #{cart_item_id}")
-
     cart_item = CartItems.get_cart_item!(cart_item_id)
     new_quantity = max(1, cart_item.quantity - 1)
 
@@ -616,65 +482,41 @@ defmodule HomeWareWeb.CheckoutLive do
 
     user = socket.assigns.current_user
     cart_items = CartItems.list_user_cart_items(user.id)
-    total = calculate_subtotal(cart_items)
-    shipping = calculate_shipping(cart_items)
-    total_plus_shipping = Decimal.add(total, shipping)
-    tax = calculate_tax(total_plus_shipping)
-    grand_total = Decimal.add(total_plus_shipping, tax)
+    totals = Orders.calculate_order_totals(cart_items)
 
     {:noreply,
      assign(socket,
        cart_items: cart_items,
-       total: total,
-       shipping: shipping,
-       tax: tax,
-       grand_total: grand_total,
-       cart_count: CartItems.get_user_cart_count(user.id)
+       total: totals.subtotal,
+       shipping: totals.shipping,
+       tax: totals.tax,
+       grand_total: totals.grand_total
      )}
   end
 
   @impl true
-  def handle_event("update_quantity", params, socket) do
-    IO.inspect(params, label: "update_quantity params")
-    IO.inspect(socket.assigns, label: "socket assigns before update")
+  def handle_event(
+        "update_quantity",
+        %{"value" => quantity, "cart-item-id" => cart_item_id},
+        socket
+      ) do
+    cart_item = CartItems.get_cart_item!(cart_item_id)
 
-    case params do
-      %{"value" => quantity, "cart-item-id" => cart_item_id} ->
-        IO.inspect("Processing quantity update: #{quantity} for cart item: #{cart_item_id}")
+    {:ok, _updated_cart_item} =
+      CartItems.update_cart_item(cart_item, %{quantity: String.to_integer(quantity)})
 
-        cart_item = CartItems.get_cart_item!(cart_item_id)
-        IO.inspect(cart_item, label: "Original cart item")
+    user = socket.assigns.current_user
+    cart_items = CartItems.list_user_cart_items(user.id)
+    totals = Orders.calculate_order_totals(cart_items)
 
-        {:ok, updated_cart_item} =
-          CartItems.update_cart_item(cart_item, %{quantity: String.to_integer(quantity)})
-
-        IO.inspect(updated_cart_item, label: "Updated cart item")
-
-        user = socket.assigns.current_user
-        cart_items = CartItems.list_user_cart_items(user.id)
-        total = calculate_subtotal(cart_items)
-        shipping = calculate_shipping(cart_items)
-        total_plus_shipping = Decimal.add(total, shipping)
-        tax = calculate_tax(total_plus_shipping)
-        grand_total = Decimal.add(total_plus_shipping, tax)
-
-        IO.inspect(cart_items, label: "Updated cart items")
-        IO.inspect(total, label: "New total")
-
-        {:noreply,
-         assign(socket,
-           cart_items: cart_items,
-           total: total,
-           shipping: shipping,
-           tax: tax,
-           grand_total: grand_total,
-           cart_count: CartItems.get_user_cart_count(user.id)
-         )}
-
-      _ ->
-        IO.inspect(params, label: "Unexpected params format")
-        {:noreply, socket}
-    end
+    {:noreply,
+     assign(socket,
+       cart_items: cart_items,
+       total: totals.subtotal,
+       shipping: totals.shipping,
+       tax: totals.tax,
+       grand_total: totals.grand_total
+     )}
   end
 
   @impl true
@@ -684,20 +526,15 @@ defmodule HomeWareWeb.CheckoutLive do
 
     user = socket.assigns.current_user
     cart_items = CartItems.list_user_cart_items(user.id)
-    total = calculate_subtotal(cart_items)
-    shipping = calculate_shipping(cart_items)
-    total_plus_shipping = Decimal.add(total, shipping)
-    tax = calculate_tax(total_plus_shipping)
-    grand_total = Decimal.add(total_plus_shipping, tax)
+    totals = Orders.calculate_order_totals(cart_items)
 
     {:noreply,
      assign(socket,
        cart_items: cart_items,
-       total: total,
-       shipping: shipping,
-       tax: tax,
-       grand_total: grand_total,
-       cart_count: CartItems.get_user_cart_count(user.id)
+       total: totals.subtotal,
+       shipping: totals.shipping,
+       tax: totals.tax,
+       grand_total: totals.grand_total
      )}
   end
 
@@ -779,6 +616,8 @@ defmodule HomeWareWeb.CheckoutLive do
       billing_address_id: billing_address.id,
       order_number: order_number,
       subtotal: socket.assigns.total,
+      shipping_amount: socket.assigns.shipping,
+      tax_amount: socket.assigns.tax,
       total_amount: socket.assigns.grand_total,
       payment_method: "cash_on_delivery",
       status: "pending",
@@ -822,36 +661,5 @@ defmodule HomeWareWeb.CheckoutLive do
 
     random_number = :crypto.strong_rand_bytes(4) |> Base.encode16() |> binary_part(0, 8)
     "VIBE-#{day_month}-#{random_number}"
-  end
-
-  defp calculate_subtotal(cart_items) do
-    Enum.reduce(cart_items, Decimal.new(0), fn item, acc ->
-      Decimal.add(acc, Decimal.mult(item.product.selling_price, Decimal.new(item.quantity)))
-    end)
-  end
-
-  defp calculate_shipping(cart_items) do
-    # Simple shipping calculation
-    if Enum.empty?(cart_items), do: Decimal.new(0), else: Decimal.new("9.99")
-  end
-
-  defp calculate_tax(subtotal) do
-    # Simple tax calculation (8.875% for NY)
-    Decimal.mult(subtotal, Decimal.new("0.08875"))
-  end
-
-  defp get_user_from_session(session) do
-    token = session["user_token"]
-
-    case token do
-      nil ->
-        nil
-
-      token ->
-        case HomeWare.Guardian.resource_from_token(token) do
-          {:ok, user, _claims} -> user
-          {:error, _reason} -> nil
-        end
-    end
   end
 end

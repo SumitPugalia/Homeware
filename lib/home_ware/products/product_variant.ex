@@ -31,8 +31,8 @@ defmodule HomeWare.Products.ProductVariant do
 
   # Set the available? field based on quantity and is_active
   def set_availability(variant) when is_map(variant) do
-    is_active = Map.get(variant, :is_active) || Map.get(variant, "is_active")
-    quantity = Map.get(variant, :quantity) || Map.get(variant, "quantity")
+    is_active = Map.get(variant, :is_active) || Map.get(variant, "is_active") || false
+    quantity = Map.get(variant, :quantity) || Map.get(variant, "quantity") || 0
     available = is_active && quantity > 0
     Map.put(variant, :available?, available)
   end

@@ -153,23 +153,24 @@
               </span>
             </div>
 
-            <%= if @order.tax_amount && Decimal.gt?(@order.tax_amount, Decimal.new("0")) do %>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Tax</span>
-                <span class="text-white">
-                  ₹<%= Number.Delimit.number_to_delimited(@order.tax_amount, precision: 2) %>
-                </span>
-              </div>
-            <% end %>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Tax</span>
+              <span class="text-white">
+                ₹<%= Number.Delimit.number_to_delimited(@order.tax_amount || Decimal.new("0.00"),
+                  precision: 2
+                ) %>
+              </span>
+            </div>
 
-            <%= if @order.shipping_amount && Decimal.gt?(@order.shipping_amount, Decimal.new("0")) do %>
-              <div class="flex justify-between">
-                <span class="text-gray-400">Shipping</span>
-                <span class="text-white">
-                  ₹<%= Number.Delimit.number_to_delimited(@order.shipping_amount, precision: 2) %>
-                </span>
-              </div>
-            <% end %>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Shipping</span>
+              <span class="text-white">
+                ₹<%= Number.Delimit.number_to_delimited(
+                  @order.shipping_amount || Decimal.new("0.00"),
+                  precision: 2
+                ) %>
+              </span>
+            </div>
 
             <%= if @order.discount_amount && Decimal.gt?(@order.discount_amount, Decimal.new("0")) do %>
               <div class="flex justify-between">
