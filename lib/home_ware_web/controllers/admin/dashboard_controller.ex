@@ -39,8 +39,7 @@ defmodule HomeWareWeb.Admin.DashboardController do
       best_sellers: best_sellers,
       recent_orders: recent_orders,
       sale_graph_data: sale_graph_data,
-      current_path: conn.request_path,
-      csrf_token: get_csrf_token()
+      current_path: conn.request_path
     )
   end
 end

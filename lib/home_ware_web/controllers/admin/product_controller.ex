@@ -27,8 +27,7 @@ defmodule HomeWareWeb.Admin.ProductController do
       total_pages: total_pages,
       total_entries: total_entries,
       per_page: @per_page,
-      current_path: conn.request_path,
-      csrf_token: get_csrf_token()
+      current_path: conn.request_path
     )
   end
 
@@ -42,8 +41,7 @@ defmodule HomeWareWeb.Admin.ProductController do
       form: form,
       categories: categories,
       brands: brands,
-      current_path: conn.request_path,
-      csrf_token: get_csrf_token()
+      current_path: conn.request_path
     )
   end
 
@@ -108,8 +106,7 @@ defmodule HomeWareWeb.Admin.ProductController do
       form: form,
       categories: categories,
       brands: brands,
-      current_path: conn.request_path,
-      csrf_token: get_csrf_token()
+      current_path: conn.request_path
     )
   end
 

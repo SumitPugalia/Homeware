@@ -460,7 +460,7 @@ defmodule HomeWareWeb.ProductDetailLive do
   end
 
   @impl true
-  def handle_event("add_to_cart", %{"product-id" => product_id}, socket) do
+  def handle_event("add_to_cart", %{"product-id" => product_id, "quantity" => quantity}, socket) do
     user = Map.get(socket.assigns, :current_user)
 
     cond do
@@ -475,7 +475,7 @@ defmodule HomeWareWeb.ProductDetailLive do
         product = HomeWare.Products.get_product!(product_id)
 
         if product.available? do
-          case CartItems.add_to_cart(user.id, product_id, nil, 1) do
+          case CartItems.add_to_cart(user.id, product_id, nil, String.to_integer(quantity)) do
             {:ok, _cart_item} ->
               {:noreply, put_flash(socket, :info, "Added to cart!")}
 
@@ -486,6 +486,16 @@ defmodule HomeWareWeb.ProductDetailLive do
           {:noreply, put_flash(socket, :error, "This product is currently out of stock.")}
         end
     end
+  end
+
+  @impl true
+  def handle_event("add_to_cart", %{"product-id" => product_id}, socket) do
+    # Fallback for when quantity is not provided, use the current quantity from socket
+    handle_event(
+      "add_to_cart",
+      %{"product-id" => product_id, "quantity" => socket.assigns.quantity},
+      socket
+    )
   end
 
   @impl true

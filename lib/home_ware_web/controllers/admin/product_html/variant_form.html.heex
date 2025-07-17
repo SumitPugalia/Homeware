@@ -1,0 +1,30 @@
+<.form for={@form} action={@action} method={@method} class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <.input field={@form[:option_name]} label="Option Name (e.g. Flavor, Size)" required />
+  <.input field={@form[:sku]} label="SKU" />
+  <.input field={@form[:price_override]} label="Price Override" type="number" step="0.01" />
+  <.input field={@form[:quantity]} label="Quantity" type="number" required />
+  <div class="flex items-center mt-2">
+    <input
+      type="checkbox"
+      name="product_variant[is_active]"
+      id="variant_is_active"
+      value="true"
+      checked={@form[:is_active].value}
+      class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+    />
+    <label for="variant_is_active" class="ml-2 block text-sm text-gray-900">Active</label>
+  </div>
+  <div class="md:col-span-3 flex items-center gap-4 mt-4">
+    <button
+      type="submit"
+      class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 transition-colors"
+    >
+      <%= if @method == "post", do: "Add Variant", else: "Update Variant" %>
+    </button>
+    <%= if @method == "put" do %>
+      <a href={~p"/admin/products/#{@product.id}/edit"} class="text-gray-600 hover:underline">
+        Cancel
+      </a>
+    <% end %>
+  </div>
+</.form>

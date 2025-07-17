@@ -90,7 +90,9 @@ defmodule HomeWareWeb.Router do
     get "/products/:id/confirm_delete", ProductController, :confirm_delete,
       as: :product_confirm_delete
 
-    resources "/products", ProductController, except: [:show]
+    resources "/products", ProductController, except: [:show] do
+      resources "/variants", ProductVariantController, except: [:show]
+    end
 
     resources "/orders", OrderController, only: [:index, :show]
     post "/orders/:id/update_status", OrderController, :update_status

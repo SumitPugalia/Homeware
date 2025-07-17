@@ -1,0 +1,467 @@
+<div class="min-h-screen bg-white dark:bg-gray-900 flex flex-col gap-8">
+  <!-- Header -->
+  <div class="flex items-center justify-between py-4 px-2 md:px-0">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+        Edit Product
+      </h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Update product information</p>
+    </div>
+    <div class="flex items-center space-x-3">
+      <a
+        href={~p"/admin/products"}
+        class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+      >
+        <i-lucide-arrow-left class="w-4 h-4 mr-2"></i-lucide-arrow-left>
+        Back to Products
+      </a>
+    </div>
+  </div>
+  <!-- Main Content -->
+  <div class="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-all duration-300">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Product Information</h3>
+      </div>
+
+      <div class="p-6">
+        <.form
+          for={@form}
+          action={~p"/admin/products/#{@product.id}"}
+          method="post"
+          multipart
+          enctype="multipart/form-data"
+          class="space-y-8"
+        >
+          <input type="hidden" name="_method" value="put" />
+          <!-- Basic Information -->
+          <div class="space-y-6">
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center">
+              <i-lucide-info class="w-5 h-5 mr-2 text-blue-500"></i-lucide-info>
+              Basic Information
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <.input
+                field={@form[:name]}
+                label="Product Name"
+                required
+                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+              <.input
+                field={@form[:brand]}
+                label="Brand"
+                type="select"
+                options={[{"Select a brand", ""} | Enum.map(@brands, &{&1, &1})]}
+                required
+                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+              <.input
+                field={@form[:model]}
+                label="Model"
+                required
+                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+              <.input
+                field={@form[:product_type]}
+                label="Product Type"
+                required
+                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+              <.input
+                field={@form[:product_category]}
+                label="Product Category"
+                required
+                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+              <.input
+                field={@form[:category_id]}
+                label="Category"
+                type="select"
+                options={Enum.map(@categories, &{&1.name, &1.id})}
+                required
+                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+            </div>
+            <.input
+              field={@form[:description]}
+              label="Description"
+              type="textarea"
+              class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              required
+            />
+          </div>
+          <!-- Pricing & Inventory -->
+          <div class="space-y-6">
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center">
+              <i-lucide-dollar-sign class="w-5 h-5 mr-2 text-green-500"></i-lucide-dollar-sign>
+              Pricing & Inventory
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <.input
+                field={@form[:price]}
+                label="MRP"
+                type="number"
+                step="0.01"
+                required
+                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+              <.input
+                field={@form[:selling_price]}
+                label="Selling Price"
+                type="number"
+                step="0.01"
+                required
+                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+              <.input
+                field={@form[:inventory_quantity]}
+                label="Stock Quantity"
+                type="number"
+                required
+                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              />
+            </div>
+          </div>
+          <!-- Current Images -->
+          <%= if @product.featured_image || (@product.images && length(@product.images) > 0) do %>
+            <div class="space-y-6">
+              <h4 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center">
+                <i-lucide-image class="w-5 h-5 mr-2 text-purple-500"></i-lucide-image>
+                Current Images
+              </h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <%= if @product.featured_image do %>
+                  <div class="relative group">
+                    <img
+                      src={@product.featured_image}
+                      alt="Featured Image"
+                      class="w-full h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-600 group-hover:shadow-lg transition-all duration-200"
+                    />
+                    <div class="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                      Featured
+                    </div>
+                  </div>
+                <% end %>
+                <%= for {image, index} <- Enum.with_index(@product.images || []) do %>
+                  <%= if image != @product.featured_image do %>
+                    <div class="relative group">
+                      <img
+                        src={image}
+                        alt={"Product Image #{index + 1}"}
+                        class="w-full h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-600 group-hover:shadow-lg transition-all duration-200"
+                      />
+                    </div>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+          <!-- Product Images -->
+          <div class="space-y-6">
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center">
+              <i-lucide-upload class="w-5 h-5 mr-2 text-indigo-500"></i-lucide-upload>
+              Update Product Images
+            </h4>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                  New Featured Image
+                </label>
+                <input
+                  type="file"
+                  name="product[featured_image]"
+                  accept="image/*"
+                  class="mt-2 block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300 transition-all duration-200"
+                />
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Upload a new featured image (optional)
+                </p>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                  Additional Images
+                </label>
+                <input
+                  type="file"
+                  name="product[images][]"
+                  accept="image/*"
+                  multiple
+                  class="mt-2 block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300 transition-all duration-200"
+                />
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Upload additional product images (optional)
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- Dimensions -->
+          <div class="space-y-6">
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center">
+              <i-lucide-ruler class="w-5 h-5 mr-2 text-orange-500"></i-lucide-ruler>
+              Dimensions
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label
+                  for="dimensions_length"
+                  class="block text-sm font-semibold text-gray-900 dark:text-white mb-2"
+                >
+                  Length (cm)
+                </label>
+                <input
+                  type="number"
+                  name="product[dimensions][length]"
+                  id="dimensions_length"
+                  step="0.01"
+                  value={get_in(@product.dimensions, ["length"])}
+                  class="mt-2 block w-full rounded-lg bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  for="dimensions_width"
+                  class="block text-sm font-semibold text-gray-900 dark:text-white mb-2"
+                >
+                  Width (cm)
+                </label>
+                <input
+                  type="number"
+                  name="product[dimensions][width]"
+                  id="dimensions_width"
+                  step="0.01"
+                  value={get_in(@product.dimensions, ["width"])}
+                  class="mt-2 block w-full rounded-lg bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  for="dimensions_height"
+                  class="block text-sm font-semibold text-gray-900 dark:text-white mb-2"
+                >
+                  Height (cm)
+                </label>
+                <input
+                  type="number"
+                  name="product[dimensions][height]"
+                  id="dimensions_height"
+                  step="0.01"
+                  value={get_in(@product.dimensions, ["height"])}
+                  class="mt-2 block w-full rounded-lg bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+            </div>
+          </div>
+          <!-- Specifications -->
+          <div class="space-y-6">
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center">
+              <i-lucide-tag class="w-5 h-5 mr-2 text-indigo-500"></i-lucide-tag>
+              Specifications
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  for="specifications_color"
+                  class="block text-sm font-semibold text-gray-900 dark:text-white mb-2"
+                >
+                  Color
+                </label>
+                <input
+                  type="text"
+                  name="product[specifications][color]"
+                  id="specifications_color"
+                  value={get_in(@product.specifications, ["color"])}
+                  class="mt-2 block w-full rounded-lg bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  for="specifications_material"
+                  class="block text-sm font-semibold text-gray-900 dark:text-white mb-2"
+                >
+                  Material
+                </label>
+                <input
+                  type="text"
+                  name="product[specifications][material]"
+                  id="specifications_material"
+                  value={get_in(@product.specifications, ["material"])}
+                  class="mt-2 block w-full rounded-lg bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+            </div>
+          </div>
+          <!-- Status -->
+          <div class="space-y-6">
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center">
+              <i-lucide-toggle-left class="w-5 h-5 mr-2 text-emerald-500"></i-lucide-toggle-left>
+              Status
+            </h4>
+            <div class="flex items-center space-x-6">
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  name="product[is_active]"
+                  value="true"
+                  checked={@form[:is_active].value}
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 transition-all duration-200"
+                />
+                <span class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Active Product
+                </span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  name="product[is_featured]"
+                  value="true"
+                  checked={@form[:is_featured].value}
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 transition-all duration-200"
+                />
+                <span class="ml-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Featured Product
+                </span>
+              </label>
+            </div>
+          </div>
+          <!-- Product Variants -->
+          <div class="space-y-6">
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center">
+              <i-lucide-layers class="w-5 h-5 mr-2 text-amber-500"></i-lucide-layers>
+              Product Variants
+            </h4>
+
+            <%= if @product.variants && Enum.any?(@product.variants) do %>
+              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                <div class="overflow-x-auto">
+                  <table class="min-w-full text-sm divide-y divide-gray-200 dark:divide-gray-600">
+                    <thead class="bg-gray-100 dark:bg-gray-600">
+                      <tr>
+                        <th class="px-4 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          Option
+                        </th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          SKU
+                        </th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          Price Override
+                        </th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          Quantity
+                        </th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          Active
+                        </th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+                      <%= for variant <- @product.variants do %>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                          <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                            <%= variant.option_name %>
+                          </td>
+                          <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                            <%= variant.sku %>
+                          </td>
+                          <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                            <%= if variant.price_override,
+                              do:
+                                "₹#{Number.Delimit.number_to_delimited(variant.price_override, precision: 2)}",
+                              else: "-" %>
+                          </td>
+                          <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                            <%= variant.quantity %>
+                          </td>
+                          <td class="px-4 py-3 whitespace-nowrap">
+                            <span class={
+                              if variant.is_active do
+                                "inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 transition-colors duration-200"
+                              else
+                                "inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 transition-colors duration-200"
+                              end
+                            }>
+                              <%= if variant.is_active, do: "Yes", else: "No" %>
+                            </span>
+                          </td>
+                          <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                            <div class="flex items-center space-x-2">
+                              <a
+                                href={
+                                  ~p"/admin/products/#{@product.id}/variants/#{variant.id}/edit"
+                                }
+                                class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+                                title="Edit"
+                              >
+                                <i-lucide-edit class="w-4 h-4"></i-lucide-edit>
+                              </a>
+                              <form
+                                action={~p"/admin/products/#{@product.id}/variants/#{variant.id}"}
+                                method="post"
+                                class="inline"
+                                onsubmit="return confirm('Are you sure you want to delete this variant?');"
+                              >
+                                <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                                <input type="hidden" name="_method" value="delete" />
+                                <button
+                                  type="submit"
+                                  class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors duration-200"
+                                  title="Delete"
+                                >
+                                  <i-lucide-trash-2 class="w-4 h-4"></i-lucide-trash-2>
+                                </button>
+                              </form>
+                            </div>
+                          </td>
+                        </tr>
+                      <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            <% else %>
+              <div class="text-center py-8">
+                <div class="w-16 h-16 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i-lucide-layers class="w-8 h-8 text-gray-400"></i-lucide-layers>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  No variants yet
+                </h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-4">
+                  Add variants to provide different options for this product.
+                </p>
+              </div>
+            <% end %>
+
+            <div class="flex items-center justify-between">
+              <a
+                href={~p"/admin/products/#{@product.id}/variants/new"}
+                class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-105"
+              >
+                <i-lucide-plus class="w-4 h-4 mr-2"></i-lucide-plus>
+                Add New Variant
+              </a>
+            </div>
+          </div>
+          <!-- Submit Button -->
+          <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <a
+              href={~p"/admin/products"}
+              class="px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-200"
+            >
+              Cancel
+            </a>
+            <button
+              type="submit"
+              class="px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-lg transition-all duration-200 transform hover:scale-105"
+            >
+              <i-lucide-save class="w-4 h-4 mr-2 inline"></i-lucide-save>
+              Update Product
+            </button>
+          </div>
+        </.form>
+      </div>
+    </div>
+  </div>
+</div>

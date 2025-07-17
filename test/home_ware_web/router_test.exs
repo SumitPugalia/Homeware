@@ -51,7 +51,7 @@ defmodule HomeWareWeb.RouterTest do
         |> put_req_header("authorization", "Bearer #{token}")
         |> get(~p"/profile")
 
-      assert html_response(conn, 200) =~ "Account Settings"
+      assert html_response(conn, 200) =~ "Profile"
     end
 
     test "GET /orders works when authenticated", %{conn: conn} do

@@ -3,8 +3,12 @@ defmodule HomeWareWeb.Admin.Shared do
   Shared helpers for admin views.
   """
 
+  import Phoenix.Controller, only: [get_csrf_token: 0]
+
   def render_admin_sidebar(assigns) do
     current_path = assigns[:current_path] || "/admin/dashboard"
+    # Always get fresh CSRF token from the controller
+    csrf_token = get_csrf_token()
 
     sidebar = """
     <div class="hidden md:fixed md:inset-y-0 md:left-0 md:z-50 md:w-64 md:bg-white md:dark:bg-gray-800 md:shadow-lg md:block border-r border-gray-200 dark:border-gray-700">
@@ -13,7 +17,7 @@ defmodule HomeWareWeb.Admin.Shared do
       </div>
       <nav class="mt-8">
         <div class="px-4 space-y-2">
-          #{sidebar_links(current_path, [vertical: true], assigns)}
+          #{sidebar_links(current_path, [vertical: true], assigns, csrf_token)}
         </div>
       </nav>
     </div>
@@ -24,7 +28,7 @@ defmodule HomeWareWeb.Admin.Shared do
       <div class="flex items-center space-x-4">
         <h1 class="text-lg font-bold text-blue-600 dark:text-blue-400">Admin</h1>
         <nav class="flex space-x-1">
-          #{sidebar_links(current_path, [vertical: false], assigns)}
+          #{sidebar_links(current_path, [vertical: false], assigns, csrf_token)}
         </nav>
       </div>
     </div>
@@ -34,7 +38,7 @@ defmodule HomeWareWeb.Admin.Shared do
     Phoenix.HTML.raw(sidebar <> topbar)
   end
 
-  defp sidebar_links(current_path, opts, assigns) do
+  defp sidebar_links(current_path, opts, _assigns, csrf_token) do
     vertical = Keyword.get(opts, :vertical, true)
 
     link_class = fn active ->
@@ -84,7 +88,7 @@ defmodule HomeWareWeb.Admin.Shared do
     <div class=\"#{if vertical, do: "pt-4 mt-4 border-t border-gray-200 dark:border-gray-700", else: "ml-2"}\">
       <form action=\"/users/log_out\" method=\"post\" style=\"display: inline;\">
         <input type=\"hidden\" name=\"_method\" value=\"delete\" />
-        <input type=\"hidden\" name=\"_csrf_token\" value=\"#{assigns[:csrf_token] || ""}\" />
+        <input type=\"hidden\" name=\"_csrf_token\" value=\"#{csrf_token}\" />
         <button type=\"submit\" class=\"flex items-center px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg w-full text-left transition-all duration-200 interactive-hover\">
           <svg class=\"w-5 h-5 mr-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1\"></path></svg>
           <span class=\"#{if vertical, do: "", else: "hidden sm:inline"}\">Logout</span>
