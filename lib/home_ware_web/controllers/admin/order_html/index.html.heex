@@ -118,7 +118,7 @@
               type="text"
               name="search"
               value={@search_query || ""}
-              placeholder="Search by order ID, customer name, or email..."
+              placeholder="Search by order number, customer name, or email..."
               class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
             />
           </div>
@@ -254,7 +254,7 @@
                     </div>
                     <div class="min-w-0 flex-1">
                       <div class="text-sm font-semibold text-gray-900 dark:text-white">
-                        #<%= order.id %>
+                        #<%= order.order_number %>
                       </div>
                       <div class="text-sm text-gray-500 dark:text-gray-400">
                         <%= length(order.order_items) %> items
@@ -358,7 +358,15 @@
                 prev_params =
                   if @search_query,
                     do: Map.put(prev_params, :search, @search_query),
-                    else: prev_params %>
+                    else: prev_params
+
+                prev_params =
+                  if @start_date,
+                    do: Map.put(prev_params, :start_date, @start_date),
+                    else: prev_params
+
+                prev_params =
+                  if @end_date, do: Map.put(prev_params, :end_date, @end_date), else: prev_params %>
                 <a
                   href={~p"/admin/orders?#{prev_params}"}
                   class="px-3 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
@@ -378,7 +386,15 @@
                 next_params =
                   if @search_query,
                     do: Map.put(next_params, :search, @search_query),
-                    else: next_params %>
+                    else: next_params
+
+                next_params =
+                  if @start_date,
+                    do: Map.put(next_params, :start_date, @start_date),
+                    else: next_params
+
+                next_params =
+                  if @end_date, do: Map.put(next_params, :end_date, @end_date), else: next_params %>
                 <a
                   href={~p"/admin/orders?#{next_params}"}
                   class="px-3 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"

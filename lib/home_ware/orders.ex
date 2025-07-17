@@ -267,10 +267,13 @@ defmodule HomeWare.Orders do
     per_page = filters[:per_page] || 20
     status = filters[:status]
     search = filters[:search]
+    start_date = filters[:start_date]
+    end_date = filters[:end_date]
 
     Order
     |> maybe_filter_by_status(status)
     |> maybe_search_orders(search)
+    |> maybe_filter_by_date_range(start_date, end_date)
     |> preload([:user, :order_items])
     |> order_by([o], desc: o.inserted_at)
     |> Repo.paginate(%{page: page, per_page: per_page})
@@ -282,10 +285,13 @@ defmodule HomeWare.Orders do
   def count_all_orders_with_filters(filters \\ %{}) do
     status = filters[:status]
     search = filters[:search]
+    start_date = filters[:start_date]
+    end_date = filters[:end_date]
 
     Order
     |> maybe_filter_by_status(status)
     |> maybe_search_orders(search)
+    |> maybe_filter_by_date_range(start_date, end_date)
     |> Repo.aggregate(:count, :id)
   end
 
@@ -316,6 +322,7 @@ defmodule HomeWare.Orders do
     |> where(
       [o, u],
       ilike(o.id, ^search_term) or
+        ilike(o.order_number, ^search_term) or
         ilike(u.email, ^search_term) or
         ilike(u.first_name, ^search_term) or
         ilike(u.last_name, ^search_term)
@@ -323,4 +330,26 @@ defmodule HomeWare.Orders do
   end
 
   defp maybe_search_orders(query, _), do: query
+
+  defp maybe_filter_by_date_range(query, nil, nil), do: query
+
+  defp maybe_filter_by_date_range(query, start_date, nil) when is_binary(start_date) do
+    where(query, [o], fragment("DATE(?)", o.inserted_at) >= ^start_date)
+  end
+
+  defp maybe_filter_by_date_range(query, nil, end_date) when is_binary(end_date) do
+    where(query, [o], fragment("DATE(?)", o.inserted_at) <= ^end_date)
+  end
+
+  defp maybe_filter_by_date_range(query, start_date, end_date)
+       when is_binary(start_date) and is_binary(end_date) do
+    where(
+      query,
+      [o],
+      fragment("DATE(?)", o.inserted_at) >= ^start_date and
+        fragment("DATE(?)", o.inserted_at) <= ^end_date
+    )
+  end
+
+  defp maybe_filter_by_date_range(query, _, _), do: query
 end
