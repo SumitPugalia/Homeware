@@ -616,6 +616,8 @@ defmodule HomeWareWeb.CheckoutLive do
       billing_address_id: billing_address.id,
       order_number: order_number,
       subtotal: socket.assigns.total,
+      shipping_amount: socket.assigns.shipping,
+      tax_amount: socket.assigns.tax,
       total_amount: socket.assigns.grand_total,
       payment_method: "cash_on_delivery",
       status: "pending",
