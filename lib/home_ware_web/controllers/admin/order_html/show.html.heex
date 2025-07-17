@@ -1,0 +1,238 @@
+<div class="min-h-screen bg-white dark:bg-gray-900 flex flex-col gap-8">
+  <!-- Header -->
+  <div class="flex items-center justify-between py-4 px-2 md:px-0">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+        Order #<%= @order.id %>
+      </h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Order details and management</p>
+    </div>
+    <div class="flex items-center space-x-3">
+      <a
+        href={~p"/admin/orders"}
+        class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+      >
+        <i-lucide-arrow-left class="w-4 h-4 mr-2"></i-lucide-arrow-left>
+        Back to Orders
+      </a>
+    </div>
+  </div>
+  <!-- Order Summary -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Order Details -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Order Information -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Order Information</h3>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
+                Order Details
+              </h4>
+              <div class="space-y-2">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600 dark:text-gray-300">Order ID:</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">
+                    #<%= @order.id %>
+                  </span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600 dark:text-gray-300">Date:</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">
+                    <%= Calendar.strftime(@order.inserted_at, "%B %d, %Y at %I:%M %p") %>
+                  </span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600 dark:text-gray-300">Status:</span>
+                  <span class={
+                    case @order.status do
+                      "pending" ->
+                        "inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+
+                      "paid" ->
+                        "inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+
+                      "shipped" ->
+                        "inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+
+                      "delivered" ->
+                        "inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
+
+                      "cancelled" ->
+                        "inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+
+                      _ ->
+                        "inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                    end
+                  }>
+                    <%= @order.status |> to_string() |> String.capitalize() %>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
+                Payment Details
+              </h4>
+              <div class="space-y-2">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600 dark:text-gray-300">Subtotal:</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">
+                    ₹<%= Number.Delimit.number_to_delimited(@order.subtotal, precision: 2) %>
+                  </span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600 dark:text-gray-300">Shipping:</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">
+                    ₹<%= Number.Delimit.number_to_delimited(@order.shipping_amount, precision: 2) %>
+                  </span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600 dark:text-gray-300">Tax:</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white">
+                    ₹<%= Number.Delimit.number_to_delimited(@order.tax_amount, precision: 2) %>
+                  </span>
+                </div>
+                <div class="flex justify-between border-t border-gray-200 dark:border-gray-600 pt-2">
+                  <span class="text-sm font-semibold text-gray-900 dark:text-white">Total:</span>
+                  <span class="text-sm font-bold text-gray-900 dark:text-white">
+                    ₹<%= Number.Delimit.number_to_delimited(@order.total_amount, precision: 2) %>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Order Items -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Order Items</h3>
+        </div>
+        <div class="p-6">
+          <div class="space-y-4">
+            <%= for item <- @order.order_items do %>
+              <div class="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div class="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-600 rounded-lg flex items-center justify-center">
+                  <i-lucide-box class="w-8 h-8 text-white"></i-lucide-box>
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-sm font-semibold text-gray-900 dark:text-white">
+                    <%= item.product.name %>
+                  </h4>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    <%= item.product.brand %> • <%= item.product.model %>
+                  </p>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">
+                    ₹<%= Number.Delimit.number_to_delimited(item.unit_price, precision: 2) %>
+                  </div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">
+                    Qty: <%= item.quantity %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Customer & Actions -->
+    <div class="space-y-6">
+      <!-- Customer Information -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Customer Information
+          </h3>
+        </div>
+        <div class="p-6">
+          <div class="space-y-4">
+            <div>
+              <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
+                Contact Details
+              </h4>
+              <div class="space-y-2">
+                <div>
+                  <span class="text-sm text-gray-600 dark:text-gray-300">Name:</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white ml-2">
+                    <%= @order.user.first_name %> <%= @order.user.last_name %>
+                  </span>
+                </div>
+                <div>
+                  <span class="text-sm text-gray-600 dark:text-gray-300">Email:</span>
+                  <span class="text-sm font-medium text-gray-900 dark:text-white ml-2">
+                    <%= @order.user.email %>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <%= if @order.shipping_address do %>
+              <div>
+                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
+                  Shipping Address
+                </h4>
+                <div class="text-sm text-gray-900 dark:text-white">
+                  <div>
+                    <%= @order.shipping_address.first_name %> <%= @order.shipping_address.last_name %>
+                  </div>
+                  <div><%= @order.shipping_address.address_line_1 %></div>
+                  <%= if @order.shipping_address.address_line_2 && @order.shipping_address.address_line_2 != "" do %>
+                    <div><%= @order.shipping_address.address_line_2 %></div>
+                  <% end %>
+                  <div>
+                    <%= @order.shipping_address.city %>, <%= @order.shipping_address.state %> <%= @order.shipping_address.postal_code %>
+                  </div>
+                  <div><%= @order.shipping_address.country %></div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <!-- Status Update -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Update Status</h3>
+        </div>
+        <div class="p-6">
+          <form method="post" action={~p"/admin/orders/#{@order.id}/update_status"}>
+            <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Order Status
+                </label>
+                <select
+                  name="status"
+                  class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="pending" selected={@order.status == "pending"}>Pending</option>
+                  <option value="paid" selected={@order.status == "paid"}>Paid</option>
+                  <option value="shipped" selected={@order.status == "shipped"}>Shipped</option>
+                  <option value="delivered" selected={@order.status == "delivered"}>
+                    Delivered
+                  </option>
+                  <option value="cancelled" selected={@order.status == "cancelled"}>
+                    Cancelled
+                  </option>
+                </select>
+              </div>
+              <button
+                type="submit"
+                class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Update Status
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,331 @@
+<div class="min-h-screen bg-white dark:bg-gray-900 flex flex-col gap-8">
+  <!-- Header -->
+  <div class="flex items-center justify-between py-4 px-2 md:px-0">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Orders</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage customer orders</p>
+    </div>
+    <div class="flex items-center space-x-3">
+      <!-- Search -->
+      <div class="relative">
+        <form method="get" action={~p"/admin/orders"}>
+          <input
+            type="text"
+            name="search"
+            value={@search_query}
+            placeholder="Search orders..."
+            class="w-64 px-4 py-2 pl-10 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          />
+          <i-lucide-search class="absolute left-3 top-2.5 w-4 h-4 text-gray-400">
+          </i-lucide-search>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+    <!-- Total Orders -->
+    <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+      <div class="p-2 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+        <i-lucide-shopping-bag class="w-6 h-6 text-blue-600 dark:text-blue-300">
+        </i-lucide-shopping-bag>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Total
+        </p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @stats.total %></p>
+      </div>
+    </div>
+    <!-- Pending Orders -->
+    <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+      <div class="p-2 rounded-lg bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center">
+        <i-lucide-clock class="w-6 h-6 text-yellow-600 dark:text-yellow-300"></i-lucide-clock>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Pending
+        </p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @stats.pending %></p>
+      </div>
+    </div>
+    <!-- Paid Orders -->
+    <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+      <div class="p-2 rounded-lg bg-green-100 dark:bg-green-900 flex items-center justify-center">
+        <i-lucide-credit-card class="w-6 h-6 text-green-600 dark:text-green-300">
+        </i-lucide-credit-card>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Paid
+        </p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @stats.paid %></p>
+      </div>
+    </div>
+    <!-- Shipped Orders -->
+    <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+      <div class="p-2 rounded-lg bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+        <i-lucide-truck class="w-6 h-6 text-purple-600 dark:text-purple-300"></i-lucide-truck>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Shipped
+        </p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @stats.shipped %></p>
+      </div>
+    </div>
+    <!-- Delivered Orders -->
+    <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+      <div class="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
+        <i-lucide-check-circle class="w-6 h-6 text-emerald-600 dark:text-emerald-300">
+        </i-lucide-check-circle>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Delivered
+        </p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @stats.delivered %></p>
+      </div>
+    </div>
+    <!-- Cancelled Orders -->
+    <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+      <div class="p-2 rounded-lg bg-red-100 dark:bg-red-900 flex items-center justify-center">
+        <i-lucide-x-circle class="w-6 h-6 text-red-600 dark:text-red-300"></i-lucide-x-circle>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Cancelled
+        </p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @stats.cancelled %></p>
+      </div>
+    </div>
+  </div>
+  <!-- Filters -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Filters</h3>
+    </div>
+    <div class="p-6">
+      <form method="get" action={~p"/admin/orders"} class="flex items-center space-x-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Status
+          </label>
+          <select
+            name="status"
+            class="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">All Statuses</option>
+            <option value="pending" selected={@status_filter == "pending"}>Pending</option>
+            <option value="paid" selected={@status_filter == "paid"}>Paid</option>
+            <option value="shipped" selected={@status_filter == "shipped"}>Shipped</option>
+            <option value="delivered" selected={@status_filter == "delivered"}>Delivered</option>
+            <option value="cancelled" selected={@status_filter == "cancelled"}>Cancelled</option>
+          </select>
+        </div>
+        <div class="flex items-end">
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Apply Filters
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Orders Table -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm transition-all duration-300">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Order List</h3>
+      <div class="text-sm text-gray-500 dark:text-gray-400">
+        Showing <%= (@page - 1) * @per_page + 1 %>-<%= min(@page * @per_page, @total_entries) %> of <%= @total_entries %> orders
+      </div>
+    </div>
+
+    <%= if Enum.empty?(@orders.entries) do %>
+      <div class="px-6 py-12 text-center">
+        <div class="flex flex-col items-center">
+          <div class="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center mb-4">
+            <i-lucide-shopping-bag class="w-8 h-8 text-white"></i-lucide-shopping-bag>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No orders found</h3>
+          <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-md">
+            No orders match your current filters.
+          </p>
+        </div>
+      </div>
+    <% else %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm divide-y divide-gray-200 dark:divide-gray-700">
+          <thead class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+              <th class="px-6 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Order
+              </th>
+              <th class="px-6 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Customer
+              </th>
+              <th class="px-6 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Amount
+              </th>
+              <th class="px-6 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Status
+              </th>
+              <th class="px-6 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Date
+              </th>
+              <th class="px-6 py-3 text-right font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+            <%= for order <- @orders.entries do %>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                <td class="px-6 py-4">
+                  <div class="flex items-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center mr-4">
+                      <i-lucide-shopping-bag class="w-6 h-6 text-white"></i-lucide-shopping-bag>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="text-sm font-semibold text-gray-900 dark:text-white">
+                        #<%= order.id %>
+                      </div>
+                      <div class="text-sm text-gray-500 dark:text-gray-400">
+                        <%= length(order.order_items) %> items
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">
+                    <%= order.user.first_name %> <%= order.user.last_name %>
+                  </div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">
+                    <%= order.user.email %>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="text-sm font-semibold text-gray-900 dark:text-white">
+                    ₹<%= Number.Delimit.number_to_delimited(order.total_amount, precision: 2) %>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class={
+                    case order.status do
+                      "pending" ->
+                        "inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+
+                      "paid" ->
+                        "inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+
+                      "shipped" ->
+                        "inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+
+                      "delivered" ->
+                        "inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
+
+                      "cancelled" ->
+                        "inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+
+                      _ ->
+                        "inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                    end
+                  }>
+                    <%= order.status |> to_string() |> String.capitalize() %>
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="text-sm text-gray-900 dark:text-white">
+                    <%= Calendar.strftime(order.inserted_at, "%b %d, %Y") %>
+                  </div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">
+                    <%= Calendar.strftime(order.inserted_at, "%I:%M %p") %>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <div class="flex items-center justify-end space-x-2">
+                    <a
+                      href={~p"/admin/orders/#{order.id}"}
+                      class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
+                      title="View Details"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        >
+                        </path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        >
+                        </path>
+                      </svg>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination -->
+      <%= if @total_pages > 1 do %>
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-500 dark:text-gray-400">
+              Page <%= @page %> of <%= @total_pages %>
+            </div>
+            <div class="flex items-center space-x-2">
+              <%= if @page > 1 do %>
+                <% prev_params = %{page: @page - 1}
+
+                prev_params =
+                  if @status_filter,
+                    do: Map.put(prev_params, :status, @status_filter),
+                    else: prev_params
+
+                prev_params =
+                  if @search_query,
+                    do: Map.put(prev_params, :search, @search_query),
+                    else: prev_params %>
+                <a
+                  href={~p"/admin/orders?#{prev_params}"}
+                  class="px-3 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                >
+                  Previous
+                </a>
+              <% end %>
+
+              <%= if @page < @total_pages do %>
+                <% next_params = %{page: @page + 1}
+
+                next_params =
+                  if @status_filter,
+                    do: Map.put(next_params, :status, @status_filter),
+                    else: next_params
+
+                next_params =
+                  if @search_query,
+                    do: Map.put(next_params, :search, @search_query),
+                    else: next_params %>
+                <a
+                  href={~p"/admin/orders?#{next_params}"}
+                  class="px-3 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                >
+                  Next
+                </a>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

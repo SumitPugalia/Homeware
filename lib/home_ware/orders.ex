@@ -256,4 +256,71 @@ defmodule HomeWare.Orders do
   defp get_item_price(%{product: product}) do
     product.selling_price
   end
+
+  # Admin functions
+
+  @doc """
+  Lists all orders with optional filters for admin use.
+  """
+  def list_all_orders_with_filters(filters \\ %{}) do
+    page = filters[:page] || 1
+    per_page = filters[:per_page] || 20
+    status = filters[:status]
+    search = filters[:search]
+
+    Order
+    |> maybe_filter_by_status(status)
+    |> maybe_search_orders(search)
+    |> preload([:user, :order_items])
+    |> order_by([o], desc: o.inserted_at)
+    |> Repo.paginate(%{page: page, per_page: per_page})
+  end
+
+  @doc """
+  Counts all orders with optional filters for admin use.
+  """
+  def count_all_orders_with_filters(filters \\ %{}) do
+    status = filters[:status]
+    search = filters[:search]
+
+    Order
+    |> maybe_filter_by_status(status)
+    |> maybe_search_orders(search)
+    |> Repo.aggregate(:count, :id)
+  end
+
+  @doc """
+  Gets a single order by ID (admin version - no user restriction).
+  """
+  def get_order!(id) do
+    Order
+    |> Repo.get!(id)
+  end
+
+  # Private filter functions
+
+  defp maybe_filter_by_status(query, nil), do: query
+  defp maybe_filter_by_status(query, ""), do: query
+
+  defp maybe_filter_by_status(query, status) do
+    where(query, [o], o.status == ^status)
+  end
+
+  defp maybe_search_orders(query, nil), do: query
+
+  defp maybe_search_orders(query, search) when is_binary(search) and byte_size(search) > 0 do
+    search_term = "%#{search}%"
+
+    query
+    |> join(:left, [o], u in assoc(o, :user))
+    |> where(
+      [o, u],
+      ilike(o.id, ^search_term) or
+        ilike(u.email, ^search_term) or
+        ilike(u.first_name, ^search_term) or
+        ilike(u.last_name, ^search_term)
+    )
+  end
+
+  defp maybe_search_orders(query, _), do: query
 end

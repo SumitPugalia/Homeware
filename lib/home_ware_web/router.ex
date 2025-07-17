@@ -92,8 +92,10 @@ defmodule HomeWareWeb.Router do
 
     resources "/products", ProductController, except: [:show]
 
+    resources "/orders", OrderController, only: [:index, :show]
+    post "/orders/:id/update_status", OrderController, :update_status
+
     # resources "/categories", CategoryController
-    # resources "/orders", OrderController
     # resources "/users", UserController
   end
 
