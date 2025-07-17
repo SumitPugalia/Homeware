@@ -7,12 +7,12 @@ defmodule HomeWareWeb.Admin.Shared do
     current_path = assigns[:current_path] || "/admin/dashboard"
 
     sidebar = """
-    <div class=\"hidden md:fixed md:inset-y-0 md:left-0 md:z-50 md:w-64 md:bg-white md:shadow-lg md:block\">
-      <div class=\"flex items-center justify-center h-16 bg-blue-600\">
-        <h1 class=\"text-xl font-bold text-white\">Admin Dashboard</h1>
+    <div class="hidden md:fixed md:inset-y-0 md:left-0 md:z-50 md:w-64 md:bg-white md:dark:bg-gray-800 md:shadow-lg md:block border-r border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-center h-16 bg-gradient-to-r from-blue-600 to-purple-600">
+        <h1 class="text-xl font-bold text-white">HomeWare Admin</h1>
       </div>
-      <nav class=\"mt-8\">
-        <div class=\"px-4 space-y-2\">
+      <nav class="mt-8">
+        <div class="px-4 space-y-2">
           #{sidebar_links(current_path, [vertical: true], assigns)}
         </div>
       </nav>
@@ -20,15 +20,15 @@ defmodule HomeWareWeb.Admin.Shared do
     """
 
     topbar = """
-    <div class=\"md:hidden fixed top-0 left-0 right-0 z-50 bg-white shadow-lg flex items-center px-2 h-16\">
-      <div class=\"flex items-center space-x-4\">
-        <h1 class=\"text-lg font-bold text-blue-600\">Admin</h1>
-        <nav class=\"flex space-x-1\">
+    <div class="md:hidden fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg flex items-center px-4 h-16 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center space-x-4">
+        <h1 class="text-lg font-bold text-blue-600 dark:text-blue-400">Admin</h1>
+        <nav class="flex space-x-1">
           #{sidebar_links(current_path, [vertical: false], assigns)}
         </nav>
       </div>
     </div>
-    <div class=\"h-16 md:hidden\"></div> <!-- Spacer for mobile topbar -->
+    <div class="h-16 md:hidden"></div> <!-- Spacer for mobile topbar -->
     """
 
     Phoenix.HTML.raw(sidebar <> topbar)
@@ -40,15 +40,17 @@ defmodule HomeWareWeb.Admin.Shared do
     link_class = fn active ->
       base =
         if vertical do
-          "flex items-center px-4 py-2 rounded-lg"
+          "flex items-center px-4 py-3 rounded-lg transition-all duration-200"
         else
-          "flex items-center px-2 py-2 rounded-lg"
+          "flex items-center px-3 py-2 rounded-lg transition-all duration-200"
         end
 
       if active do
-        base <> " text-gray-700 bg-blue-50"
+        base <>
+          " text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700"
       else
-        base <> " text-gray-600 hover:bg-gray-50"
+        base <>
+          " text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
       end
     end
 
@@ -70,7 +72,7 @@ defmodule HomeWareWeb.Admin.Shared do
         active = String.contains?(current_path, href) and href != "#"
 
         """
-        <a href=\"#{href}\" class=\"#{link_class.(active)}\">
+        <a href=\"#{href}\" class=\"#{link_class.(active)} interactive-hover\">
           <svg class=\"w-5 h-5 mr-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"#{svg_path}\"></path></svg>
           <span class=\"#{if vertical, do: "", else: "hidden sm:inline"}\">#{label}</span>
         </a>
@@ -79,11 +81,11 @@ defmodule HomeWareWeb.Admin.Shared do
       |> Enum.join("")
 
     logout_html = """
-    <div class=\"#{if vertical, do: "pt-4 mt-4 border-t border-gray-200", else: "ml-2"}\">
+    <div class=\"#{if vertical, do: "pt-4 mt-4 border-t border-gray-200 dark:border-gray-700", else: "ml-2"}\">
       <form action=\"/users/log_out\" method=\"post\" style=\"display: inline;\">
         <input type=\"hidden\" name=\"_method\" value=\"delete\" />
         <input type=\"hidden\" name=\"_csrf_token\" value=\"#{assigns[:csrf_token] || ""}\" />
-        <button type=\"submit\" class=\"flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg w-full text-left\">
+        <button type=\"submit\" class=\"flex items-center px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg w-full text-left transition-all duration-200 interactive-hover\">
           <svg class=\"w-5 h-5 mr-3\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1\"></path></svg>
           <span class=\"#{if vertical, do: "", else: "hidden sm:inline"}\">Logout</span>
         </button>

@@ -1,40 +1,66 @@
-<div class="min-h-screen bg-gray-50">
-  <!-- Header -->
-  <div class="bg-white shadow">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+  <!-- Sticky Top Bar -->
+  <div class="sticky top-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center py-6">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p class="mt-1 text-sm text-gray-500">Real-time overview of your store</p>
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-4">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Real-time store overview</p>
+          </div>
         </div>
-        <button
-          phx-click="refresh"
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+        <div class="flex items-center space-x-3">
+          <!-- Dark/Light Mode Toggle -->
+          <button
+            phx-click="toggle_theme"
+            class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+            title="Toggle theme"
+          >
+            <svg
+              class="w-5 h-5 text-gray-600 dark:text-gray-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-            </path>
-          </svg>
-          Refresh
-        </button>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              >
+              </path>
+            </svg>
+          </button>
+          <!-- Refresh Button -->
+          <button
+            phx-click="refresh"
+            class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              >
+              </path>
+            </svg>
+            Refresh
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Stats Grid - Slim Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
       <!-- Total Revenue -->
-      <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+      <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+        <div class="p-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center">
                 <svg
                   class="w-5 h-5 text-white"
                   fill="none"
@@ -50,22 +76,25 @@
                   </path>
                 </svg>
               </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  Revenue
+                </p>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  ₹<%= @total_revenue %>
+                </p>
+              </div>
             </div>
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Total Revenue</dt>
-                <dd class="text-lg font-medium text-gray-900">₹<%= @total_revenue %></dd>
-              </dl>
-            </div>
+            <div class="text-green-500 text-sm font-medium">▲ 12%</div>
           </div>
         </div>
       </div>
       <!-- Total Orders -->
-      <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
+      <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+        <div class="p-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
                 <svg
                   class="w-5 h-5 text-white"
                   fill="none"
@@ -81,22 +110,25 @@
                   </path>
                 </svg>
               </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  Orders
+                </p>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  <%= @total_orders %>
+                </p>
+              </div>
             </div>
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Total Orders</dt>
-                <dd class="text-lg font-medium text-gray-900"><%= @total_orders %></dd>
-              </dl>
-            </div>
+            <div class="text-blue-500 text-sm font-medium">▲ 8%</div>
           </div>
         </div>
       </div>
       <!-- Active Orders -->
-      <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
+      <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+        <div class="p-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
                 <svg
                   class="w-5 h-5 text-white"
                   fill="none"
@@ -112,22 +144,25 @@
                   </path>
                 </svg>
               </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  Active
+                </p>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  <%= @active_orders %>
+                </p>
+              </div>
             </div>
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Active Orders</dt>
-                <dd class="text-lg font-medium text-gray-900"><%= @active_orders %></dd>
-              </dl>
-            </div>
+            <div class="text-yellow-500 text-sm font-medium">●</div>
           </div>
         </div>
       </div>
       <!-- Total Customers -->
-      <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
+      <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+        <div class="p-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center">
                 <svg
                   class="w-5 h-5 text-white"
                   fill="none"
@@ -143,25 +178,28 @@
                   </path>
                 </svg>
               </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  Customers
+                </p>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  <%= @total_customers %>
+                </p>
+              </div>
             </div>
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Total Customers</dt>
-                <dd class="text-lg font-medium text-gray-900"><%= @total_customers %></dd>
-              </dl>
-            </div>
+            <div class="text-purple-500 text-sm font-medium">▲ 15%</div>
           </div>
         </div>
       </div>
     </div>
-    <!-- Additional Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <!-- Secondary Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
       <!-- Completed Orders -->
-      <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+      <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+        <div class="p-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
                 <svg
                   class="w-5 h-5 text-white"
                   fill="none"
@@ -177,22 +215,25 @@
                   </path>
                 </svg>
               </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  Completed
+                </p>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  <%= @completed_orders %>
+                </p>
+              </div>
             </div>
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Completed Orders</dt>
-                <dd class="text-lg font-medium text-gray-900"><%= @completed_orders %></dd>
-              </dl>
-            </div>
+            <div class="text-emerald-500 text-sm font-medium">▲ 5%</div>
           </div>
         </div>
       </div>
       <!-- Return Orders -->
-      <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="w-8 h-8 bg-red-500 rounded-md flex items-center justify-center">
+      <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+        <div class="p-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-red-400 to-red-600 rounded-lg flex items-center justify-center">
                 <svg
                   class="w-5 h-5 text-white"
                   fill="none"
@@ -208,22 +249,25 @@
                   </path>
                 </svg>
               </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  Returns
+                </p>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  <%= @return_orders %>
+                </p>
+              </div>
             </div>
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Return Orders</dt>
-                <dd class="text-lg font-medium text-gray-900"><%= @return_orders %></dd>
-              </dl>
-            </div>
+            <div class="text-red-500 text-sm font-medium">▼ 2%</div>
           </div>
         </div>
       </div>
       <!-- Total Products -->
-      <div class="bg-white overflow-hidden shadow rounded-lg">
-        <div class="p-5">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div class="w-8 h-8 bg-indigo-500 rounded-md flex items-center justify-center">
+      <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 dark:border-gray-700">
+        <div class="p-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-lg flex items-center justify-center">
                 <svg
                   class="w-5 h-5 text-white"
                   fill="none"
@@ -239,53 +283,58 @@
                   </path>
                 </svg>
               </div>
+              <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  Products
+                </p>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  <%= @total_products %>
+                </p>
+              </div>
             </div>
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Total Products</dt>
-                <dd class="text-lg font-medium text-gray-900"><%= @total_products %></dd>
-              </dl>
-            </div>
+            <div class="text-indigo-500 text-sm font-medium">▲ 3%</div>
           </div>
         </div>
       </div>
     </div>
     <!-- Charts and Tables Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <!-- Recent Orders -->
-      <div class="bg-white shadow rounded-lg">
-        <div class="px-4 py-5 sm:p-6">
-          <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Recent Orders</h3>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Recent Orders Table -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Orders</h3>
+        </div>
+        <div class="overflow-hidden">
           <div class="flow-root">
-            <ul class="-my-5 divide-y divide-gray-200">
+            <ul class="divide-y divide-gray-200 dark:divide-gray-700">
               <%= for order <- @recent_orders do %>
-                <li class="py-4">
-                  <div class="flex items-center space-x-4">
-                    <div class="flex-shrink-0">
-                      <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                        <span class="text-sm font-medium text-gray-700">
+                <li class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                        <span class="text-xs font-medium text-gray-600 dark:text-gray-300">
                           #<%= order.order_number %>
                         </span>
                       </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">
+                          Order #<%= order.order_number %>
+                        </p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                          ₹<%= order.total_amount %> • <%= String.capitalize(
+                            to_string(order.status)
+                          ) %>
+                        </p>
+                      </div>
                     </div>
-                    <div class="flex-1 min-w-0">
-                      <p class="text-sm font-medium text-gray-900 truncate">
-                        Order #<%= order.order_number %>
-                      </p>
-                      <p class="text-sm text-gray-500">
-                        ₹<%= order.total_amount %> • <%= String.capitalize(
-                          to_string(order.status)
-                        ) %>
-                      </p>
-                    </div>
-                    <div class="flex-shrink-0">
-                      <span class={"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium #{case order.status do
-                        :pending -> "bg-yellow-100 text-yellow-800"
-                        :paid -> "bg-blue-100 text-blue-800"
-                        :shipped -> "bg-purple-100 text-purple-800"
-                        :delivered -> "bg-green-100 text-green-800"
-                        :cancelled -> "bg-red-100 text-red-800"
-                        _ -> "bg-gray-100 text-gray-800"
+                    <div class="flex items-center space-x-2">
+                      <span class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium #{case order.status do
+                        :pending -> "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                        :paid -> "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                        :shipped -> "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                        :delivered -> "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                        :cancelled -> "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                        _ -> "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                       end}"}>
                         <%= String.capitalize(to_string(order.status)) %>
                       </span>
@@ -298,18 +347,20 @@
         </div>
       </div>
       <!-- Best Sellers -->
-      <div class="bg-white shadow rounded-lg">
-        <div class="px-4 py-5 sm:p-6">
-          <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Best Sellers</h3>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Best Sellers</h3>
+        </div>
+        <div class="overflow-hidden">
           <div class="flow-root">
-            <ul class="-my-5 divide-y divide-gray-200">
+            <ul class="divide-y divide-gray-200 dark:divide-gray-700">
               <%= for product <- @best_sellers do %>
-                <li class="py-4">
-                  <div class="flex items-center space-x-4">
-                    <div class="flex-shrink-0">
-                      <div class="w-8 h-8 bg-gray-300 rounded-md flex items-center justify-center">
+                <li class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-8 h-8 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-lg flex items-center justify-center">
                         <svg
-                          class="w-5 h-5 text-gray-600"
+                          class="w-4 h-4 text-white"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -323,17 +374,17 @@
                           </path>
                         </svg>
                       </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">
+                          <%= product.name %>
+                        </p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                          ₹<%= product.price %> • <%= product.inventory_quantity %> in stock
+                        </p>
+                      </div>
                     </div>
-                    <div class="flex-1 min-w-0">
-                      <p class="text-sm font-medium text-gray-900 truncate">
-                        <%= product.name %>
-                      </p>
-                      <p class="text-sm text-gray-500">
-                        ₹<%= product.price %> • <%= product.inventory_quantity %> in stock
-                      </p>
-                    </div>
-                    <div class="flex-shrink-0">
-                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <div class="flex items-center space-x-2">
+                      <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                         Best Seller
                       </span>
                     </div>

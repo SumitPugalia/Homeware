@@ -11,6 +11,7 @@ module.exports = {
     "../lib/home_ware_web.ex",
     "../lib/home_ware_web/**/*.*ex"
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {

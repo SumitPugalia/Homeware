@@ -18,7 +18,11 @@ defmodule HomeWareWeb.Admin.DashboardLive do
       :timer.send_interval(30_000, self(), :update_stats)
     end
 
-    {:ok, socket |> assign(:current_user, user) |> assign_stats()}
+    {:ok,
+     socket
+     |> assign(:current_user, user)
+     |> assign(:theme, "light")
+     |> assign_stats()}
   end
 
   @impl Phoenix.LiveView
@@ -29,6 +33,12 @@ defmodule HomeWareWeb.Admin.DashboardLive do
   @impl Phoenix.LiveView
   def handle_event("refresh", _params, socket) do
     {:noreply, assign_stats(socket)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("toggle_theme", _params, socket) do
+    new_theme = if socket.assigns.theme == "light", do: "dark", else: "light"
+    {:noreply, assign(socket, :theme, new_theme)}
   end
 
   defp assign_stats(socket) do

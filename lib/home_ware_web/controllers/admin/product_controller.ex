@@ -178,6 +178,16 @@ defmodule HomeWareWeb.Admin.ProductController do
     )
   end
 
+  def toggle_active(conn, %{"id" => id}) do
+    product = Products.get_product!(id)
+    new_status = !product.is_active
+    {:ok, _product} = Products.update_product(product, %{is_active: new_status})
+
+    conn
+    |> put_flash(:info, "Product status updated!")
+    |> redirect(to: ~p"/admin/products")
+  end
+
   # Transform product parameters to match database structure
   defp transform_product_params(params) do
     params
@@ -235,11 +245,28 @@ defmodule HomeWareWeb.Admin.ProductController do
     Map.put(params, "is_active", true)
   end
 
+  defp transform_boolean_fields(%{"is_active" => "false"} = params) do
+    Map.put(params, "is_active", false)
+  end
+
   defp transform_boolean_fields(%{"is_featured" => "true"} = params) do
     Map.put(params, "is_featured", true)
   end
 
-  defp transform_boolean_fields(params), do: params
+  defp transform_boolean_fields(%{"is_featured" => "false"} = params) do
+    Map.put(params, "is_featured", false)
+  end
+
+  # Handle case when boolean fields are not present (unchecked checkboxes)
+  defp transform_boolean_fields(%{"is_active" => _} = params), do: params
+  defp transform_boolean_fields(%{"is_featured" => _} = params), do: params
+
+  # When boolean fields are missing (unchecked checkboxes), set them to false
+  defp transform_boolean_fields(params) do
+    params
+    |> Map.put_new("is_active", false)
+    |> Map.put_new("is_featured", false)
+  end
 
   # Handle file uploads for product images
   defp handle_file_uploads(conn, params) do

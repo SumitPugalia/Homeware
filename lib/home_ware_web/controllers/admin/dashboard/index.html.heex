@@ -1,211 +1,168 @@
-<div class="min-h-screen bg-gray-50 flex">
-  <%= render_admin_sidebar(assigns) %>
-  <!-- Main Content -->
-  <div class="flex-1 md:ml-64">
-    <!-- Header -->
-    <div class="bg-white border-b border-gray-200 px-6 py-4">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p class="text-sm text-gray-600 mt-1">Welcome to your admin dashboard</p>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col gap-8">
+  <!-- Header -->
+  <div class="flex items-center justify-between py-4 px-2 md:px-0">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Dashboard</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Welcome to your admin dashboard</p>
+    </div>
+    <!-- Optional: Place for quick actions -->
+  </div>
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Total Products -->
+    <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+      <div class="p-2 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+        <i-lucide-box class="w-6 h-6 text-blue-600 dark:text-blue-300"></i-lucide-box>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Total Products
+        </p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @total_products %></p>
+      </div>
+      <!-- Trend indicator (optional) -->
+      <div class="flex items-center">
+        <span class="text-green-500 text-xs font-semibold flex items-center gap-1">
+          <i-lucide-trending-up class="w-4 h-4"></i-lucide-trending-up>▲
+        </span>
       </div>
     </div>
-    <!-- Content Area -->
-    <div class="p-6">
-      <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div class="flex items-center">
-            <div class="p-3 rounded-full bg-blue-100">
-              <svg
-                class="w-6 h-6 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                >
-                </path>
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-600">Total Products</p>
-              <p class="text-2xl font-semibold text-gray-900"><%= @total_products %></p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div class="flex items-center">
-            <div class="p-3 rounded-full bg-green-100">
-              <svg
-                class="w-6 h-6 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                >
-                </path>
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-600">Total Orders</p>
-              <p class="text-2xl font-semibold text-gray-900"><%= @total_orders %></p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div class="flex items-center">
-            <div class="p-3 rounded-full bg-yellow-100">
-              <svg
-                class="w-6 h-6 text-yellow-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                >
-                </path>
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-600">Total Customers</p>
-              <p class="text-2xl font-semibold text-gray-900"><%= @total_customers %></p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div class="flex items-center">
-            <div class="p-3 rounded-full bg-purple-100">
-              <svg
-                class="w-6 h-6 text-purple-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-                >
-                </path>
-              </svg>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-600">Revenue</p>
-              <p class="text-2xl font-semibold text-gray-900">
-                ₹<%= Number.Delimit.number_to_delimited(@total_revenue, precision: 2) %>
-              </p>
-            </div>
-          </div>
-        </div>
+    <!-- Total Orders -->
+    <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+      <div class="p-2 rounded-lg bg-green-100 dark:bg-green-900 flex items-center justify-center">
+        <i-lucide-shopping-cart class="w-6 h-6 text-green-600 dark:text-green-300">
+        </i-lucide-shopping-cart>
       </div>
-      <!-- Recent Orders -->
-      <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-900">Recent Orders</h2>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Order ID
-                </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Product
-                </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Customer
-                </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Date
-                </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Status
-                </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Amount
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <%= if Enum.empty?(@recent_orders) do %>
-                <tr>
-                  <td colspan="6" class="px-6 py-12 text-center">
-                    <div class="flex flex-col items-center">
-                      <svg
-                        class="w-12 h-12 text-gray-400 mb-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                        >
-                        </path>
-                      </svg>
-                      <h3 class="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
-                      <p class="text-gray-500">
-                        Orders will appear here once customers start placing them.
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              <% else %>
-                <%= for order <- @recent_orders do %>
-                  <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      #<%= order.id %>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <%= order.product_name %>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <%= order.customer_name %>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <%= Calendar.strftime(order.date, "%b %d, %Y") %>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span class={"inline-flex px-3 py-1 text-xs font-semibold rounded-full #{case order.status do
-                        :pending -> "bg-yellow-100 text-yellow-800"
-                        :paid -> "bg-green-100 text-green-800"
-                        :shipped -> "bg-blue-100 text-blue-800"
-                        :delivered -> "bg-green-100 text-green-800"
-                        :cancelled -> "bg-red-100 text-red-800"
-                      end}"}>
-                        <%= String.upcase(to_string(order.status)) %>
-                      </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                      ₹<%= Number.Delimit.number_to_delimited(order.amount, precision: 2) %>
-                    </td>
-                  </tr>
-                <% end %>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
+      <div class="flex-1">
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Total Orders
+        </p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @total_orders %></p>
+      </div>
+      <div class="flex items-center">
+        <span class="text-red-500 text-xs font-semibold flex items-center gap-1">
+          <i-lucide-trending-down class="w-4 h-4"></i-lucide-trending-down>▼
+        </span>
+      </div>
+    </div>
+    <!-- Total Customers -->
+    <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+      <div class="p-2 rounded-lg bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center">
+        <i-lucide-users class="w-6 h-6 text-yellow-600 dark:text-yellow-300"></i-lucide-users>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Total Customers
+        </p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @total_customers %></p>
+      </div>
+      <div class="flex items-center">
+        <span class="text-green-500 text-xs font-semibold flex items-center gap-1">
+          <i-lucide-trending-up class="w-4 h-4"></i-lucide-trending-up>▲
+        </span>
+      </div>
+    </div>
+    <!-- Revenue -->
+    <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+      <div class="p-2 rounded-lg bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+        <i-lucide-wallet class="w-6 h-6 text-purple-600 dark:text-purple-300"></i-lucide-wallet>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Revenue
+        </p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white">
+          ₹<%= Number.Delimit.number_to_delimited(@total_revenue, precision: 2) %>
+        </p>
+      </div>
+      <div class="flex items-center">
+        <span class="text-green-500 text-xs font-semibold flex items-center gap-1">
+          <i-lucide-trending-up class="w-4 h-4"></i-lucide-trending-up>▲
+        </span>
       </div>
     </div>
   </div>
+  <!-- Recent Orders -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shadow-sm transition-all duration-300">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Orders</h2>
+      <!-- Optional: Add filter or export button here -->
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th class="px-6 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Order ID
+            </th>
+            <th class="px-6 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Product
+            </th>
+            <th class="px-6 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Customer
+            </th>
+            <th class="px-6 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Date
+            </th>
+            <th class="px-6 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Status
+            </th>
+            <th class="px-6 py-3 text-left font-semibold text-xs text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Amount
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+          <%= if Enum.empty?(@recent_orders) do %>
+            <tr>
+              <td colspan="6" class="px-6 py-12 text-center">
+                <div class="flex flex-col items-center">
+                  <i-lucide-shopping-bag class="w-12 h-12 text-gray-400 mb-4">
+                  </i-lucide-shopping-bag>
+                  <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                    No orders found
+                  </h3>
+                  <p class="text-gray-500 dark:text-gray-400">
+                    Orders will appear here once customers start placing them.
+                  </p>
+                </div>
+              </td>
+            </tr>
+          <% else %>
+            <%= for order <- @recent_orders do %>
+              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                  #<%= order.id %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">
+                  <%= order.product_name %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">
+                  <%= order.customer_name %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">
+                  <%= Calendar.strftime(order.date, "%b %d, %Y") %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class={"inline-flex px-3 py-1 text-xs font-semibold rounded-full transition-colors duration-200 " <> case order.status do
+                    :pending -> "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                    :paid -> "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                    :shipped -> "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                    :delivered -> "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                    :cancelled -> "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                  end}>
+                    <%= String.upcase(to_string(order.status)) %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap font-semibold text-gray-900 dark:text-white">
+                  ₹<%= Number.Delimit.number_to_delimited(order.amount, precision: 2) %>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- TODO: Add Revenue Chart, Top Products, etc. in similar modern card style -->
 </div>

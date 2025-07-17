@@ -126,7 +126,7 @@ defmodule HomeWare.Products do
     parsed_filters = Map.update(parsed_filters, :max_price, nil, &parse_price/1)
 
     Product
-    |> where(is_active: true)
+    # |> where(is_active: true) # REMOVE this line for admin listing
     |> apply_filters(parsed_filters)
     |> preload(:category)
     |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
