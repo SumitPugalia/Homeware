@@ -125,6 +125,7 @@ defmodule HomeWare.Orders do
     Order
     |> order_by([o], desc: o.inserted_at)
     |> limit(^limit)
+    |> preload(:order_items)
     |> Repo.all()
   end
 
@@ -178,7 +179,7 @@ defmodule HomeWare.Orders do
     case length(cart_items) do
       0 -> Decimal.new("0")
       # Flat rate shipping
-      _ -> Decimal.new("10.00")
+      _ -> Decimal.new("0.00")
     end
   end
 
@@ -187,7 +188,7 @@ defmodule HomeWare.Orders do
   """
   def calculate_tax(subtotal_plus_shipping) do
     # 8.875% tax rate
-    Decimal.mult(subtotal_plus_shipping, Decimal.new("0.08875"))
+    Decimal.mult(subtotal_plus_shipping, Decimal.new("0"))
   end
 
   @doc """
