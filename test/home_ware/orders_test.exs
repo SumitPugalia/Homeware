@@ -57,6 +57,62 @@ defmodule HomeWare.OrdersTest do
       assert updated_order.notes == "Updated notes"
     end
 
+    test "calculate_total_revenue/0 returns sum of completed orders" do
+      # Create orders with different statuses
+      Factory.insert(:order, %{status: :paid, total_amount: Decimal.new("100.00")})
+      Factory.insert(:order, %{status: :delivered, total_amount: Decimal.new("200.00")})
+      # should not be included
+      Factory.insert(:order, %{status: :pending, total_amount: Decimal.new("50.00")})
+      # should not be included
+      Factory.insert(:order, %{status: :cancelled, total_amount: Decimal.new("25.00")})
+
+      total_revenue = Orders.calculate_total_revenue()
+      assert Decimal.eq?(total_revenue, Decimal.new("300.00"))
+    end
+
+    test "calculate_revenue_by_status/1 returns revenue for specific status" do
+      Factory.insert(:order, %{status: :paid, total_amount: Decimal.new("100.00")})
+      Factory.insert(:order, %{status: :paid, total_amount: Decimal.new("150.00")})
+      Factory.insert(:order, %{status: :delivered, total_amount: Decimal.new("200.00")})
+
+      paid_revenue = Orders.calculate_revenue_by_status(:paid)
+      assert Decimal.eq?(paid_revenue, Decimal.new("250.00"))
+
+      delivered_revenue = Orders.calculate_revenue_by_status(:delivered)
+      assert Decimal.eq?(delivered_revenue, Decimal.new("200.00"))
+    end
+
+    test "get_monthly_sales_data/1 returns monthly revenue data" do
+      # Create an order for this month
+      Factory.insert(:order, %{
+        status: :delivered,
+        total_amount: Decimal.new("500.00"),
+        inserted_at: DateTime.truncate(DateTime.utc_now(), :second)
+      })
+
+      monthly_data = Orders.get_monthly_sales_data(1)
+      assert length(monthly_data) == 1
+      {_month, revenue} = List.first(monthly_data)
+      assert revenue > 0.0
+    end
+
+    test "count_orders/0 returns total order count" do
+      Factory.insert(:order)
+      Factory.insert(:order)
+      Factory.insert(:order)
+
+      assert Orders.count_orders() == 3
+    end
+
+    test "count_orders_by_status/1 returns count for specific status" do
+      Factory.insert(:order, %{status: :pending})
+      Factory.insert(:order, %{status: :pending})
+      Factory.insert(:order, %{status: :delivered})
+
+      assert Orders.count_orders_by_status(:pending) == 2
+      assert Orders.count_orders_by_status(:delivered) == 1
+    end
+
     test "update_order/2 with invalid data returns error changeset" do
       order = Factory.insert(:order)
       assert {:error, %Ecto.Changeset{}} = Orders.update_order(order, %{order_number: nil})

@@ -92,31 +92,70 @@ defmodule HomeWare.Orders do
     HomeWare.Repo.one(from o in Order, where: o.status == ^status, select: count(o.id))
   end
 
-  def list_recent_orders(n) do
-    query =
-      from o in Order,
-        join: u in assoc(o, :user),
-        order_by: [desc: o.inserted_at],
-        limit: ^n,
-        select: %{
-          id: o.id,
-          # Since orders can have multiple items
-          product_name: "Multiple Products",
-          date: o.inserted_at,
-          customer_name: u.first_name,
-          status: o.status,
-          amount: o.total_amount
-        }
-
-    HomeWare.Repo.all(query)
-  end
-
   def monthly_sales_data(n) do
     alias HomeWare.Orders.Order
     now = Date.utc_today()
     months = Enum.map(0..(n - 1), fn i -> Date.add(now, -30 * i) end)
     # This is a stub, you may want to use fragment for real month grouping
     Enum.map(months, fn date -> {Date.to_string(date), Enum.random(1000..5000)} end)
+  end
+
+  @doc """
+  Calculates the total revenue from all orders.
+  """
+  def calculate_total_revenue do
+    Order
+    |> where([o], o.status in [:paid, :shipped, :delivered])
+    |> Repo.aggregate(:sum, :total_amount) || Decimal.new("0")
+  end
+
+  @doc """
+  Calculates revenue for a specific status.
+  """
+  def calculate_revenue_by_status(status) do
+    Order
+    |> where(status: ^status)
+    |> Repo.aggregate(:sum, :total_amount) || Decimal.new("0")
+  end
+
+  @doc """
+  Gets the most recent orders for the dashboard.
+  """
+  def list_recent_orders(limit) do
+    Order
+    |> order_by([o], desc: o.inserted_at)
+    |> limit(^limit)
+    |> Repo.all()
+  end
+
+  def deliver_user_confirmation_instructions(_user, confirmation_fun)
+      when is_function(confirmation_fun, 1) do
+    # {encoded_token, user_token} = UserToken.generate_email_token(user, "confirm")
+    # confirmation_fun.(encoded_token)
+    # UserToken.create_user_token(user, user_token, "confirm")
+    :ok
+  end
+
+  @doc """
+  Gets monthly sales data with actual revenue calculations.
+  """
+  def get_monthly_sales_data(months_back \\ 12) do
+    now = Date.utc_today()
+
+    Enum.map(0..(months_back - 1), fn i ->
+      month_date = Date.add(now, -30 * i)
+      month_start = Date.new(month_date.year, month_date.month, 1) |> elem(1)
+      month_end = Date.end_of_month(month_date)
+
+      revenue =
+        Order
+        |> where([o], o.status in [:paid, :shipped, :delivered])
+        |> where([o], fragment("DATE(?)", o.inserted_at) >= ^month_start)
+        |> where([o], fragment("DATE(?)", o.inserted_at) <= ^month_end)
+        |> Repo.aggregate(:sum, :total_amount) || Decimal.new("0")
+
+      {Date.to_string(month_date), Decimal.to_float(revenue)}
+    end)
   end
 
   @doc """

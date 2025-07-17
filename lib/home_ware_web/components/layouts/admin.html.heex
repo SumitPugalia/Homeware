@@ -12,10 +12,14 @@
     </script>
   </head>
   <body class="min-h-screen bg-gray-50">
-    <!-- Main Content -->
-    <main class="w-full">
-      <.flash_group flash={@flash} />
-      <%= @inner_content %>
-    </main>
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <%= HomeWareWeb.Admin.Shared.render_admin_sidebar(assigns) %>
+      <!-- Main Content -->
+      <main class="flex-1 p-8 md:ml-64 mt-16 md:mt-0">
+        <.flash_group flash={@flash} />
+        <%= @inner_content %>
+      </main>
+    </div>
   </body>
 </html>

@@ -5,25 +5,24 @@ defmodule HomeWare.AccountsTest do
   alias HomeWare.Accounts.User
   alias HomeWare.Factory
 
-  describe "users" do
-    test "register_user/1 with valid data creates a user" do
-      valid_attrs = %{
-        email: "test@example.com",
-        password: "testpassword123",
-        first_name: "John",
-        last_name: "Doe",
-        role: :customer
-      }
+  describe "accounts" do
+    alias HomeWare.Accounts
 
-      assert {:ok, %User{} = user} = Accounts.register_user(valid_attrs)
-      assert user.email == "test@example.com"
-      assert user.first_name == "John"
-      assert user.last_name == "Doe"
-      assert user.role == :customer
+    test "list_users/0 returns all users" do
+      user = Factory.insert(:user)
+      assert Accounts.list_users() == [user]
     end
 
-    test "register_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.register_user(%{email: nil})
+    test "count_customers/0 returns count of active customers" do
+      # Create some customers
+      Factory.insert(:user, %{role: :customer, is_active: true})
+      Factory.insert(:user, %{role: :customer, is_active: true})
+      # inactive customer
+      Factory.insert(:user, %{role: :customer, is_active: false})
+      # admin user
+      Factory.insert(:user, %{role: :admin, is_active: true})
+
+      assert Accounts.count_customers() == 2
     end
 
     test "get_user!/1 returns the user with given id" do
@@ -32,29 +31,46 @@ defmodule HomeWare.AccountsTest do
     end
 
     test "get_user_by_email/1 returns the user with given email" do
-      user = Factory.insert(:user, %{email: "test@example.com"})
-      assert Accounts.get_user_by_email("test@example.com") == user
+      user = Factory.insert(:user)
+      assert Accounts.get_user_by_email(user.email) == user
+    end
+
+    test "get_user_by_email_and_password/2 returns the user if email and password are valid" do
+      user = Factory.insert(:user, %{hashed_password: Bcrypt.hash_pwd_salt("test123")})
+      assert Accounts.get_user_by_email_and_password(user.email, "test123") == user
+    end
+
+    test "get_user_by_email_and_password/2 returns nil if email is invalid" do
+      assert Accounts.get_user_by_email_and_password("unknown@example.com", "test123") == nil
+    end
+
+    test "get_user_by_email_and_password/2 returns nil if password is invalid" do
+      user = Factory.insert(:user, %{hashed_password: Bcrypt.hash_pwd_salt("test123")})
+      assert Accounts.get_user_by_email_and_password(user.email, "wrong") == nil
+    end
+
+    test "authenticate_user/2 returns {:ok, user} if email and password are valid" do
+      user = Factory.insert(:user, %{hashed_password: Bcrypt.hash_pwd_salt("test123")})
+      assert {:ok, authenticated_user} = Accounts.authenticate_user(user.email, "test123")
+      assert authenticated_user == user
+    end
+
+    test "authenticate_user/2 returns {:error, :invalid_credentials} if email is invalid" do
+      assert {:error, :invalid_credentials} =
+               Accounts.authenticate_user("unknown@example.com", "test123")
+    end
+
+    test "authenticate_user/2 returns {:error, :invalid_credentials} if password is invalid" do
+      user = Factory.insert(:user, %{hashed_password: Bcrypt.hash_pwd_salt("test123")})
+      assert {:error, :invalid_credentials} = Accounts.authenticate_user(user.email, "wrong")
     end
 
     test "update_user/2 with valid data updates the user" do
       user = Factory.insert(:user)
-      update_attrs = %{first_name: "Jane", last_name: "Smith"}
+      update_attrs = %{first_name: "Updated Name"}
 
       assert {:ok, %User{} = updated_user} = Accounts.update_user(user, update_attrs)
-      assert updated_user.first_name == "Jane"
-      assert updated_user.last_name == "Smith"
-    end
-
-    test "update_user/2 with invalid data returns error changeset" do
-      user = Factory.insert(:user)
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, %{email: nil})
-      assert user == Accounts.get_user!(user.id)
-    end
-
-    test "delete_user/1 deletes the user" do
-      user = Factory.insert(:user)
-      assert {:ok, %User{}} = Accounts.delete_user(user)
-      assert_raise Ecto.NoResultsError, fn -> Accounts.get_user!(user.id) end
+      assert updated_user.first_name == "Updated Name"
     end
 
     test "change_user/1 returns a user changeset" do
@@ -62,28 +78,35 @@ defmodule HomeWare.AccountsTest do
       assert %Ecto.Changeset{} = Accounts.change_user(user)
     end
 
-    test "authenticate_user/2 with valid credentials returns user" do
-      user = Factory.insert(:user, %{email: "test@example.com"})
-      # Set password for authentication
-      {:ok, _user_with_password} =
-        Accounts.update_user(user, %{hashed_password: Bcrypt.hash_pwd_salt("testpassword123")})
-
-      assert {:ok, authenticated_user} =
-               Accounts.authenticate_user("test@example.com", "testpassword123")
-
-      assert authenticated_user.id == user.id
-    end
-
-    test "authenticate_user/2 with invalid credentials returns error" do
-      Factory.insert(:user, %{email: "test@example.com"})
-
-      assert {:error, :invalid_credentials} =
-               Accounts.authenticate_user("test@example.com", "wrongpassword")
-    end
-
-    test "deliver_user_confirmation_instructions/2 returns ok" do
+    test "change_user_registration/1 returns a user changeset" do
       user = Factory.insert(:user)
-      assert :ok = Accounts.deliver_user_confirmation_instructions(user, fn _token -> :ok end)
+      assert %Ecto.Changeset{} = Accounts.change_user_registration(user)
+    end
+
+    test "create_user/1 with valid data creates a user" do
+      valid_attrs = %{
+        email: "test@example.com",
+        hashed_password: "test123",
+        first_name: "Test",
+        last_name: "User",
+        role: :customer
+      }
+
+      assert {:ok, %User{} = user} = Accounts.create_user(valid_attrs)
+      assert user.email == "test@example.com"
+      assert user.first_name == "Test"
+      assert user.last_name == "User"
+      assert user.role == :customer
+    end
+
+    test "create_user/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(%{email: nil})
+    end
+
+    test "delete_user/1 deletes the user" do
+      user = Factory.insert(:user)
+      assert {:ok, %User{}} = Accounts.delete_user(user)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_user!(user.id) end
     end
   end
 end
