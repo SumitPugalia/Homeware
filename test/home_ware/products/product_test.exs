@@ -180,4 +180,80 @@ defmodule HomeWare.Products.ProductTest do
       assert length(available_products) == 1
     end
   end
+
+  describe "products with variants availability" do
+    test "product with available variants is available" do
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 0})
+
+      # Create available variants
+      Factory.insert(:product_variant, %{product_id: product.id, is_active: true, quantity: 10})
+      Factory.insert(:product_variant, %{product_id: product.id, is_active: true, quantity: 5})
+
+      # Get product with variants
+      product_with_variants = Products.get_product_with_variants!(product.id)
+
+      assert product_with_variants.available? == true
+      assert length(product_with_variants.variants) == 2
+      assert Enum.all?(product_with_variants.variants, & &1.available?)
+    end
+
+    test "product with no available variants is not available" do
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 0})
+
+      # Create unavailable variants
+      Factory.insert(:product_variant, %{product_id: product.id, is_active: false, quantity: 10})
+      Factory.insert(:product_variant, %{product_id: product.id, is_active: true, quantity: 0})
+
+      # Get product with variants
+      product_with_variants = Products.get_product_with_variants!(product.id)
+
+      assert product_with_variants.available? == false
+      # Only active variants are loaded
+      assert length(product_with_variants.variants) == 1
+      assert Enum.all?(product_with_variants.variants, &(&1.available? == false))
+    end
+
+    test "product with mixed variant availability is available if any variant is available" do
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 0})
+
+      # Create variants with mixed availability
+      Factory.insert(:product_variant, %{product_id: product.id, is_active: true, quantity: 0})
+      Factory.insert(:product_variant, %{product_id: product.id, is_active: true, quantity: 10})
+      Factory.insert(:product_variant, %{product_id: product.id, is_active: false, quantity: 5})
+
+      # Get product with variants
+      product_with_variants = Products.get_product_with_variants!(product.id)
+
+      assert product_with_variants.available? == true
+      # Only active variants are loaded
+      assert length(product_with_variants.variants) == 2
+
+      # Check that at least one variant is available
+      available_variants = Enum.filter(product_with_variants.variants, & &1.available?)
+      assert length(available_variants) == 1
+    end
+
+    test "product without variants uses inventory_quantity for availability" do
+      product = Factory.insert(:product, %{is_active: true, inventory_quantity: 10})
+
+      # Get product without variants
+      product_without_variants = Products.get_product!(product.id)
+
+      assert product_without_variants.available? == true
+      # Variants are not loaded when using get_product!
+      assert Ecto.assoc_loaded?(product_without_variants.variants) == false
+    end
+
+    test "product with variants but inactive product is not available" do
+      product = Factory.insert(:product, %{is_active: false, inventory_quantity: 0})
+
+      # Create available variants
+      Factory.insert(:product_variant, %{product_id: product.id, is_active: true, quantity: 10})
+
+      # Get product with variants
+      product_with_variants = Products.get_product_with_variants!(product.id)
+
+      assert product_with_variants.available? == false
+    end
+  end
 end

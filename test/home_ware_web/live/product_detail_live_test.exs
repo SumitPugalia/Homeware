@@ -1,6 +1,5 @@
 defmodule HomeWareWeb.ProductDetailLiveTest do
   use HomeWareWeb.ConnCase
-  import Phoenix.LiveViewTest
 
   alias HomeWare.Factory
   alias HomeWare.Guardian
@@ -13,7 +12,7 @@ defmodule HomeWareWeb.ProductDetailLiveTest do
   end
 
   describe "product availability" do
-    test "shows Add to Cart button when product has available variants", %{
+    test "shows enabled Add to Cart button when product has available variants", %{
       conn: conn,
       token: token
     } do
@@ -37,13 +36,14 @@ defmodule HomeWareWeb.ProductDetailLiveTest do
 
       # Should show "In Stock" badge
       assert html =~ "In Stock"
-      # Should show "Add to Cart" button
+      # Should show enabled "Add to Cart" button (not disabled)
       assert html =~ "Add to Cart"
-      # Should not show "Out of Stock" button (the main purchase button)
+      refute html =~ "disabled"
+      # Should not show disabled "Out of Stock" button
       refute html =~ "Out of Stock</span>"
     end
 
-    test "shows Out of Stock button when product has no available variants", %{
+    test "shows disabled Out of Stock button when product has no available variants", %{
       conn: conn,
       token: token
     } do
@@ -67,10 +67,11 @@ defmodule HomeWareWeb.ProductDetailLiveTest do
 
       # Should show "Out of Stock" badge
       assert html =~ "Out of Stock"
-      # Should show "Out of Stock" button (the main purchase button)
+      # Should show disabled "Out of Stock" button
       assert html =~ "Out of Stock</span>"
-      # Should not show "Add to Cart" button
-      refute html =~ "Add to Cart"
+      assert html =~ "disabled"
+      # Should not show enabled "Add to Cart" button
+      refute html =~ "phx-click=\"add_to_cart\""
     end
   end
 end

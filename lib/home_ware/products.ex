@@ -281,11 +281,15 @@ defmodule HomeWare.Products do
   If the product has variants, it's considered available if any variant is available.
   """
   def set_availability(%Product{} = product) do
-    # If product has variants, check if any variant is available
+    # If product has variants, set their availability first, then check if any variant is available
     available =
       if product.variants && is_list(product.variants) && length(product.variants) > 0 do
+        # Set availability on all variants first
+        variants_with_availability =
+          HomeWare.Products.ProductVariant.set_availability(product.variants)
+
         # Product is available if any variant is available
-        product.is_active && Enum.any?(product.variants, & &1.available?)
+        product.is_active && Enum.any?(variants_with_availability, & &1.available?)
       else
         # Product is available if it's active and has inventory
         product.is_active && product.inventory_quantity > 0
