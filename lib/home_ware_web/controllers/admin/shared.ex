@@ -9,7 +9,7 @@ defmodule HomeWareWeb.Admin.Shared do
     sidebar = """
     <div class="hidden md:fixed md:inset-y-0 md:left-0 md:z-50 md:w-64 md:bg-white md:dark:bg-gray-800 md:shadow-lg md:block border-r border-gray-200 dark:border-gray-700">
       <div class="flex items-center justify-center h-16 bg-gradient-to-r from-blue-600 to-purple-600">
-        <h1 class="text-xl font-bold text-white">HomeWare Admin</h1>
+        <h1 class="text-xl font-bold text-white">Vibe Needs</h1>
       </div>
       <nav class="mt-8">
         <div class="px-4 space-y-2">
