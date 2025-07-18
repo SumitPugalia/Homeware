@@ -156,7 +156,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
                     name="min_price"
                     value={@filters[:min_price] || ""}
                     placeholder="₹0"
-                    class="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
+                    class="w-full pl-8 pr-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
                   />
                   <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                     <span class="text-gray-400 text-sm">₹</span>
@@ -174,7 +174,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
                     name="max_price"
                     value={@filters[:max_price] || ""}
                     placeholder="₹∞"
-                    class="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
+                    class="w-full pl-8 pr-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
                   />
                   <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                     <span class="text-gray-400 text-sm">₹</span>
