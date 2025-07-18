@@ -173,6 +173,13 @@ defmodule HomeWare.Products do
     set_availability(product_with_variants)
   end
 
+  def list_product_variants(product_id) do
+    ProductVariant
+    |> where(product_id: ^product_id, is_active: true)
+    |> Repo.all()
+    |> Enum.map(&HomeWare.Products.ProductVariant.set_availability/1)
+  end
+
   def create_product(attrs \\ %{}) do
     %Product{}
     |> Product.changeset(attrs)
