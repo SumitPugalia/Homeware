@@ -10,7 +10,8 @@ defmodule HomeWareWeb.CartFunctionalityTest do
     # Do NOT create any variants for this product
 
     # Product with variants: available if at least one variant is active and in stock
-    product_with_variants = Factory.insert(:product, %{inventory_quantity: 0, is_active: false})
+    # Set inventory_quantity to 0 since availability is determined by variants
+    product_with_variants = Factory.insert(:product, %{inventory_quantity: 0, is_active: true})
 
     variant1 =
       Factory.insert(:product_variant, %{
@@ -129,7 +130,7 @@ defmodule HomeWareWeb.CartFunctionalityTest do
       assert cart_item.quantity == 2
     end
 
-    test "redirects to login when user is not authenticated", context do
+    test "redirects to login when user is not authenticated", _context do
       # Try to access checkout without being logged in
       assert {:error, {:redirect, %{to: "/users/log_in"}}} =
                build_conn()
@@ -284,12 +285,6 @@ defmodule HomeWareWeb.CartFunctionalityTest do
       product2 = context.product_with_variants
       variant = context.variant1
 
-      # Debug: Print initial state
-      IO.puts("=== DEBUG: Initial state ===")
-      IO.puts("Product 1: #{product.name} (ID: #{product.id})")
-      IO.puts("Product 2: #{product2.name} (ID: #{product2.id})")
-      IO.puts("Variant: #{variant.sku} (ID: #{variant.id})")
-
       # Add first product to cart
       {:ok, view1, _html} =
         build_conn()
@@ -302,8 +297,6 @@ defmodule HomeWareWeb.CartFunctionalityTest do
 
       # Debug: Check cart after first product
       cart_items_after_first = CartItems.list_user_cart_items(user.id)
-      IO.puts("=== DEBUG: Cart after first product ===")
-      IO.puts("Cart items count: #{length(cart_items_after_first)}")
 
       Enum.each(cart_items_after_first, fn item ->
         IO.puts("  - Product: #{item.product.name}, Quantity: #{item.quantity}")
@@ -316,18 +309,9 @@ defmodule HomeWareWeb.CartFunctionalityTest do
         |> live(~p"/products/#{product2.id}")
 
       # Debug: Check product and variant availability
-      IO.puts("=== DEBUG: Product and Variant Availability ===")
-      IO.puts("Product available?: #{product2.available?}")
-      IO.puts("Product is_active?: #{product2.is_active}")
-      IO.puts("Product inventory_quantity: #{product2.inventory_quantity}")
-      IO.puts("Variant available?: #{variant.available?}")
-      IO.puts("Variant is_active?: #{variant.is_active}")
-      IO.puts("Variant quantity: #{variant.quantity}")
 
       # Debug: Check what buttons are rendered
-      product_html = render(view2)
-      IO.puts("=== DEBUG: Product Detail HTML ===")
-      IO.puts(product_html)
+      _product_html = render(view2)
 
       view2
       |> element("button[phx-click=select_variant][phx-value-variant='#{variant.id}']")
@@ -339,8 +323,6 @@ defmodule HomeWareWeb.CartFunctionalityTest do
 
       # Debug: Check cart after second product
       cart_items_after_second = CartItems.list_user_cart_items(user.id)
-      IO.puts("=== DEBUG: Cart after second product ===")
-      IO.puts("Cart items count: #{length(cart_items_after_second)}")
 
       Enum.each(cart_items_after_second, fn item ->
         IO.puts(
@@ -355,9 +337,7 @@ defmodule HomeWareWeb.CartFunctionalityTest do
         |> live(~p"/checkout")
 
       # Debug: Print checkout HTML
-      checkout_html = render(checkout_view)
-      IO.puts("=== DEBUG: Checkout HTML ===")
-      IO.puts(checkout_html)
+      _checkout_html = render(checkout_view)
 
       # Verify both items are in checkout
       assert has_element?(checkout_view, "a", product.name)

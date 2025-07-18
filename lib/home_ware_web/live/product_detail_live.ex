@@ -444,7 +444,7 @@ defmodule HomeWareWeb.ProductDetailLive do
 
       true ->
         # Check if product exists and is available
-        product = HomeWare.Products.get_product!(product_id)
+        product = HomeWare.Products.get_product_with_variants!(product_id)
 
         if product.available? do
           case CartItems.add_to_cart(
@@ -486,7 +486,7 @@ defmodule HomeWareWeb.ProductDetailLive do
 
       true ->
         # Check if product exists and is available
-        product = HomeWare.Products.get_product!(product_id)
+        product = HomeWare.Products.get_product_with_variants!(product_id)
 
         if product.available? do
           case CartItems.add_to_cart(user.id, product_id, nil, String.to_integer(quantity)) do
