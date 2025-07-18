@@ -333,23 +333,40 @@ defmodule HomeWare.Orders do
   defp maybe_search_orders(query, _), do: query
 
   defp maybe_filter_by_date_range(query, nil, nil), do: query
+  defp maybe_filter_by_date_range(query, "", nil), do: query
+  defp maybe_filter_by_date_range(query, nil, ""), do: query
+  defp maybe_filter_by_date_range(query, "", ""), do: query
 
-  defp maybe_filter_by_date_range(query, start_date, nil) when is_binary(start_date) do
-    where(query, [o], fragment("DATE(?)", o.inserted_at) >= ^start_date)
+  defp maybe_filter_by_date_range(query, start_date, nil)
+       when is_binary(start_date) and start_date != "" do
+    case Date.from_iso8601(start_date) do
+      {:ok, date} -> where(query, [o], fragment("DATE(?)", o.inserted_at) >= ^date)
+      :error -> query
+    end
   end
 
-  defp maybe_filter_by_date_range(query, nil, end_date) when is_binary(end_date) do
-    where(query, [o], fragment("DATE(?)", o.inserted_at) <= ^end_date)
+  defp maybe_filter_by_date_range(query, nil, end_date)
+       when is_binary(end_date) and end_date != "" do
+    case Date.from_iso8601(end_date) do
+      {:ok, date} -> where(query, [o], fragment("DATE(?)", o.inserted_at) <= ^date)
+      :error -> query
+    end
   end
 
   defp maybe_filter_by_date_range(query, start_date, end_date)
-       when is_binary(start_date) and is_binary(end_date) do
-    where(
-      query,
-      [o],
-      fragment("DATE(?)", o.inserted_at) >= ^start_date and
-        fragment("DATE(?)", o.inserted_at) <= ^end_date
-    )
+       when is_binary(start_date) and is_binary(end_date) and start_date != "" and end_date != "" do
+    case {Date.from_iso8601(start_date), Date.from_iso8601(end_date)} do
+      {{:ok, start_date_struct}, {:ok, end_date_struct}} ->
+        where(
+          query,
+          [o],
+          fragment("DATE(?)", o.inserted_at) >= ^start_date_struct and
+            fragment("DATE(?)", o.inserted_at) <= ^end_date_struct
+        )
+
+      _ ->
+        query
+    end
   end
 
   defp maybe_filter_by_date_range(query, _, _), do: query

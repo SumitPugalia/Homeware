@@ -27,7 +27,7 @@ defmodule HomeWareWeb.ProductCatalogLiveTest do
 
       assert index_live
              |> form("#filter-form", %{category: category.id})
-             |> render_submit()
+             |> render_change()
     end
 
     test "filters products by brand", %{conn: conn} do
@@ -35,7 +35,7 @@ defmodule HomeWareWeb.ProductCatalogLiveTest do
 
       assert index_live
              |> form("#filter-form", %{brand: "Test Brand"})
-             |> render_submit()
+             |> render_change()
     end
 
     test "filters products by price range", %{conn: conn} do
@@ -43,7 +43,7 @@ defmodule HomeWareWeb.ProductCatalogLiveTest do
 
       assert index_live
              |> form("#filter-form", %{min_price: "10", max_price: "100"})
-             |> render_submit()
+             |> render_change()
     end
 
     test "adds product to cart", %{conn: conn, product: product} do

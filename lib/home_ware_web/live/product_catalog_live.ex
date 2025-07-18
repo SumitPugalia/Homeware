@@ -62,221 +62,234 @@ defmodule HomeWareWeb.ProductCatalogLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="min-h-screen bg-gray-900 text-white">
-      <div class="container mx-auto px-4 py-8">
-        <!-- Modern Filter Section -->
-        <div class="mb-12">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-white">Filters</h2>
-          </div>
+    <div class="min-h-screen bg-gray-900 text-white py-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <!-- Header -->
+        <div class="mb-8">
+          <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">
+            Product
+            <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Catalog
+            </span>
+          </h1>
+          <p class="text-gray-400">
+            Discover our curated collection of premium lifestyle products
+          </p>
+        </div>
 
-          <form
-            phx-submit="filter"
-            id="filter-form"
-            class="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-3xl shadow-2xl border border-gray-700"
-          >
-            <!-- Filter Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <!-- Category Filter -->
-              <div class="space-y-3">
-                <label class="block text-sm font-semibold text-gray-300 uppercase tracking-wide">
-                  Category
-                </label>
-                <div class="relative group">
-                  <select
-                    name="category"
-                    class="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
-                  >
-                    <option value="">All Categories</option>
-                    <%= for category <- @categories do %>
-                      <option value={category.id} selected={@filters[:category] == category.id}>
-                        <%= category.name %>
-                      </option>
-                    <% end %>
-                  </select>
-                  <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                    <svg
-                      class="w-5 h-5 text-gray-400 group-hover:text-gray-300 transition-colors"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <!-- Filters Sidebar -->
+          <div class="lg:col-span-1">
+            <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 sticky top-24">
+              <h2 class="text-xl font-bold text-white mb-6">Filters</h2>
+
+              <form id="filter-form" phx-change="filter" class="space-y-4">
+                <!-- Category Filter -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-300">
+                    Category
+                  </label>
+                  <div class="relative">
+                    <select
+                      name="category"
+                      class="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 9l-7 7-7-7"
+                      <option value="">All Categories</option>
+                      <%= for category <- @categories do %>
+                        <option value={category.id} selected={@filters[:category] == category.id}>
+                          <%= category.name %>
+                        </option>
+                      <% end %>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <svg
+                        class="w-4 h-4 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                      </path>
-                    </svg>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <!-- Brand Filter -->
-              <div class="space-y-3">
-                <label class="block text-sm font-semibold text-gray-300 uppercase tracking-wide">
-                  Brand
-                </label>
-                <div class="relative group">
-                  <select
-                    name="brand"
-                    class="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
-                  >
-                    <option value="">All Brands</option>
-                    <%= for brand <- @brands do %>
-                      <option value={brand} selected={@filters[:brand] == brand}><%= brand %></option>
-                    <% end %>
-                  </select>
-                  <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                    <svg
-                      class="w-5 h-5 text-gray-400 group-hover:text-gray-300 transition-colors"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                <!-- Brand Filter -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-300">
+                    Brand
+                  </label>
+                  <div class="relative">
+                    <select
+                      name="brand"
+                      class="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 9l-7 7-7-7"
+                      <option value="">All Brands</option>
+                      <%= for brand <- @brands do %>
+                        <option value={brand} selected={@filters[:brand] == brand}>
+                          <%= brand %>
+                        </option>
+                      <% end %>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <svg
+                        class="w-4 h-4 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                      </path>
-                    </svg>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <!-- Min Price Filter -->
-              <div class="space-y-3">
-                <label class="block text-sm font-semibold text-gray-300 uppercase tracking-wide">
-                  Min Price
-                </label>
-                <div class="relative group">
-                  <input
-                    type="number"
-                    name="min_price"
-                    value={@filters[:min_price] || ""}
-                    placeholder="₹0"
-                    class="w-full pl-8 pr-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
-                  />
-                  <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                    <span class="text-gray-400 text-sm">₹</span>
+                <!-- Min Price Filter -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-300">
+                    Min Price
+                  </label>
+                  <div class="relative">
+                    <input
+                      type="number"
+                      name="min_price"
+                      value={@filters[:min_price] || ""}
+                      placeholder="₹0"
+                      class="w-full pl-8 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+                    />
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <span class="text-gray-400 text-sm">₹</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <!-- Max Price Filter -->
-              <div class="space-y-3">
-                <label class="block text-sm font-semibold text-gray-300 uppercase tracking-wide">
-                  Max Price
-                </label>
-                <div class="relative group">
-                  <input
-                    type="number"
-                    name="max_price"
-                    value={@filters[:max_price] || ""}
-                    placeholder="₹∞"
-                    class="w-full pl-8 pr-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-2xl text-white text-sm font-medium transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none group-hover:border-gray-500"
-                  />
-                  <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                    <span class="text-gray-400 text-sm">₹</span>
+                <!-- Max Price Filter -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-300">
+                    Max Price
+                  </label>
+                  <div class="relative">
+                    <input
+                      type="number"
+                      name="max_price"
+                      value={@filters[:max_price] || ""}
+                      placeholder="₹∞"
+                      class="w-full pl-8 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+                    />
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <span class="text-gray-400 text-sm">₹</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <!-- Action Buttons -->
-            <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-700">
-              <div class="flex items-center space-x-4">
-                <button
-                  type="submit"
-                  class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-2xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
-                >
-                  <div class="flex items-center space-x-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"
-                      >
-                      </path>
-                    </svg>
-                    <span>Apply Filters</span>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  phx-click="reset_filters"
-                  class="text-gray-400 hover:text-white transition-colors font-medium"
-                >
-                  Reset
-                </button>
-              </div>
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-between pt-4 border-t border-gray-700">
+                  <button
+                    type="submit"
+                    class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105"
+                  >
+                    <div class="flex items-center space-x-2">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"
+                        />
+                      </svg>
+                      <span class="text-sm">Apply</span>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    phx-click="reset_filters"
+                    class="text-gray-400 hover:text-white transition-colors text-sm font-medium"
+                  >
+                    Reset
+                  </button>
+                </div>
+              </form>
               <!-- Active Filters Display -->
-              <div class="flex items-center space-x-2">
-                <%= if @filters[:category] || @filters[:brand] || @filters[:min_price] || @filters[:max_price] do %>
-                  <span class="text-sm text-gray-400">Active filters:</span>
-                  <div class="flex items-center space-x-2">
+              <%= if @filters[:category] || @filters[:brand] || @filters[:min_price] || @filters[:max_price] do %>
+                <div class="mt-4 pt-4 border-t border-gray-700">
+                  <span class="text-xs text-gray-400">Active filters:</span>
+                  <div class="flex flex-wrap gap-2 mt-2">
                     <%= if @filters[:category] do %>
-                      <span class="px-3 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full border border-purple-500/30">
+                      <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full border border-purple-500/30">
                         Category
                       </span>
                     <% end %>
                     <%= if @filters[:brand] do %>
-                      <span class="px-3 py-1 bg-pink-500/20 text-pink-300 text-xs rounded-full border border-pink-500/30">
+                      <span class="px-2 py-1 bg-pink-500/20 text-pink-300 text-xs rounded-full border border-pink-500/30">
                         Brand
                       </span>
                     <% end %>
                     <%= if @filters[:min_price] || @filters[:max_price] do %>
-                      <span class="px-3 py-1 bg-teal-500/20 text-teal-300 text-xs rounded-full border border-teal-500/30">
+                      <span class="px-2 py-1 bg-teal-500/20 text-teal-300 text-xs rounded-full border border-teal-500/30">
                         Price
                       </span>
                     <% end %>
                   </div>
-                <% end %>
-              </div>
-            </div>
-          </form>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          <%= for product <- @products do %>
-            <div
-              class="group relative bg-gray-800 rounded-2xl p-6 hover:bg-gray-700 transition-all duration-500 transform hover:-translate-y-2 cursor-pointer"
-              data-product-id={product.id}
-              phx-click="navigate_to_product"
-              phx-value-product-id={product.id}
-            >
-              <.product_card product={product} />
-            </div>
-          <% end %>
-        </div>
-
-        <%= if @total_count > 0 do %>
-          <div class="mt-8 flex justify-center">
-            <nav class="flex items-center space-x-2">
-              <%= if @page > 1 do %>
-                <a
-                  href={~p"/products?page=#{@page - 1}"}
-                  class="px-3 py-2 text-gray-500 hover:text-gray-700"
-                >
-                  Previous
-                </a>
+                </div>
               <% end %>
-
-              <span class="px-3 py-2 text-gray-700">
-                Page <%= @page %> of <%= ceil(@total_count / @per_page) %>
-              </span>
-
-              <%= if @page < ceil(@total_count / @per_page) do %>
-                <a
-                  href={~p"/products?page=#{@page + 1}"}
-                  class="px-3 py-2 text-gray-500 hover:text-gray-700"
-                >
-                  Next
-                </a>
-              <% end %>
-            </nav>
+            </div>
           </div>
-        <% end %>
+          <!-- Products Grid -->
+          <div class="lg:col-span-3">
+            <div class="mb-6 flex items-center justify-between">
+              <p class="text-gray-400 text-sm">
+                Showing <%= length(@products) %> of <%= @total_count %> products
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <%= for product <- @products do %>
+                <div
+                  class="group bg-gray-800 rounded-xl p-4 hover:bg-gray-700 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+                  data-product-id={product.id}
+                  phx-click="navigate_to_product"
+                  phx-value-product-id={product.id}
+                >
+                  <.product_card product={product} />
+                </div>
+              <% end %>
+            </div>
+
+            <%= if @total_count > 0 do %>
+              <div class="mt-8 flex justify-center">
+                <nav class="flex items-center space-x-2">
+                  <%= if @page > 1 do %>
+                    <a
+                      href={~p"/products?page=#{@page - 1}"}
+                      class="px-3 py-2 text-gray-400 hover:text-white transition-colors text-sm"
+                    >
+                      Previous
+                    </a>
+                  <% end %>
+
+                  <span class="px-3 py-2 text-gray-300 text-sm">
+                    Page <%= @page %> of <%= ceil(@total_count / @per_page) %>
+                  </span>
+
+                  <%= if @page < ceil(@total_count / @per_page) do %>
+                    <a
+                      href={~p"/products?page=#{@page + 1}"}
+                      class="px-3 py-2 text-gray-400 hover:text-white transition-colors text-sm"
+                    >
+                      Next
+                    </a>
+                  <% end %>
+                </nav>
+              </div>
+            <% end %>
+          </div>
+        </div>
       </div>
     </div>
     """

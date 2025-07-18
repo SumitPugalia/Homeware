@@ -60,8 +60,8 @@ defmodule HomeWareWeb.CheckoutLive do
     ~H"""
     <div class="min-h-screen bg-black text-white font-sans">
       <!-- Progress Indicator -->
-      <div class="max-w-5xl mx-auto pt-8 pb-4">
-        <div class="flex items-center justify-center space-x-8">
+      <div class="max-w-5xl mx-auto pt-6 pb-3">
+        <div class="flex items-center justify-center space-x-6">
           <%= for {step, label, icon, active} <- [
             {1, "Cart", "🛒", @step >= 1},
             {2, "Shipping", "🚚", @step >= 2},
@@ -70,36 +70,36 @@ defmodule HomeWareWeb.CheckoutLive do
           ] do %>
             <div class="flex items-center">
               <div class={
-                "w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold " <>
+                "w-8 h-8 rounded-full flex items-center justify-center text-base font-bold " <>
                 if active, do: "bg-gradient-to-br from-purple-500 to-teal-400 shadow-lg text-black", else: "bg-gray-800 text-gray-400"
               }>
                 <%= icon %>
               </div>
               <span class={
-                "ml-2 text-base font-semibold tracking-wide uppercase " <>
+                "ml-2 text-sm font-semibold tracking-wide uppercase " <>
                 if active, do: "text-purple-400", else: "text-gray-500"
               }>
                 <%= label %>
               </span>
             </div>
             <%= unless step == 4 do %>
-              <div class="w-8 h-1 rounded bg-gradient-to-r from-purple-500 to-red-500 mx-2"></div>
+              <div class="w-6 h-1 rounded bg-gradient-to-r from-purple-500 to-red-500 mx-2"></div>
             <% end %>
           <% end %>
         </div>
       </div>
 
-      <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 px-4 pb-12">
+      <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4 pb-8">
         <!-- LEFT: Customer Details & Payment -->
-        <div class="bg-gray-900 rounded-3xl shadow-2xl p-8 space-y-8">
+        <div class="bg-gray-900 rounded-2xl shadow-2xl p-6 space-y-6">
           <%= if @step == 1 do %>
             <!-- Cart Review -->
             <div>
-              <h2 class="text-xl font-bold mb-4 text-purple-400">Review Your Cart</h2>
+              <h2 class="text-lg font-bold mb-3 text-purple-400">Review Your Cart</h2>
               <%= if Enum.empty?(@cart_items) do %>
-                <div class="text-center py-12">
+                <div class="text-center py-8">
                   <svg
-                    class="mx-auto h-12 w-12 text-gray-400"
+                    class="mx-auto h-10 w-10 text-gray-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -113,25 +113,25 @@ defmodule HomeWareWeb.CheckoutLive do
                   </svg>
                   <h3 class="mt-2 text-sm font-medium text-gray-300">Your cart is empty</h3>
                   <p class="mt-1 text-sm text-gray-500">Start shopping to add items to your cart.</p>
-                  <div class="mt-6">
+                  <div class="mt-4">
                     <a
                       href="/products"
-                      class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-black bg-gradient-to-r from-purple-500 to-teal-400 hover:from-purple-600 hover:to-teal-500"
+                      class="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-black bg-gradient-to-r from-purple-500 to-teal-400 hover:from-purple-600 hover:to-teal-500"
                     >
                       Continue Shopping
                     </a>
                   </div>
                 </div>
               <% else %>
-                <div class="space-y-4">
+                <div class="space-y-3">
                   <%= for item <- @cart_items do %>
                     <.cart_item item={item} />
                   <% end %>
                 </div>
-                <div class="mt-8 flex justify-end">
+                <div class="mt-6 flex justify-end">
                   <button
                     phx-click="proceed_to_address"
-                    class="bg-gradient-to-r from-purple-500 to-teal-400 text-black px-8 py-3 rounded-xl font-bold hover:from-purple-600 hover:to-teal-500 transition-all shadow-lg"
+                    class="bg-gradient-to-r from-purple-500 to-teal-400 text-black px-6 py-2 rounded-lg font-bold hover:from-purple-600 hover:to-teal-500 transition-all shadow-lg"
                   >
                     Continue to Address Selection
                   </button>
@@ -143,41 +143,41 @@ defmodule HomeWareWeb.CheckoutLive do
           <%= if @step == 2 do %>
             <!-- Address Selection -->
             <div>
-              <h2 class="text-xl font-bold mb-4 text-teal-400">Select Addresses</h2>
+              <h2 class="text-lg font-bold mb-3 text-teal-400">Select Addresses</h2>
               <!-- Shipping Address -->
-              <div class="mb-8">
-                <h3 class="text-lg font-medium text-gray-300 mb-4">Shipping Address</h3>
-                <div class="grid grid-cols-1 gap-4">
+              <div class="mb-6">
+                <h3 class="text-base font-medium text-gray-300 mb-3">Shipping Address</h3>
+                <div class="grid grid-cols-1 gap-3">
                   <%= for address <- @addresses do %>
                     <div
                       class={
                         if @selected_shipping_address_id == address.id,
                           do:
-                            "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-purple-500 bg-purple-500/10",
+                            "border-2 rounded-lg p-3 cursor-pointer transition-all duration-200 border-purple-500 bg-purple-500/10",
                           else:
-                            "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-gray-700 bg-gray-800 hover:border-purple-500"
+                            "border-2 rounded-lg p-3 cursor-pointer transition-all duration-200 border-gray-700 bg-gray-800 hover:border-purple-500"
                       }
                       phx-click="select_shipping_address"
                       phx-value-address-id={address.id}
                     >
                       <div class="flex items-start justify-between">
                         <div class="flex-1">
-                          <p class="font-medium text-white">
+                          <p class="font-medium text-white text-sm">
                             <%= address.first_name %> <%= address.last_name %>
                           </p>
-                          <p class="text-sm text-gray-400"><%= address.address_line_1 %></p>
+                          <p class="text-xs text-gray-400"><%= address.address_line_1 %></p>
                           <%= if address.address_line_2 && address.address_line_2 != "" do %>
-                            <p class="text-sm text-gray-400"><%= address.address_line_2 %></p>
+                            <p class="text-xs text-gray-400"><%= address.address_line_2 %></p>
                           <% end %>
-                          <p class="text-sm text-gray-400">
+                          <p class="text-xs text-gray-400">
                             <%= address.city %>, <%= address.state %> <%= address.postal_code %>
                           </p>
-                          <p class="text-sm text-gray-400"><%= address.phone %></p>
+                          <p class="text-xs text-gray-400"><%= address.phone %></p>
                         </div>
-                        <div class="ml-4">
+                        <div class="ml-3">
                           <%= if @selected_shipping_address_id == address.id do %>
                             <svg
-                              class="h-5 w-5 text-purple-400"
+                              class="h-4 w-4 text-purple-400"
                               fill="currentColor"
                               viewBox="0 0 20 20"
                             >
@@ -193,21 +193,24 @@ defmodule HomeWareWeb.CheckoutLive do
                     </div>
                   <% end %>
                 </div>
-                <div class="mt-4">
-                  <a href="/addresses/new" class="text-purple-400 hover:text-purple-300 font-medium">
+                <div class="mt-3">
+                  <a
+                    href="/addresses/new"
+                    class="text-purple-400 hover:text-purple-300 font-medium text-sm"
+                  >
                     + Add New Address
                   </a>
                 </div>
               </div>
               <!-- Billing Address -->
-              <div class="mb-8">
-                <h3 class="text-lg font-medium text-gray-300 mb-4">Billing Address</h3>
-                <div class="flex items-center mb-4">
+              <div class="mb-6">
+                <h3 class="text-base font-medium text-gray-300 mb-3">Billing Address</h3>
+                <div class="flex items-center mb-3">
                   <input
                     type="checkbox"
                     id="same_as_shipping"
                     phx-click="toggle_billing_same_as_shipping"
-                    class="accent-purple-500 w-5 h-5 rounded focus:ring-2 focus:ring-purple-500/40"
+                    class="accent-purple-500 w-4 h-4 rounded focus:ring-2 focus:ring-purple-500/40"
                   />
                   <label for="same_as_shipping" class="ml-2 block text-sm text-gray-300">
                     Same as shipping address
@@ -215,37 +218,37 @@ defmodule HomeWareWeb.CheckoutLive do
                 </div>
 
                 <%= if @selected_shipping_address_id && @selected_billing_address_id != @selected_shipping_address_id do %>
-                  <div class="grid grid-cols-1 gap-4">
+                  <div class="grid grid-cols-1 gap-3">
                     <%= for address <- @addresses do %>
                       <div
                         class={
                           if @selected_billing_address_id == address.id,
                             do:
-                              "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-teal-500 bg-teal-500/10",
+                              "border-2 rounded-lg p-3 cursor-pointer transition-all duration-200 border-teal-500 bg-teal-500/10",
                             else:
-                              "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-gray-700 bg-gray-800 hover:border-teal-500"
+                              "border-2 rounded-lg p-3 cursor-pointer transition-all duration-200 border-gray-700 bg-gray-800 hover:border-teal-500"
                         }
                         phx-click="select_billing_address"
                         phx-value-address-id={address.id}
                       >
                         <div class="flex items-start justify-between">
                           <div class="flex-1">
-                            <p class="font-medium text-white">
+                            <p class="font-medium text-white text-sm">
                               <%= address.first_name %> <%= address.last_name %>
                             </p>
-                            <p class="text-sm text-gray-400"><%= address.address_line_1 %></p>
+                            <p class="text-xs text-gray-400"><%= address.address_line_1 %></p>
                             <%= if address.address_line_2 && address.address_line_2 != "" do %>
-                              <p class="text-sm text-gray-400"><%= address.address_line_2 %></p>
+                              <p class="text-xs text-gray-400"><%= address.address_line_2 %></p>
                             <% end %>
-                            <p class="text-sm text-gray-400">
+                            <p class="text-xs text-gray-400">
                               <%= address.city %>, <%= address.state %> <%= address.postal_code %>
                             </p>
-                            <p class="text-sm text-gray-400"><%= address.phone %></p>
+                            <p class="text-xs text-gray-400"><%= address.phone %></p>
                           </div>
-                          <div class="ml-4">
+                          <div class="ml-3">
                             <%= if @selected_billing_address_id == address.id do %>
                               <svg
-                                class="h-5 w-5 text-teal-400"
+                                class="h-4 w-4 text-teal-400"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                               >
@@ -268,14 +271,14 @@ defmodule HomeWareWeb.CheckoutLive do
                 <button
                   type="button"
                   phx-click="back_to_cart"
-                  class="bg-gray-700 text-gray-300 px-6 py-2 rounded-xl hover:bg-gray-600 transition-colors"
+                  class="bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm"
                 >
                   Back to Cart
                 </button>
                 <button
                   phx-click="proceed_to_payment"
                   disabled={!@selected_shipping_address_id}
-                  class="bg-gradient-to-r from-purple-500 to-teal-400 text-black px-6 py-2 rounded-xl font-bold hover:from-purple-600 hover:to-teal-500 transition-all disabled:bg-gray-600 disabled:cursor-not-allowed"
+                  class="bg-gradient-to-r from-purple-500 to-teal-400 text-black px-4 py-2 rounded-lg font-bold hover:from-purple-600 hover:to-teal-500 transition-all disabled:bg-gray-600 disabled:cursor-not-allowed text-sm"
                 >
                   Continue to Payment
                 </button>
@@ -286,11 +289,11 @@ defmodule HomeWareWeb.CheckoutLive do
           <%= if @step == 3 do %>
             <!-- Payment Information -->
             <div>
-              <h2 class="text-xl font-bold mb-4 text-red-500">Payment Method</h2>
-              <div class="mb-6">
-                <div class="flex items-center p-4 bg-gray-800/50 border-2 border-purple-500/30 rounded-xl">
+              <h2 class="text-lg font-bold mb-3 text-red-500">Payment Method</h2>
+              <div class="mb-4">
+                <div class="flex items-center p-3 bg-gray-800/50 border-2 border-purple-500/30 rounded-lg">
                   <svg
-                    class="w-6 h-6 text-purple-400 mr-3"
+                    class="w-5 h-5 text-purple-400 mr-2"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -302,18 +305,20 @@ defmodule HomeWareWeb.CheckoutLive do
                       d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
                     />
                   </svg>
-                  <span class="text-white font-medium">Cash on Delivery</span>
+                  <span class="text-white font-medium text-sm">Cash on Delivery</span>
                 </div>
               </div>
 
-              <form phx-submit="save_payment" class="space-y-6">
+              <form phx-submit="save_payment" class="space-y-4">
                 <div>
-                  <label class="block text-gray-400 mb-2">Special handling or delivery notes</label>
+                  <label class="block text-gray-400 mb-2 text-sm">
+                    Special handling or delivery notes
+                  </label>
                   <textarea
                     name="notes"
                     phx-keyup="update_notes"
                     rows="2"
-                    class="w-full rounded-xl bg-black/80 border-2 border-gray-700 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/40 text-white px-4 py-3 text-lg shadow transition-all duration-200 outline-none"
+                    class="w-full rounded-lg bg-black/80 border-2 border-gray-700 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/40 text-white px-3 py-2 text-sm shadow transition-all duration-200 outline-none"
                     placeholder="Any special instructions for delivery..."
                   ></textarea>
                 </div>
@@ -322,7 +327,7 @@ defmodule HomeWareWeb.CheckoutLive do
                   <button
                     type="button"
                     phx-click="back_to_address"
-                    class="bg-gray-700 text-gray-300 px-6 py-2 rounded-xl hover:bg-gray-600 transition-colors"
+                    class="bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm"
                   >
                     Back
                   </button>
@@ -332,21 +337,21 @@ defmodule HomeWareWeb.CheckoutLive do
           <% end %>
         </div>
         <!-- RIGHT: Order Summary -->
-        <div class="bg-gray-950 rounded-3xl shadow-2xl p-8 space-y-8">
-          <h2 class="text-xl font-bold mb-6 text-purple-400">Order Summary</h2>
+        <div class="bg-gray-950 rounded-2xl shadow-2xl p-6 space-y-6">
+          <h2 class="text-lg font-bold mb-4 text-purple-400">Order Summary</h2>
           <!-- Promo Code -->
-          <div class="flex items-center mt-6">
+          <div class="flex items-center mt-4">
             <input
               type="text"
               placeholder="Promo code"
-              class="flex-1 rounded-xl bg-black/80 border-2 border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/40 text-white px-4 py-3 text-lg shadow transition-all duration-200 outline-none"
+              class="flex-1 rounded-lg bg-black/80 border-2 border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/40 text-white px-3 py-2 text-sm shadow transition-all duration-200 outline-none"
             />
-            <button class="ml-3 px-5 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-teal-400 text-black font-bold shadow-lg hover:from-purple-600 hover:to-teal-500 transition-all">
+            <button class="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-teal-400 text-black font-bold shadow-lg hover:from-purple-600 hover:to-teal-500 transition-all text-sm">
               Apply
             </button>
           </div>
           <!-- Totals -->
-          <div class="mt-8 space-y-2 text-lg">
+          <div class="mt-6 space-y-2 text-base">
             <div class="flex justify-between">
               <span class="text-gray-400">Subtotal</span>
               <span data-testid="subtotal">
@@ -365,7 +370,7 @@ defmodule HomeWareWeb.CheckoutLive do
                 ₹<%= Number.Delimit.number_to_delimited(@tax, precision: 2) %>
               </span>
             </div>
-            <div class="flex justify-between font-bold text-xl">
+            <div class="flex justify-between font-bold text-lg">
               <span class="text-purple-400">Total</span>
               <span data-testid="grand-total">
                 ₹<%= Number.Delimit.number_to_delimited(@grand_total, precision: 2) %>
@@ -373,21 +378,21 @@ defmodule HomeWareWeb.CheckoutLive do
             </div>
           </div>
           <!-- Estimated Delivery -->
-          <div class="mt-4 text-teal-400 text-sm">
+          <div class="mt-3 text-teal-400 text-xs">
             <span>Estimated delivery: 3-5 business days</span>
           </div>
           <!-- CTA -->
           <button
             phx-click="complete_order"
             disabled={is_nil(@notes) || @notes == ""}
-            class={"w-full mt-8 py-4 rounded-2xl font-extrabold text-xl shadow-xl transition-all focus:outline-none focus:ring-4 focus:ring-purple-500/40 #{if is_nil(@notes) || @notes == "", do: "bg-gray-600 text-gray-400 cursor-not-allowed", else: "bg-gradient-to-r from-purple-500 via-red-500 to-teal-400 text-black hover:from-purple-600 hover:via-red-600 hover:to-teal-500 animate-glow"}"}
+            class={"w-full mt-6 py-3 rounded-xl font-extrabold text-lg shadow-xl transition-all focus:outline-none focus:ring-4 focus:ring-purple-500/40 #{if is_nil(@notes) || @notes == "", do: "bg-gray-600 text-gray-400 cursor-not-allowed", else: "bg-gradient-to-r from-purple-500 via-red-500 to-teal-400 text-black hover:from-purple-600 hover:via-red-600 hover:to-teal-500 animate-glow"}"}
           >
             <span class="drop-shadow-lg">Complete My Order</span>
           </button>
           <!-- Trust Badges -->
-          <div class="flex items-center justify-center space-x-6 mt-8">
-            <div class="flex items-center space-x-2">
-              <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="flex items-center justify-center space-x-4 mt-6">
+            <div class="flex items-center space-x-1">
+              <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -403,16 +408,16 @@ defmodule HomeWareWeb.CheckoutLive do
               </svg>
               <span class="text-xs text-gray-400">Secure Payment</span>
             </div>
-            <div class="flex items-center space-x-2">
-              <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-center space-x-1">
+              <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
                 <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
               </svg>
               <span class="text-xs text-gray-400">18+ Only</span>
             </div>
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-1">
               <svg
-                class="w-6 h-6 text-purple-400"
+                class="w-5 h-5 text-purple-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -434,14 +439,14 @@ defmodule HomeWareWeb.CheckoutLive do
 
     <style>
       .input-glow {
-        @apply w-full rounded-xl bg-black/80 border-2 border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/40 text-white px-4 py-3 text-lg shadow transition-all duration-200 outline-none;
+        @apply w-full rounded-lg bg-black/80 border-2 border-gray-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/40 text-white px-3 py-2 text-sm shadow transition-all duration-200 outline-none;
         box-shadow: 0 0 0 0 transparent;
       }
       .input-glow:focus {
         box-shadow: 0 0 8px 2px #a21caf55, 0 0 0 2px #14b8a6aa;
       }
       .payment-btn {
-        @apply w-full py-3 rounded-xl font-bold text-lg bg-gray-800 text-gray-300 border-2 border-gray-700 shadow transition-all duration-200;
+        @apply w-full py-3 rounded-lg font-bold text-sm bg-gray-800 text-gray-300 border-2 border-gray-700 shadow transition-all duration-200;
       }
       .payment-btn.selected, .payment-btn:focus {
         @apply bg-gradient-to-r from-purple-500 to-teal-400 text-black border-purple-500 shadow-lg;
