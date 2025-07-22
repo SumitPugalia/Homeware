@@ -209,11 +209,10 @@
                   Length (cm)
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   name="product[dimensions][length]"
                   id="dimensions_length"
-                  step="0.01"
-                  value={get_in(@product.dimensions, ["length"])}
+                  value={@form.params["dimensions"] && @form.params["dimensions"]["length"] || @form.data.dimensions && @form.data.dimensions["length"]}
                   class="mt-2 block w-full rounded-lg bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 />
               </div>
@@ -225,11 +224,10 @@
                   Width (cm)
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   name="product[dimensions][width]"
                   id="dimensions_width"
-                  step="0.01"
-                  value={get_in(@product.dimensions, ["width"])}
+                  value={@form.params["dimensions"] && @form.params["dimensions"]["width"] || @form.data.dimensions && @form.data.dimensions["width"]}
                   class="mt-2 block w-full rounded-lg bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 />
               </div>
@@ -241,11 +239,10 @@
                   Height (cm)
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   name="product[dimensions][height]"
                   id="dimensions_height"
-                  step="0.01"
-                  value={get_in(@product.dimensions, ["height"])}
+                  value={@form.params["dimensions"] && @form.params["dimensions"]["height"] || @form.data.dimensions && @form.data.dimensions["height"]}
                   class="mt-2 block w-full rounded-lg bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 />
               </div>
@@ -269,7 +266,7 @@
                   type="text"
                   name="product[specifications][color]"
                   id="specifications_color"
-                  value={get_in(@product.specifications, ["color"])}
+                  value={get_in(@form[:specifications].value, ["color"])}
                   class="mt-2 block w-full rounded-lg bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 />
               </div>
@@ -284,7 +281,7 @@
                   type="text"
                   name="product[specifications][material]"
                   id="specifications_material"
-                  value={get_in(@product.specifications, ["material"])}
+                  value={get_in(@form[:specifications].value, ["material"])}
                   class="mt-2 block w-full rounded-lg bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 />
               </div>

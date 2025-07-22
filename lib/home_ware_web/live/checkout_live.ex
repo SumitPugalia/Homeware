@@ -636,51 +636,65 @@ defmodule HomeWareWeb.CheckoutLive do
       Enum.find(socket.assigns.addresses, fn addr -> addr.id == shipping_address_id end)
 
     billing_address =
-      Enum.find(socket.assigns.addresses, fn addr -> addr.id == billing_address_id end)
+      if billing_address_id do
+        Enum.find(socket.assigns.addresses, fn addr -> addr.id == billing_address_id end)
+      else
+        nil
+      end
 
-    # Generate order number
-    order_number = generate_order_number()
+    # Validate that required addresses are selected
+    cond do
+      is_nil(shipping_address) ->
+        {:noreply, put_flash(socket, :error, "Please select a shipping address.")}
 
-    # Create the order
-    order_params = %{
-      user_id: user.id,
-      shipping_address_id: shipping_address.id,
-      billing_address_id: billing_address.id,
-      order_number: order_number,
-      subtotal: socket.assigns.total,
-      shipping_amount: socket.assigns.shipping,
-      tax_amount: socket.assigns.tax,
-      total_amount: socket.assigns.grand_total,
-      payment_method: "cash_on_delivery",
-      status: "pending",
-      notes: notes
-    }
+      is_nil(billing_address) ->
+        {:noreply, put_flash(socket, :error, "Please select a billing address.")}
 
-    case HomeWare.Orders.create_order(order_params) do
-      {:ok, order} ->
-        # Create order items from cart items
-        Enum.each(cart_items, fn cart_item ->
-          HomeWare.Orders.create_order_item(%{
-            order_id: order.id,
-            product_id: cart_item.product_id,
-            product_variant_id: cart_item.product_variant_id,
-            quantity: cart_item.quantity,
-            unit_price: cart_item.product.selling_price,
-            total_price: Decimal.mult(cart_item.product.selling_price, cart_item.quantity)
-          })
-        end)
+      true ->
+        # Generate order number
+        order_number = generate_order_number()
 
-        # Clear the cart
-        HomeWare.CartItems.clear_user_cart(user.id)
+        # Create the order
+        order_params = %{
+          user_id: user.id,
+          shipping_address_id: shipping_address.id,
+          billing_address_id: billing_address.id,
+          order_number: order_number,
+          subtotal: socket.assigns.total,
+          shipping_amount: socket.assigns.shipping,
+          tax_amount: socket.assigns.tax,
+          total_amount: socket.assigns.grand_total,
+          payment_method: "cash_on_delivery",
+          status: "pending",
+          notes: notes
+        }
 
-        {:noreply,
-         socket
-         |> put_flash(:info, "Order placed successfully!")
-         |> push_navigate(to: "/orders")}
+            case HomeWare.Orders.create_order(order_params) do
+          {:ok, order} ->
+            # Create order items from cart items
+            Enum.each(cart_items, fn cart_item ->
+              HomeWare.Orders.create_order_item(%{
+                order_id: order.id,
+                product_id: cart_item.product_id,
+                product_variant_id: cart_item.product_variant_id,
+                quantity: cart_item.quantity,
+                unit_price: cart_item.product.selling_price,
+                total_price: Decimal.mult(cart_item.product.selling_price, cart_item.quantity)
+              })
+            end)
 
-      {:error, reason} ->
-        Logger.error("Error creating order: #{inspect(reason)}")
-        {:noreply, put_flash(socket, :error, "Could not place order. Please try again.")}
+            # Clear the cart
+            HomeWare.CartItems.clear_user_cart(user.id)
+
+            {:noreply,
+             socket
+             |> put_flash(:info, "Order placed successfully!")
+             |> push_navigate(to: "/orders")}
+
+          {:error, reason} ->
+            Logger.error("Error creating order: #{inspect(reason)}")
+            {:noreply, put_flash(socket, :error, "Could not place order. Please try again.")}
+        end
     end
   end
 
