@@ -164,7 +164,7 @@ defmodule HomeWareWeb.ProductDetailLive do
                         <div class="text-xs text-gray-400 mb-1">SKU: <%= variant.sku %></div>
                         <%= if variant.price_override do %>
                           <div class="text-purple-400 font-semibold text-sm">
-                            ₹<%= Formatters.format_currency(variant.price_override) %>
+                            <%= Formatters.format_currency(variant.price_override) %>
                           </div>
                         <% end %>
                         <%= unless variant.available? do %>
@@ -179,12 +179,12 @@ defmodule HomeWareWeb.ProductDetailLive do
               <% end %>
               <div class="flex items-center space-x-3">
                 <span class="text-gray-400 line-through text-lg">
-                  ₹<%= Formatters.format_currency(
+                  <%= Formatters.format_currency(
                     display_price(@product, @variants, @selected_variant_id, :original)
                   ) %>
                 </span>
                 <span class="text-3xl font-bold text-purple-400">
-                  ₹<%= Formatters.format_currency(
+                  <%= Formatters.format_currency(
                     display_price(@product, @variants, @selected_variant_id, :selling)
                   ) %>
                 </span>

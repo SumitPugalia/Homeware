@@ -7,6 +7,7 @@ defmodule HomeWareWeb.CartItem do
 
   use Phoenix.Component
   alias HomeWareWeb.Formatters
+  import HomeWare.Orders, only: [get_item_price: 1]
 
   @doc """
   Renders a cart item with consistent styling and functionality.
@@ -48,7 +49,7 @@ defmodule HomeWareWeb.CartItem do
           <div class="text-right">
             <span class="font-bold text-lg text-teal-400">
               <%= Formatters.format_currency(
-                Decimal.mult(@item.product.selling_price, Decimal.new(@item.quantity))
+                Decimal.mult(get_item_price(@item), Decimal.new(@item.quantity))
               ) %>
             </span>
           </div>
@@ -132,7 +133,7 @@ defmodule HomeWareWeb.CartItem do
       <div class="text-right">
         <div class="font-semibold text-teal-400">
           <%= Formatters.format_currency(
-            Decimal.mult(@item.product.selling_price, Decimal.new(@item.quantity))
+            Decimal.mult(get_item_price(@item), Decimal.new(@item.quantity))
           ) %>
         </div>
       </div>

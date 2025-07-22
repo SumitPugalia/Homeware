@@ -245,7 +245,7 @@ defmodule HomeWare.Orders do
 
   # Private helper functions
 
-  defp get_item_price(%{product_variant: variant, product: product}) when not is_nil(variant) do
+  def get_item_price(%{product_variant: variant, product: product}) when not is_nil(variant) do
     # If price_override is nil, fall back to product selling_price
     if is_nil(variant.price_override) do
       product.selling_price
@@ -254,7 +254,7 @@ defmodule HomeWare.Orders do
     end
   end
 
-  defp get_item_price(%{product: product}) do
+  def get_item_price(%{product: product}) do
     product.selling_price
   end
 

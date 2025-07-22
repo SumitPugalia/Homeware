@@ -400,7 +400,27 @@
                                 class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
                                 title="Edit"
                               >
-                                <i-lucide-edit class="w-4 h-4"></i-lucide-edit>
+                                <!-- Heroicons Pencil Square (edit) -->
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  class="w-4 h-4"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M16.862 3.487a2.25 2.25 0 113.182 3.182l-9.193 9.193a2.25 2.25 0 01-1.06.592l-3.25.813.813-3.25a2.25 2.25 0 01.592-1.06l9.193-9.193z"
+                                  />
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M19.5 6.75L17.25 4.5m-2.25 2.25l-9.193 9.193a2.25 2.25 0 00-.592 1.06l-.813 3.25 3.25-.813a2.25 2.25 0 001.06-.592l9.193-9.193"
+                                  />
+                                </svg>
                               </a>
                               <form
                                 action={~p"/admin/products/#{@product.id}/variants/#{variant.id}"}
@@ -415,7 +435,21 @@
                                   class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors duration-200"
                                   title="Delete"
                                 >
-                                  <i-lucide-trash-2 class="w-4 h-4"></i-lucide-trash-2>
+                                  <!-- Heroicons Trash -->
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="w-4 h-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M6 18L18 6M6 6l12 12"
+                                    />
+                                  </svg>
                                 </button>
                               </form>
                             </div>
