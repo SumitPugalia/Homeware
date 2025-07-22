@@ -37,6 +37,12 @@
           >
             My Orders
           </a>
+          <a
+            href="/chat"
+            class="text-gray-300 hover:text-purple-400 text-lg font-medium transition-colors duration-200"
+          >
+            Chat with Admin
+          </a>
           <form action="/users/log_out" method="post" class="inline">
             <input type="hidden" name="_method" value="delete" />
             <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
@@ -177,6 +183,12 @@
             class="block px-3 py-2 text-gray-300 hover:text-purple-400 hover:bg-gray-800/50 rounded-md transition-colors duration-200 text-sm"
           >
             My Orders
+          </a>
+          <a
+            href="/chat"
+            class="block px-3 py-2 text-gray-300 hover:text-purple-400 hover:bg-gray-800/50 rounded-md transition-colors duration-200 text-sm"
+          >
+            Chat with Admin
           </a>
           <form action="/users/log_out" method="post" class="inline">
             <input type="hidden" name="_method" value="delete" />

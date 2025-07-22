@@ -51,6 +51,7 @@ defmodule HomeWareWeb.Router do
     get "/users/log_in", UserSessionController, :new
     post "/users/log_in", UserSessionController, :create
     delete "/users/log_out", UserSessionController, :delete
+    live "/chat", ChatLive
   end
 
   # Protected LiveView routes
@@ -99,6 +100,7 @@ defmodule HomeWareWeb.Router do
 
     # resources "/categories", CategoryController
     # resources "/users", UserController
+    live "/chat", ChatLive
   end
 
   # Other scopes may use custom stacks.
