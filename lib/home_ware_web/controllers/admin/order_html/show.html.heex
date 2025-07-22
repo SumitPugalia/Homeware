@@ -42,7 +42,7 @@
                 <div class="flex justify-between">
                   <span class="text-sm text-gray-600 dark:text-gray-300">Date:</span>
                   <span class="text-sm font-medium text-gray-900 dark:text-white">
-                    <%= Calendar.strftime(@order.inserted_at, "%B %d, %Y at %I:%M %p") %>
+                    <%= HomeWareWeb.Formatters.format_datetime(@order.inserted_at) %>
                   </span>
                 </div>
                 <div class="flex justify-between">

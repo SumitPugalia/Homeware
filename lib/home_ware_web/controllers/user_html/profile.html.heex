@@ -101,7 +101,7 @@
               Member Since
             </label>
             <p class="text-white text-lg font-medium">
-              <%= Calendar.strftime(@current_user.inserted_at, "%B %d, %Y") %>
+              <%= HomeWareWeb.Formatters.format_datetime(@current_user.inserted_at) %>
             </p>
           </div>
         </div>

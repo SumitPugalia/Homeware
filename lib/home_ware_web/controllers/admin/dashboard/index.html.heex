@@ -141,7 +141,7 @@
                   <%= order.customer_name %>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">
-                  <%= Calendar.strftime(order.date, "%b %d, %Y") %>
+                  <%= HomeWareWeb.Formatters.format_datetime(order.date) %>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span class={"inline-flex px-3 py-1 text-xs font-semibold rounded-full transition-colors duration-200 " <> case order.status do

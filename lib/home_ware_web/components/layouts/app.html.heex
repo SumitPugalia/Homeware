@@ -31,6 +31,12 @@
           Contact
         </a>
         <%= if @current_user do %>
+          <a
+            href="/orders"
+            class="text-gray-300 hover:text-purple-400 text-lg font-medium transition-colors duration-200"
+          >
+            My Orders
+          </a>
           <form action="/users/log_out" method="post" class="inline">
             <input type="hidden" name="_method" value="delete" />
             <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
@@ -166,6 +172,12 @@
           Contact
         </a>
         <%= if @current_user do %>
+          <a
+            href="/orders"
+            class="block px-3 py-2 text-gray-300 hover:text-purple-400 hover:bg-gray-800/50 rounded-md transition-colors duration-200 text-sm"
+          >
+            My Orders
+          </a>
           <form action="/users/log_out" method="post" class="inline">
             <input type="hidden" name="_method" value="delete" />
             <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />

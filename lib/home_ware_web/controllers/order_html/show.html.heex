@@ -145,7 +145,7 @@
               </span>
             </div>
             <p class="text-xs text-gray-500">
-              Ordered on <%= Calendar.strftime(@order.inserted_at, "%B %d, %Y") %>
+              Ordered on <%= HomeWareWeb.Formatters.format_datetime(@order.inserted_at) %>
             </p>
           </div>
           <!-- Price Breakdown -->

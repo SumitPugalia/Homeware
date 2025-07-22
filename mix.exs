@@ -67,7 +67,8 @@ defmodule HomeWare.MixProject do
       {:sweet_xml, "~> 0.7"},
       {:bypass, "~> 2.1", only: :test},
       {:number, "~> 1.0.1"},
-      {:mox, "~> 1.0", only: :test}
+      {:mox, "~> 1.0", only: :test},
+      {:timex, "~> 3.7"}
     ]
   end
 

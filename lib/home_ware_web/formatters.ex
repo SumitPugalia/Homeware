@@ -49,10 +49,12 @@ defmodule HomeWareWeb.Formatters do
   end
 
   @doc """
-  Formats a datetime in a human-readable format.
+  Formats a datetime in a human-readable format, converting from UTC to Asia/Kolkata timezone.
   """
   def format_datetime(datetime) do
-    Calendar.strftime(datetime, "%B %d, %Y at %I:%M %p")
+    datetime
+    |> Timex.to_datetime("Asia/Kolkata")
+    |> Timex.format!("%d %b %Y, %I:%M %p", :strftime)
   end
 
   @doc """

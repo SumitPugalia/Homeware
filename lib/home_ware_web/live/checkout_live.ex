@@ -669,7 +669,7 @@ defmodule HomeWareWeb.CheckoutLive do
           notes: notes
         }
 
-            case HomeWare.Orders.create_order(order_params) do
+        case HomeWare.Orders.create_order(order_params) do
           {:ok, order} ->
             # Create order items from cart items
             Enum.each(cart_items, fn cart_item ->
