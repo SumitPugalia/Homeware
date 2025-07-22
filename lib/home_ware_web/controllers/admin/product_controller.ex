@@ -15,7 +15,10 @@ defmodule HomeWareWeb.Admin.ProductController do
 
   def index(conn, params) do
     page = params["page"] |> to_int() |> max(1)
-    products = Products.paginated_products(page, @per_page)
+    search = params["search"]
+    filters = %{}
+    filters = if search, do: Map.put(filters, :search, search), else: filters
+    products = Products.paginated_products(page, @per_page, filters)
     total_entries = Products.count_products()
     total_pages = ceil(total_entries / @per_page)
     categories = Categories.list_categories_with_counts()
@@ -27,7 +30,8 @@ defmodule HomeWareWeb.Admin.ProductController do
       total_pages: total_pages,
       total_entries: total_entries,
       per_page: @per_page,
-      current_path: conn.request_path
+      current_path: conn.request_path,
+      search: search
     )
   end
 

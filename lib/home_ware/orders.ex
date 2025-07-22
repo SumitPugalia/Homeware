@@ -322,8 +322,7 @@ defmodule HomeWare.Orders do
     |> join(:left, [o], u in assoc(o, :user))
     |> where(
       [o, u],
-      ilike(o.id, ^search_term) or
-        ilike(o.order_number, ^search_term) or
+      ilike(o.order_number, ^search_term) or
         ilike(u.email, ^search_term) or
         ilike(u.first_name, ^search_term) or
         ilike(u.last_name, ^search_term)

@@ -8,12 +8,21 @@
     <div class="flex items-center space-x-3">
       <!-- Search -->
       <div class="relative">
-        <input
-          type="text"
-          placeholder="Search products..."
-          class="w-64 px-4 py-2 pl-10 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-        />
-        <i-lucide-search class="absolute left-3 top-2.5 w-4 h-4 text-gray-400"></i-lucide-search>
+        <form method="get" action="/admin/products">
+          <input
+            type="text"
+            name="search"
+            value={@search || ""}
+            placeholder="Search products..."
+            class="w-64 px-4 py-2 pl-10 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          />
+          <button
+            type="submit"
+            class="absolute left-3 top-2.5 w-4 h-4 text-gray-400 bg-transparent border-none p-0 m-0 cursor-pointer"
+          >
+            <i-lucide-search class="w-4 h-4"></i-lucide-search>
+          </button>
+        </form>
       </div>
       <!-- Add Product Button -->
       <a

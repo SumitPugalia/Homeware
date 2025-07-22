@@ -81,7 +81,7 @@
                   Revenue
                 </p>
                 <p class="text-lg font-bold text-gray-900 dark:text-white">
-                  ₹<%= @total_revenue %>
+                  <%= HomeWareWeb.Formatters.format_currency(@total_revenue) %>
                 </p>
               </div>
             </div>
