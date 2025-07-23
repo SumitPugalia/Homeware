@@ -77,6 +77,7 @@ defmodule HomeWare.Products.Product do
     |> validate_number(:price, greater_than: 0)
     |> validate_number(:selling_price, greater_than: 0)
     |> validate_number(:inventory_quantity, greater_than_or_equal_to: 0)
+    |> cast_assoc(:variants, with: &HomeWare.Products.ProductVariant.changeset/2, required: false)
   end
 
   @doc """

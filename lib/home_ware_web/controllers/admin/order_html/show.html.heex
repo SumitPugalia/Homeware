@@ -12,7 +12,20 @@
         href={~p"/admin/orders"}
         class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
       >
-        <i-lucide-arrow-left class="w-4 h-4 mr-2"></i-lucide-arrow-left>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-4 h-4 mr-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
         Back to Orders
       </a>
     </div>
@@ -117,7 +130,20 @@
             <%= for item <- @order.order_items do %>
               <div class="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <div class="w-16 h-16 bg-gradient-to-br from-gray-400 to-gray-600 rounded-lg flex items-center justify-center">
-                  <i-lucide-box class="w-8 h-8 text-white"></i-lucide-box>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-8 h-8 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <rect width="20" height="20" x="2" y="2" rx="2" /><path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 12h8m-4-4v8"
+                    />
+                  </svg>
                 </div>
                 <div class="flex-1">
                   <h4 class="text-sm font-semibold text-gray-900 dark:text-white">

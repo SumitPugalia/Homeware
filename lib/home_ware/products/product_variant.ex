@@ -23,10 +23,22 @@ defmodule HomeWare.Products.ProductVariant do
   def changeset(product_variant, attrs) do
     product_variant
     |> cast(attrs, [:option_name, :sku, :price_override, :quantity, :is_active, :product_id])
-    |> validate_required([:option_name, :quantity, :sku, :product_id])
+    |> cast_boolean(:is_active)
+    |> validate_required([:option_name, :quantity, :sku])
     |> validate_number(:quantity, greater_than_or_equal_to: 0)
     |> validate_number(:price_override, greater_than: 0)
     |> foreign_key_constraint(:product_id)
+  end
+
+  defp cast_boolean(changeset, field) do
+    value = get_field(changeset, field)
+
+    cond do
+      is_boolean(value) -> changeset
+      value in ["true", "1", 1] -> put_change(changeset, field, true)
+      value in ["false", "0", 0] -> put_change(changeset, field, false)
+      true -> changeset
+    end
   end
 
   # Set the available? field based on quantity and is_active
