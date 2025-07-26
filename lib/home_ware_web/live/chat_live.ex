@@ -27,7 +27,7 @@ defmodule HomeWareWeb.ChatLive do
     if is_nil(user) do
       {:ok,
        socket
-       |> put_flash(:error, "You must be logged in to chat with admin.")
+       |> put_flash(:error, "You must be logged in to chat with customer support.")
        |> push_navigate(to: "/users/log_in")}
     else
       if connected?(socket), do: PubSub.subscribe(HomeWare.PubSub, @topic)
@@ -78,7 +78,7 @@ defmodule HomeWareWeb.ChatLive do
     <div class="flex justify-center items-center min-h-[80vh] bg-transparent px-2 sm:px-0">
       <div class="w-full max-w-lg sm:max-w-md md:max-w-lg bg-gray-900 rounded-xl shadow-lg flex flex-col h-[80vh] sm:h-[70vh] border border-gray-800">
         <h2 class="text-lg font-bold mb-2 px-4 pt-4 pb-2 border-b border-gray-800 text-white">
-          Chat with Admin
+          Customer Support
         </h2>
         <div class="flex-1 overflow-y-auto px-2 py-2 space-y-1" id="chat-messages">
           <%= for msg <- @messages do %>

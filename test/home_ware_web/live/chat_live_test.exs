@@ -14,7 +14,7 @@ defmodule HomeWareWeb.ChatLiveTest do
       _chat_room = insert(:chat_room, %{customer_id: user.id})
       {:ok, lv, _html} = live(conn, "/chat")
 
-      assert has_element?(lv, "h2", "Chat with Admin")
+      assert has_element?(lv, "h2", "Customer Support")
       assert has_element?(lv, "input[name=message]")
       assert has_element?(lv, "button", "Send")
 

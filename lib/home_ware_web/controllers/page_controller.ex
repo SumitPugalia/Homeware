@@ -3,6 +3,7 @@ defmodule HomeWareWeb.PageController do
 
   alias HomeWare.Products
   alias HomeWare.Categories
+  alias HomeWare.MailMessages
 
   def home(conn, params) do
     # Extract search and filter parameters
@@ -53,6 +54,20 @@ defmodule HomeWareWeb.PageController do
 
   def contact(conn, _params) do
     render(conn, :contact)
+  end
+
+  def contact_submit(conn, params) do
+    case MailMessages.create_mail_message(params) do
+      {:ok, _mail_message} ->
+        conn
+        |> put_flash(:info, "Thank you for your message! We'll get back to you soon.")
+        |> redirect(to: ~p"/contact")
+
+      {:error, %Ecto.Changeset{} = _changeset} ->
+        conn
+        |> put_flash(:error, "There was an error sending your message. Please try again.")
+        |> redirect(to: ~p"/contact")
+    end
   end
 
   def shipping(conn, _params) do

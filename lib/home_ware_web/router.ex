@@ -39,6 +39,7 @@ defmodule HomeWareWeb.Router do
     # Static pages (public)
     get "/about", PageController, :about
     get "/contact", PageController, :contact
+    post "/contact/submit", PageController, :contact_submit
     get "/shipping", PageController, :shipping
     get "/returns", PageController, :returns
     get "/privacy", PageController, :privacy
