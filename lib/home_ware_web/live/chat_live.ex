@@ -54,9 +54,7 @@ defmodule HomeWareWeb.ChatLive do
   end
 
   # Handle send button click
-  def handle_event("send_message", _params, socket) do
-    message = socket.assigns.message
-
+  def handle_event("send_message", %{"message" => message}, socket) do
     if message && String.trim(message) != "" do
       user = socket.assigns.current_user
       chat_room = socket.assigns.chat_room

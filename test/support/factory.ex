@@ -178,6 +178,19 @@ defmodule HomeWare.Factory do
     |> Map.merge(attrs)
   end
 
+  def build(:chat_message, attrs) do
+    chat_room_id = Map.get(attrs, :chat_room_id) || HomeWare.Factory.insert(:chat_room).id
+    sender_id = Map.get(attrs, :sender_id) || Ecto.UUID.generate()
+
+    %HomeWare.Chat.ChatMessage{
+      chat_room_id: chat_room_id,
+      sender_type: Map.get(attrs, :sender_type, "customer"),
+      sender_id: sender_id,
+      body: Map.get(attrs, :body, "Test message")
+    }
+    |> Map.merge(attrs)
+  end
+
   # Helper function to create and insert records
   def insert(factory, attrs \\ %{}) do
     build(factory, attrs)

@@ -242,7 +242,7 @@
                     onclick="toggleOrderStatusDropdown()"
                   >
                     <span class="text-gray-300" id="order-status-display">
-                      <%= String.capitalize(@order.status) %>
+                      <%= String.capitalize(Atom.to_string(@order.status)) %>
                     </span>
                     <svg
                       id="order-status-dropdown-chevron"
