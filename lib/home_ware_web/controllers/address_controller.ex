@@ -55,7 +55,7 @@ defmodule HomeWareWeb.AddressController do
 
   def delete(conn, %{"id" => id}) do
     address = Addresses.get_address!(id)
-    {:ok, _address} = Addresses.delete_address(address)
+    {:ok, _address} = Addresses.soft_delete_address(address)
 
     conn
     |> put_flash(:info, "Address deleted successfully.")

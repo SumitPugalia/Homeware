@@ -9,7 +9,7 @@ defmodule HomeWare.Addresses do
 
   def list_user_addresses(user_id) do
     Address
-    |> where(user_id: ^user_id)
+    |> where([a], a.user_id == ^user_id and a.is_active == true)
     |> Repo.all()
   end
 
@@ -29,6 +29,12 @@ defmodule HomeWare.Addresses do
 
   def delete_address(%Address{} = address) do
     Repo.delete(address)
+  end
+
+  def soft_delete_address(%Address{} = address) do
+    address
+    |> Address.changeset(%{is_active: false})
+    |> Repo.update()
   end
 
   def change_address(%Address{} = address, attrs \\ %{}) do

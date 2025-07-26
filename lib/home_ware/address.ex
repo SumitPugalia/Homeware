@@ -20,6 +20,7 @@ defmodule HomeWare.Address do
     field :country, :string
     field :phone, :string
     field :is_default, :boolean, default: false
+    field :is_active, :boolean, default: true
 
     belongs_to :user, HomeWare.Accounts.User
     has_many :orders_as_shipping, HomeWare.Orders.Order, foreign_key: :shipping_address_id
@@ -43,7 +44,8 @@ defmodule HomeWare.Address do
       :country,
       :phone,
       :is_default,
-      :user_id
+      :user_id,
+      :is_active
     ])
     |> validate_required([
       :address_type,
