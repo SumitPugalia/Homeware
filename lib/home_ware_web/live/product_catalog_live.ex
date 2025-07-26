@@ -14,7 +14,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
   import HomeWareWeb.ProductCard, only: [product_card: 1]
 
   # Product catalog should be publicly accessible
-  # on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
+  on_mount {HomeWareWeb.LiveAuth, :ensure_authenticated}
 
   @impl true
   def mount(params, session, socket) do

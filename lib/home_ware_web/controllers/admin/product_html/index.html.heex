@@ -282,7 +282,15 @@
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
                 <td class="px-6 py-4">
                   <div class="flex items-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-gray-400 to-gray-600 rounded-lg flex items-center justify-center mr-4">
+                    <%= if product.featured_image && product.featured_image != "" do %>
+                      <img
+                        src={product.featured_image}
+                        alt={product.name}
+                        class="w-12 h-12 rounded-lg object-cover mr-4 border border-gray-200 dark:border-gray-600"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                      />
+                    <% end %>
+                    <div class={"w-12 h-12 rounded-lg flex items-center justify-center mr-4 #{if product.featured_image && product.featured_image != "", do: "hidden", else: "bg-gradient-to-br from-gray-400 to-gray-600"}"}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="w-6 h-6 text-white"
