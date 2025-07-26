@@ -45,6 +45,15 @@ defmodule HomeWare.Accounts.User do
     |> validate_inclusion(:role, @roles)
   end
 
+  def update_profile_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:email, :first_name, :last_name, :phone])
+    |> validate_required([:email, :first_name, :last_name])
+    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
+    |> validate_length(:email, max: 160)
+    |> unique_constraint(:email)
+  end
+
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password, :first_name, :last_name, :phone])

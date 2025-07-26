@@ -44,6 +44,12 @@ defmodule HomeWare.Accounts do
     |> Repo.update()
   end
 
+  def update_user_profile(%User{} = user, attrs) do
+    user
+    |> User.update_profile_changeset(attrs)
+    |> Repo.update()
+  end
+
   def change_user(%User{} = user, attrs \\ %{}) do
     User.changeset(user, attrs)
   end

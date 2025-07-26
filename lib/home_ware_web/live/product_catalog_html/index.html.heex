@@ -15,16 +15,116 @@
                 <!-- Category Filter -->
                 <div class="mb-4">
                   <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                  <select class="w-full border-gray-300 rounded-md shadow-sm">
-                    <option>All Categories</option>
-                  </select>
+                  <div class="relative">
+                    <button
+                      type="button"
+                      id="category-filter-dropdown-button"
+                      class="w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-700 transition-all duration-200 focus:outline-none focus:border-blue-500 text-left flex items-center justify-between cursor-pointer hover:bg-gray-50 hover:border-gray-400"
+                      onclick="toggleCategoryFilterDropdown()"
+                    >
+                      <span class="text-gray-700" id="category-filter-display">
+                        All Categories
+                      </span>
+                      <svg
+                        id="category-filter-dropdown-chevron"
+                        class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                    <div
+                      id="category-filter-dropdown-menu"
+                      class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg hidden"
+                    >
+                      <div class="py-1">
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectCategoryFilter('all')"
+                          data-category="all"
+                        >
+                          <span>All Categories</span>
+                          <svg
+                            class="w-4 h-4 text-blue-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <!-- Brand Filter -->
                 <div class="mb-4">
                   <label class="block text-sm font-medium text-gray-700 mb-2">Brand</label>
-                  <select class="w-full border-gray-300 rounded-md shadow-sm">
-                    <option>All Brands</option>
-                  </select>
+                  <div class="relative">
+                    <button
+                      type="button"
+                      id="brand-filter-dropdown-button"
+                      class="w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-700 transition-all duration-200 focus:outline-none focus:border-blue-500 text-left flex items-center justify-between cursor-pointer hover:bg-gray-50 hover:border-gray-400"
+                      onclick="toggleBrandFilterDropdown()"
+                    >
+                      <span class="text-gray-700" id="brand-filter-display">All Brands</span>
+                      <svg
+                        id="brand-filter-dropdown-chevron"
+                        class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                    <div
+                      id="brand-filter-dropdown-menu"
+                      class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg hidden"
+                    >
+                      <div class="py-1">
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectBrandFilter('all')"
+                          data-brand="all"
+                        >
+                          <span>All Brands</span>
+                          <svg
+                            class="w-4 h-4 text-blue-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <!-- Price Range -->
                 <div class="mb-4">
@@ -47,20 +147,148 @@
                   <label class="block text-sm font-medium text-gray-700 mb-2">
                     Minimum Rating
                   </label>
-                  <select class="w-full border-gray-300 rounded-md shadow-sm">
-                    <option>Any Rating</option>
-                    <option>4+ Stars</option>
-                    <option>3+ Stars</option>
-                  </select>
+                  <div class="relative">
+                    <button
+                      type="button"
+                      id="rating-filter-dropdown-button"
+                      class="w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-700 transition-all duration-200 focus:outline-none focus:border-blue-500 text-left flex items-center justify-between cursor-pointer hover:bg-gray-50 hover:border-gray-400"
+                      onclick="toggleRatingFilterDropdown()"
+                    >
+                      <span class="text-gray-700" id="rating-filter-display">Any Rating</span>
+                      <svg
+                        id="rating-filter-dropdown-chevron"
+                        class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                    <div
+                      id="rating-filter-dropdown-menu"
+                      class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg hidden"
+                    >
+                      <div class="py-1">
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectRatingFilter('any')"
+                          data-rating="any"
+                        >
+                          <span>Any Rating</span>
+                          <svg
+                            class="w-4 h-4 text-blue-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectRatingFilter('4')"
+                          data-rating="4"
+                        >
+                          <span>4+ Stars</span>
+                        </button>
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectRatingFilter('3')"
+                          data-rating="3"
+                        >
+                          <span>3+ Stars</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <!-- Availability -->
                 <div class="mb-4">
                   <label class="block text-sm font-medium text-gray-700 mb-2">Availability</label>
-                  <select class="w-full border-gray-300 rounded-md shadow-sm">
-                    <option>All Items</option>
-                    <option>In Stock</option>
-                    <option>Out of Stock</option>
-                  </select>
+                  <div class="relative">
+                    <button
+                      type="button"
+                      id="availability-filter-dropdown-button"
+                      class="w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-700 transition-all duration-200 focus:outline-none focus:border-blue-500 text-left flex items-center justify-between cursor-pointer hover:bg-gray-50 hover:border-gray-400"
+                      onclick="toggleAvailabilityFilterDropdown()"
+                    >
+                      <span class="text-gray-700" id="availability-filter-display">
+                        All Items
+                      </span>
+                      <svg
+                        id="availability-filter-dropdown-chevron"
+                        class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                    <div
+                      id="availability-filter-dropdown-menu"
+                      class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg hidden"
+                    >
+                      <div class="py-1">
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectAvailabilityFilter('all')"
+                          data-availability="all"
+                        >
+                          <span>All Items</span>
+                          <svg
+                            class="w-4 h-4 text-blue-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectAvailabilityFilter('in-stock')"
+                          data-availability="in-stock"
+                        >
+                          <span>In Stock</span>
+                        </button>
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectAvailabilityFilter('out-of-stock')"
+                          data-availability="out-of-stock"
+                        >
+                          <span>Out of Stock</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -70,12 +298,82 @@
               <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center space-x-4">
                   <label class="text-sm font-medium text-gray-700">Sort by:</label>
-                  <select class="border-gray-300 rounded-md shadow-sm">
-                    <option>Newest</option>
-                    <option>Price: Low to High</option>
-                    <option>Price: High to Low</option>
-                    <option>Rating</option>
-                  </select>
+                  <div class="relative">
+                    <button
+                      type="button"
+                      id="sort-dropdown-button"
+                      class="px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-700 transition-all duration-200 focus:outline-none focus:border-blue-500 text-left flex items-center justify-between cursor-pointer hover:bg-gray-50 hover:border-gray-400"
+                      onclick="toggleSortDropdown()"
+                    >
+                      <span class="text-gray-700" id="sort-display">Newest</span>
+                      <svg
+                        id="sort-dropdown-chevron"
+                        class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                    <div
+                      id="sort-dropdown-menu"
+                      class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg hidden"
+                    >
+                      <div class="py-1">
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectSort('newest')"
+                          data-sort="newest"
+                        >
+                          <span>Newest</span>
+                          <svg
+                            class="w-4 h-4 text-blue-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectSort('price-low')"
+                          data-sort="price-low"
+                        >
+                          <span>Price: Low to High</span>
+                        </button>
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectSort('price-high')"
+                          data-sort="price-high"
+                        >
+                          <span>Price: High to Low</span>
+                        </button>
+                        <button
+                          type="button"
+                          class="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-150 flex items-center justify-between"
+                          onclick="selectSort('rating')"
+                          data-sort="rating"
+                        >
+                          <span>Rating</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <!-- Product Grid -->
@@ -159,3 +457,258 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Category Filter Dropdown
+  function toggleCategoryFilterDropdown() {
+    const menu = document.getElementById('category-filter-dropdown-menu');
+    const chevron = document.getElementById('category-filter-dropdown-chevron');
+    const isHidden = menu.classList.contains('hidden');
+    
+    if (isHidden) {
+      menu.classList.remove('hidden');
+      chevron.style.transform = 'rotate(180deg)';
+    } else {
+      menu.classList.add('hidden');
+      chevron.style.transform = 'rotate(0deg)';
+    }
+  }
+
+  function selectCategoryFilter(category) {
+    const button = document.getElementById('category-filter-dropdown-button');
+    const display = document.getElementById('category-filter-display');
+    const menu = document.getElementById('category-filter-dropdown-menu');
+    const chevron = document.getElementById('category-filter-dropdown-chevron');
+    
+    // Update the button text
+    display.textContent = category === 'all' ? 'All Categories' : category;
+    
+    // Update checkmarks
+    document.querySelectorAll('[data-category]').forEach(btn => {
+      const checkmark = btn.querySelector('svg');
+      if (btn.dataset.category === category) {
+        if (!checkmark) {
+          btn.innerHTML += '<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+        }
+      } else {
+        if (checkmark) {
+          checkmark.remove();
+        }
+      }
+    });
+    
+    // Close dropdown
+    menu.classList.add('hidden');
+    chevron.style.transform = 'rotate(0deg)';
+  }
+
+  // Brand Filter Dropdown
+  function toggleBrandFilterDropdown() {
+    const menu = document.getElementById('brand-filter-dropdown-menu');
+    const chevron = document.getElementById('brand-filter-dropdown-chevron');
+    const isHidden = menu.classList.contains('hidden');
+    
+    if (isHidden) {
+      menu.classList.remove('hidden');
+      chevron.style.transform = 'rotate(180deg)';
+    } else {
+      menu.classList.add('hidden');
+      chevron.style.transform = 'rotate(0deg)';
+    }
+  }
+
+  function selectBrandFilter(brand) {
+    const button = document.getElementById('brand-filter-dropdown-button');
+    const display = document.getElementById('brand-filter-display');
+    const menu = document.getElementById('brand-filter-dropdown-menu');
+    const chevron = document.getElementById('brand-filter-dropdown-chevron');
+    
+    // Update the button text
+    display.textContent = brand === 'all' ? 'All Brands' : brand;
+    
+    // Update checkmarks
+    document.querySelectorAll('[data-brand]').forEach(btn => {
+      const checkmark = btn.querySelector('svg');
+      if (btn.dataset.brand === brand) {
+        if (!checkmark) {
+          btn.innerHTML += '<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+        }
+      } else {
+        if (checkmark) {
+          checkmark.remove();
+        }
+      }
+    });
+    
+    // Close dropdown
+    menu.classList.add('hidden');
+    chevron.style.transform = 'rotate(0deg)';
+  }
+
+  // Rating Filter Dropdown
+  function toggleRatingFilterDropdown() {
+    const menu = document.getElementById('rating-filter-dropdown-menu');
+    const chevron = document.getElementById('rating-filter-dropdown-chevron');
+    const isHidden = menu.classList.contains('hidden');
+    
+    if (isHidden) {
+      menu.classList.remove('hidden');
+      chevron.style.transform = 'rotate(180deg)';
+    } else {
+      menu.classList.add('hidden');
+      chevron.style.transform = 'rotate(0deg)';
+    }
+  }
+
+  function selectRatingFilter(rating) {
+    const button = document.getElementById('rating-filter-dropdown-button');
+    const display = document.getElementById('rating-filter-display');
+    const menu = document.getElementById('rating-filter-dropdown-menu');
+    const chevron = document.getElementById('rating-filter-dropdown-chevron');
+    
+    // Update the button text
+    const ratingLabels = {
+      'any': 'Any Rating',
+      '4': '4+ Stars',
+      '3': '3+ Stars'
+    };
+    display.textContent = ratingLabels[rating];
+    
+    // Update checkmarks
+    document.querySelectorAll('[data-rating]').forEach(btn => {
+      const checkmark = btn.querySelector('svg');
+      if (btn.dataset.rating === rating) {
+        if (!checkmark) {
+          btn.innerHTML += '<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+        }
+      } else {
+        if (checkmark) {
+          checkmark.remove();
+        }
+      }
+    });
+    
+    // Close dropdown
+    menu.classList.add('hidden');
+    chevron.style.transform = 'rotate(0deg)';
+  }
+
+  // Availability Filter Dropdown
+  function toggleAvailabilityFilterDropdown() {
+    const menu = document.getElementById('availability-filter-dropdown-menu');
+    const chevron = document.getElementById('availability-filter-dropdown-chevron');
+    const isHidden = menu.classList.contains('hidden');
+    
+    if (isHidden) {
+      menu.classList.remove('hidden');
+      chevron.style.transform = 'rotate(180deg)';
+    } else {
+      menu.classList.add('hidden');
+      chevron.style.transform = 'rotate(0deg)';
+    }
+  }
+
+  function selectAvailabilityFilter(availability) {
+    const button = document.getElementById('availability-filter-dropdown-button');
+    const display = document.getElementById('availability-filter-display');
+    const menu = document.getElementById('availability-filter-dropdown-menu');
+    const chevron = document.getElementById('availability-filter-dropdown-chevron');
+    
+    // Update the button text
+    const availabilityLabels = {
+      'all': 'All Items',
+      'in-stock': 'In Stock',
+      'out-of-stock': 'Out of Stock'
+    };
+    display.textContent = availabilityLabels[availability];
+    
+    // Update checkmarks
+    document.querySelectorAll('[data-availability]').forEach(btn => {
+      const checkmark = btn.querySelector('svg');
+      if (btn.dataset.availability === availability) {
+        if (!checkmark) {
+          btn.innerHTML += '<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+        }
+      } else {
+        if (checkmark) {
+          checkmark.remove();
+        }
+      }
+    });
+    
+    // Close dropdown
+    menu.classList.add('hidden');
+    chevron.style.transform = 'rotate(0deg)';
+  }
+
+  // Sort Dropdown
+  function toggleSortDropdown() {
+    const menu = document.getElementById('sort-dropdown-menu');
+    const chevron = document.getElementById('sort-dropdown-chevron');
+    const isHidden = menu.classList.contains('hidden');
+    
+    if (isHidden) {
+      menu.classList.remove('hidden');
+      chevron.style.transform = 'rotate(180deg)';
+    } else {
+      menu.classList.add('hidden');
+      chevron.style.transform = 'rotate(0deg)';
+    }
+  }
+
+  function selectSort(sort) {
+    const button = document.getElementById('sort-dropdown-button');
+    const display = document.getElementById('sort-display');
+    const menu = document.getElementById('sort-dropdown-menu');
+    const chevron = document.getElementById('sort-dropdown-chevron');
+    
+    // Update the button text
+    const sortLabels = {
+      'newest': 'Newest',
+      'price-low': 'Price: Low to High',
+      'price-high': 'Price: High to Low',
+      'rating': 'Rating'
+    };
+    display.textContent = sortLabels[sort];
+    
+    // Update checkmarks
+    document.querySelectorAll('[data-sort]').forEach(btn => {
+      const checkmark = btn.querySelector('svg');
+      if (btn.dataset.sort === sort) {
+        if (!checkmark) {
+          btn.innerHTML += '<svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+        }
+      } else {
+        if (checkmark) {
+          checkmark.remove();
+        }
+      }
+    });
+    
+    // Close dropdown
+    menu.classList.add('hidden');
+    chevron.style.transform = 'rotate(0deg)';
+  }
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', function(event) {
+    const dropdowns = [
+      { button: 'category-filter-dropdown-button', menu: 'category-filter-dropdown-menu', chevron: 'category-filter-dropdown-chevron' },
+      { button: 'brand-filter-dropdown-button', menu: 'brand-filter-dropdown-menu', chevron: 'brand-filter-dropdown-chevron' },
+      { button: 'rating-filter-dropdown-button', menu: 'rating-filter-dropdown-menu', chevron: 'rating-filter-dropdown-chevron' },
+      { button: 'availability-filter-dropdown-button', menu: 'availability-filter-dropdown-menu', chevron: 'availability-filter-dropdown-chevron' },
+      { button: 'sort-dropdown-button', menu: 'sort-dropdown-menu', chevron: 'sort-dropdown-chevron' }
+    ];
+    
+    dropdowns.forEach(dropdown => {
+      const button = document.getElementById(dropdown.button);
+      const menu = document.getElementById(dropdown.menu);
+      const chevron = document.getElementById(dropdown.chevron);
+      
+      if (button && menu && chevron && !button.contains(event.target) && !menu.contains(event.target)) {
+        menu.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+      }
+    });
+  });
+</script>

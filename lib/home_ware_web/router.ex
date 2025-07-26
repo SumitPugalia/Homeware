@@ -74,6 +74,8 @@ defmodule HomeWareWeb.Router do
     pipe_through [:browser, :require_auth]
 
     get "/profile", UserController, :profile
+    get "/profile/edit", UserController, :edit
+    put "/profile", UserController, :update
     get "/orders", OrderController, :index
     get "/orders/:id", OrderController, :show
     live "/wishlist", WishlistLive, :index

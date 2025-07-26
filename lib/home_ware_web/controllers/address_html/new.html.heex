@@ -34,11 +34,14 @@
               value={@changeset.changes[:first_name] || ""}
               required
               class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/40 focus:shadow-[0_0_0_4px_rgba(139,92,246,0.25)] focus:outline-none focus:bg-gray-800/80"
-              placeholder="First Name"
+              placeholder=" "
             />
             <label
               for="address_first_name"
-              class="absolute left-4 top-4 text-gray-400 transition-all duration-300 peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
+              class="absolute left-4 top-4 text-gray-400 transition-all duration-300
+                peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
+                peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
+                peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
             >
               First Name
             </label>
@@ -66,11 +69,14 @@
               value={@changeset.changes[:last_name] || ""}
               required
               class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-              placeholder="Last Name"
+              placeholder=" "
             />
             <label
               for="address_last_name"
-              class="absolute left-4 top-4 text-gray-400 transition-all duration-300 peer-focus:text-purple-400 peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs peer-focus:bg-gray-900 px-2 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+              class="absolute left-4 top-4 text-gray-400 transition-all duration-300
+                peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
+                peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
+                peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
             >
               Last Name
             </label>
@@ -91,17 +97,19 @@
           </div>
         </div>
         <!-- Address Type -->
-        <div class="relative group">
-          <select
-            name="address[address_type]"
-            class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70 appearance-none"
+        <div class="relative">
+          <button
+            type="button"
+            id="address-type-dropdown-button"
+            class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-gray-300 transition-all duration-200 focus:outline-none focus:border-purple-500 text-left flex items-center justify-between cursor-pointer hover:bg-gray-700 hover:border-gray-500"
+            onclick="toggleAddressTypeDropdown()"
           >
-            <option value="shipping" class="bg-gray-800 text-white">Shipping Address</option>
-            <option value="billing" class="bg-gray-800 text-white">Billing Address</option>
-          </select>
-          <div class="absolute inset-y-0 right-0 flex items-center pr-6 pointer-events-none">
+            <span class="text-gray-300">
+              Shipping Address
+            </span>
             <svg
-              class="w-5 h-5 text-gray-400"
+              id="address-type-dropdown-chevron"
+              class="w-4 h-4 text-gray-400 transition-transform duration-200"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -113,22 +121,114 @@
                 d="M19 9l-7 7-7-7"
               />
             </svg>
+          </button>
+          <div
+            id="address-type-dropdown-menu"
+            class="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-lg hidden"
+          >
+            <input
+              type="hidden"
+              name="address[address_type]"
+              value="shipping"
+              id="address-type-input"
+            />
+            <div class="py-1">
+              <button
+                type="button"
+                class="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 transition-colors duration-150 flex items-center justify-between"
+                onclick="selectAddressType('shipping')"
+                data-address-type="shipping"
+              >
+                <span>Shipping Address</span>
+                <svg
+                  class="w-4 h-4 text-purple-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 transition-colors duration-150 flex items-center justify-between"
+                onclick="selectAddressType('billing')"
+                data-address-type="billing"
+              >
+                <span>Billing Address</span>
+              </button>
+            </div>
           </div>
           <%= if error = @changeset.errors[:address_type] do %>
             <%= if @changeset.action do %>
-              <div class="text-red-400 text-sm mt-2 flex items-center">
-                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fill-rule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-                <%= elem(error, 0) %>
-              </div>
+              <div class="text-red-400 text-xs mt-1"><%= elem(error, 0) %></div>
             <% end %>
           <% end %>
         </div>
+
+        <script>
+          function toggleAddressTypeDropdown() {
+            const menu = document.getElementById('address-type-dropdown-menu');
+            const chevron = document.getElementById('address-type-dropdown-chevron');
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+              menu.classList.remove('hidden');
+              chevron.style.transform = 'rotate(180deg)';
+            } else {
+              menu.classList.add('hidden');
+              chevron.style.transform = 'rotate(0deg)';
+            }
+          }
+
+          function selectAddressType(type) {
+            const button = document.getElementById('address-type-dropdown-button');
+            const input = document.getElementById('address-type-input');
+            const menu = document.getElementById('address-type-dropdown-menu');
+            const chevron = document.getElementById('address-type-dropdown-chevron');
+            
+            // Update the button text
+            button.querySelector('span').textContent = type === 'shipping' ? 'Shipping Address' : 'Billing Address';
+            
+            // Update the hidden input
+            input.value = type;
+            
+            // Update checkmarks
+            document.querySelectorAll('[data-address-type]').forEach(btn => {
+              const checkmark = btn.querySelector('svg');
+              if (btn.dataset.addressType === type) {
+                if (!checkmark) {
+                  btn.innerHTML += '<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+                }
+              } else {
+                if (checkmark) {
+                  checkmark.remove();
+                }
+              }
+            });
+            
+            // Close dropdown
+            menu.classList.add('hidden');
+            chevron.style.transform = 'rotate(0deg)';
+          }
+
+          // Close dropdown when clicking outside
+          document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('address-type-dropdown-button');
+            const menu = document.getElementById('address-type-dropdown-menu');
+            const chevron = document.getElementById('address-type-dropdown-chevron');
+            
+            if (!dropdown.contains(event.target) && !menu.contains(event.target)) {
+              menu.classList.add('hidden');
+              chevron.style.transform = 'rotate(0deg)';
+            }
+          });
+        </script>
         <!-- Company -->
         <div class="relative group">
           <input
@@ -137,11 +237,14 @@
             name="address[company]"
             value={@changeset.changes[:company] || ""}
             class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-            placeholder="Company (Optional)"
+            placeholder=" "
           />
           <label
             for="address_company"
-            class="absolute left-4 top-4 text-gray-400 transition-all duration-300 peer-focus:text-purple-400 peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs peer-focus:bg-gray-900 px-2 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+            class="absolute left-4 top-4 text-gray-400 transition-all duration-300
+              peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
+              peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
+              peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
           >
             Company (Optional)
           </label>
@@ -169,11 +272,14 @@
             value={@changeset.changes[:address_line_1] || ""}
             required
             class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-            placeholder="Street Address"
+            placeholder=" "
           />
           <label
             for="address_line_1"
-            class="absolute left-4 top-4 text-gray-400 transition-all duration-300 peer-focus:text-purple-400 peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs peer-focus:bg-gray-900 px-2 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+            class="absolute left-4 top-4 text-gray-400 transition-all duration-300
+              peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
+              peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
+              peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
           >
             Street Address
           </label>
@@ -200,11 +306,14 @@
             name="address[address_line_2]"
             value={@changeset.changes[:address_line_2] || ""}
             class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-            placeholder="Apartment, suite, etc. (Optional)"
+            placeholder=" "
           />
           <label
             for="address_line_2"
-            class="absolute left-4 top-4 text-gray-400 transition-all duration-300 peer-focus:text-purple-400 peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs peer-focus:bg-gray-900 px-2 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+            class="absolute left-4 top-4 text-gray-400 transition-all duration-300
+              peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
+              peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
+              peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
           >
             Apartment, suite, etc. (Optional)
           </label>
@@ -233,11 +342,14 @@
               value={@changeset.changes[:city] || ""}
               required
               class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-              placeholder="City"
+              placeholder=" "
             />
             <label
               for="address_city"
-              class="absolute left-4 top-4 text-gray-400 transition-all duration-300 peer-focus:text-purple-400 peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs peer-focus:bg-gray-900 px-2 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+              class="absolute left-4 top-4 text-gray-400 transition-all duration-300
+                peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
+                peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
+                peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
             >
               City
             </label>
@@ -265,11 +377,14 @@
               value={@changeset.changes[:state] || ""}
               required
               class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-              placeholder="State"
+              placeholder=" "
             />
             <label
               for="address_state"
-              class="absolute left-4 top-4 text-gray-400 transition-all duration-300 peer-focus:text-purple-400 peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs peer-focus:bg-gray-900 px-2 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+              class="absolute left-4 top-4 text-gray-400 transition-all duration-300
+                peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
+                peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
+                peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
             >
               State
             </label>
@@ -297,11 +412,14 @@
               value={@changeset.changes[:postal_code] || ""}
               required
               class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-              placeholder="Postal Code"
+              placeholder=" "
             />
             <label
               for="address_postal_code"
-              class="absolute left-4 top-4 text-gray-400 transition-all duration-300 peer-focus:text-purple-400 peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs peer-focus:bg-gray-900 px-2 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+              class="absolute left-4 top-4 text-gray-400 transition-all duration-300
+                peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
+                peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
+                peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
             >
               Postal Code
             </label>
@@ -330,11 +448,14 @@
             value={@changeset.changes[:country] || ""}
             required
             class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-            placeholder="Country"
+            placeholder=" "
           />
           <label
             for="address_country"
-            class="absolute left-4 top-4 text-gray-400 transition-all duration-300 peer-focus:text-purple-400 peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs peer-focus:bg-gray-900 px-2 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+            class="absolute left-4 top-4 text-gray-400 transition-all duration-300
+              peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
+              peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
+              peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
           >
             Country
           </label>
@@ -361,11 +482,14 @@
             name="address[phone]"
             value={@changeset.changes[:phone] || ""}
             class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-            placeholder="Phone Number (Optional)"
+            placeholder=" "
           />
           <label
             for="address_phone"
-            class="absolute left-4 top-4 text-gray-400 transition-all duration-300 peer-focus:text-purple-400 peer-focus:-top-2 peer-focus:left-2 peer-focus:text-xs peer-focus:bg-gray-900 px-2 peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400"
+            class="absolute left-4 top-4 text-gray-400 transition-all duration-300
+              peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
+              peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
+              peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
           >
             Phone Number (Optional)
           </label>
