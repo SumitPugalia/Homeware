@@ -21,10 +21,49 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 
+// Chat-specific hooks
+const ChatHooks = {
+  ChatScroll() {
+    this.mounted = () => {
+      this.scrollToBottom();
+    }
+    
+    this.updated = () => {
+      this.scrollToBottom();
+    }
+    
+    this.scrollToBottom = () => {
+      const container = this.el;
+      container.scrollTop = container.scrollHeight;
+    }
+  },
+  
+  AutoResize() {
+    this.mounted = () => {
+      this.resize();
+    }
+    
+    this.updated = () => {
+      this.resize();
+    }
+    
+    this.resize = () => {
+      const input = this.el;
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    }
+    
+    this.el.addEventListener('input', () => {
+      this.resize();
+    });
+  }
+}
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
-  params: {_csrf_token: csrfToken}
+  params: {_csrf_token: csrfToken},
+  hooks: ChatHooks
 })
 
 liveSocket.connect()
@@ -68,6 +107,24 @@ document.addEventListener('DOMContentLoaded', function() {
         mobileMenuButton.setAttribute('aria-expanded', 'false');
       }
     });
+  }
+});
+
+// Chat-specific enhancements
+document.addEventListener('DOMContentLoaded', function() {
+  // Auto-focus on message input when chat loads
+  const messageInput = document.querySelector('input[name="message"]');
+  if (messageInput) {
+    messageInput.focus();
+  }
+});
+
+// Listen for clear_input event from LiveView
+window.addEventListener('clear_input', () => {
+  const messageInput = document.querySelector('input[name="message"]');
+  if (messageInput) {
+    messageInput.value = '';
+    messageInput.focus();
   }
 });
 

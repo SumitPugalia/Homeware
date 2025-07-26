@@ -29,6 +29,10 @@ defmodule HomeWareWeb.Admin.ChatLive do
     {:noreply, assign(socket, selected_room: room, messages: messages, message: "")}
   end
 
+  def handle_event("update_message", %{"message" => message}, socket) do
+    {:noreply, assign(socket, :message, message)}
+  end
+
   def handle_event("send_message", %{"message" => body}, socket) do
     room = socket.assigns.selected_room
     # TODO: set current admin id from session
@@ -133,6 +137,7 @@ defmodule HomeWareWeb.Admin.ChatLive do
           <%= if @selected_room do %>
             <form
               phx-submit="send_message"
+              phx-change="update_message"
               class="flex gap-2 border-t pt-2 bg-white sticky bottom-0 z-10"
             >
               <input
@@ -143,7 +148,13 @@ defmodule HomeWareWeb.Admin.ChatLive do
                 class="flex-1 rounded border px-2 py-2"
                 autocomplete="off"
               />
-              <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Send</button>
+              <button
+                type="submit"
+                disabled={!@message || String.trim(@message) == ""}
+                class="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-4 py-2 rounded transition-colors"
+              >
+                Send
+              </button>
             </form>
           <% else %>
             <div class="text-gray-500">Select a chat room to start chatting.</div>
