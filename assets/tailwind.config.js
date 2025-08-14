@@ -15,7 +15,37 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        brand: "#FD4F00",
+        brand: {
+          primary: "#4F46E5",
+          "primary-hover": "#4338CA",
+          accent: "#10B981",
+          neutral: {
+            50: "#F8FAFC",
+            100: "#F1F5F9",
+            200: "#E2E8F0",
+            300: "#CBD5E1",
+            400: "#94A3B8",
+            500: "#64748B",
+            600: "#475569",
+            700: "#334155",
+            800: "#1E293B",
+            900: "#0F172A"
+          }
+        },
+        text: {
+          primary: "#0F172A",
+          secondary: "#475569"
+        }
+      },
+      borderRadius: {
+        'sm': '10px',
+        'md': '12px',
+        'lg': '16px'
+      },
+      boxShadow: {
+        'subtle': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'modal': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
       }
     },
   },

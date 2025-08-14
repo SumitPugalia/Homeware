@@ -13,16 +13,16 @@ defmodule HomeWareWeb.ProductCard do
   """
   def product_card(assigns) do
     ~H"""
-    <div class="bg-gray-800 rounded-2xl shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-gray-700">
+    <div class="bg-white rounded-lg shadow-card border border-brand-neutral-200 overflow-hidden group hover:shadow-modal transition-all duration-300 transform hover:-translate-y-1">
       <!-- Product Image -->
       <div class="relative">
         <img
           src={@product.featured_image || "https://via.placeholder.com/300x200"}
           alt={@product.name}
-          class="w-full h-48 object-cover group-hover:opacity-90 transition-opacity duration-300"
+          class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <!-- Availability Badge -->
-        <div class="absolute top-2 left-2">
+        <div class="absolute top-3 left-3">
           <span class={get_availability_class(@product.available?)}>
             <%= Formatters.format_availability_status(
               @product.available?,
@@ -45,6 +45,11 @@ defmodule HomeWareWeb.ProductCard do
               do: "Remove from wishlist",
               else: "Add to wishlist"
           }
+          aria-label={
+            if Map.get(@product, :is_in_wishlist, false),
+              do: "Remove from wishlist",
+              else: "Add to wishlist"
+          }
         >
           <svg
             class={get_wishlist_icon_class(@product)}
@@ -62,10 +67,10 @@ defmodule HomeWareWeb.ProductCard do
         </button>
         <!-- Out of Stock Overlay -->
         <%= if !@product.available? do %>
-          <div class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
+          <div class="absolute inset-0 bg-brand-neutral-900/50 flex items-center justify-center">
             <div class="text-center">
               <svg
-                class="w-12 h-12 text-white mx-auto mb-2"
+                class="w-8 h-8 text-white mx-auto mb-2"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -77,29 +82,29 @@ defmodule HomeWareWeb.ProductCard do
                   d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
                 />
               </svg>
-              <span class="text-white font-bold text-lg">Out of Stock</span>
+              <span class="text-white font-medium text-sm">Out of Stock</span>
             </div>
           </div>
         <% end %>
       </div>
       <!-- Product Info -->
-      <div class="p-6">
-        <h3 class="text-xl font-bold mb-2 text-white group-hover:text-purple-400 transition-colors">
-          <a href={~p"/products/#{@product.id}"} class="hover:text-purple-400">
+      <div class="p-4">
+        <h3 class="text-lg font-semibold mb-2 text-text-primary group-hover:text-brand-primary transition-colors line-clamp-1">
+          <a href={~p"/products/#{@product.id}"} class="hover:text-brand-primary">
             <%= @product.name %>
           </a>
         </h3>
 
-        <p class="text-gray-400 text-sm mb-4 line-clamp-2">
+        <p class="text-text-secondary text-sm mb-4 line-clamp-2">
           <%= @product.description %>
         </p>
 
         <div class="flex items-center justify-between gap-4">
           <div class="flex items-center space-x-2">
-            <span class="text-gray-400 line-through text-sm">
+            <span class="text-brand-neutral-400 line-through text-sm">
               <%= Formatters.format_currency(@product.price) %>
             </span>
-            <span class="text-2xl font-bold text-purple-400">
+            <span class="text-xl font-bold text-brand-primary">
               <%= Formatters.format_currency(@product.selling_price) %>
             </span>
           </div>
@@ -109,16 +114,32 @@ defmodule HomeWareWeb.ProductCard do
               phx-click="add_to_cart"
               phx-value-product-id={@product.id}
               phx-stop-propagation
-              class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-sm font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+              class="bg-brand-primary hover:bg-brand-primary-hover text-white p-2 rounded-md transition-colors duration-200 shadow-sm hover:shadow-md"
+              aria-label="Add to cart"
             >
-              +
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
             </button>
           <% else %>
             <button
               disabled
-              class="bg-gray-500 text-gray-300 px-3 py-1.5 rounded-full text-sm font-medium cursor-not-allowed"
+              class="bg-brand-neutral-200 text-brand-neutral-400 p-2 rounded-md cursor-not-allowed"
+              aria-label="Out of stock"
             >
-              +
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
             </button>
           <% end %>
         </div>
@@ -131,19 +152,22 @@ defmodule HomeWareWeb.ProductCard do
 
   defp get_availability_class(available?) do
     case available? do
-      true -> "bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded"
-      false -> "bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded"
+      true ->
+        "bg-green-100 text-green-800 text-xs font-medium px-3 py-1 rounded-full border border-green-200"
+
+      false ->
+        "bg-red-100 text-red-800 text-xs font-medium px-3 py-1 rounded-full border border-red-200"
     end
   end
 
   defp get_wishlist_button_class(product) do
     base_class =
-      "absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full shadow-md transition-all duration-300"
+      "absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full shadow-sm transition-all duration-200"
 
     if Map.get(product, :is_in_wishlist, false) do
-      "#{base_class} bg-pink-500 hover:bg-pink-600"
+      "#{base_class} bg-brand-accent hover:bg-brand-accent/80"
     else
-      "#{base_class} bg-gray-800/80 hover:bg-gray-700/80"
+      "#{base_class} bg-white/90 hover:bg-white border border-brand-neutral-200"
     end
   end
 
@@ -153,7 +177,7 @@ defmodule HomeWareWeb.ProductCard do
     if Map.get(product, :is_in_wishlist, false) do
       "#{base_class} text-white"
     else
-      "#{base_class} text-gray-400"
+      "#{base_class} text-brand-neutral-400"
     end
   end
 end

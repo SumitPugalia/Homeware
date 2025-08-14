@@ -62,17 +62,14 @@ defmodule HomeWareWeb.ProductCatalogLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="min-h-screen bg-gray-900 text-white py-8">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="min-h-screen bg-brand-neutral-50 py-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-          <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">
-            Product
-            <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Catalog
-            </span>
+          <h1 class="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+            Product <span class="text-brand-primary">Catalog</span>
           </h1>
-          <p class="text-gray-400">
+          <p class="text-text-secondary text-lg">
             Discover our curated collection of premium lifestyle products
           </p>
         </div>
@@ -80,19 +77,19 @@ defmodule HomeWareWeb.ProductCatalogLive do
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <!-- Filters Sidebar -->
           <div class="lg:col-span-1">
-            <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 sticky top-24">
-              <h2 class="text-xl font-bold text-white mb-6">Filters</h2>
+            <div class="bg-white rounded-lg shadow-card border border-brand-neutral-200 p-6 sticky top-24">
+              <h2 class="text-xl font-bold text-text-primary mb-6">Filters</h2>
 
-              <form id="filter-form" phx-change="filter" class="space-y-4">
+              <form id="filter-form" phx-change="filter" class="space-y-6">
                 <!-- Category Filter -->
                 <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-300">
+                  <label class="block text-sm font-semibold text-text-primary">
                     Category
                   </label>
                   <div class="relative">
                     <select
                       name="category"
-                      class="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+                      class="w-full px-4 py-3 bg-white border border-brand-neutral-300 rounded-md text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none"
                     >
                       <option value="">All Categories</option>
                       <%= for category <- @categories do %>
@@ -103,7 +100,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
                     </select>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                       <svg
-                        class="w-4 h-4 text-gray-400"
+                        class="w-4 h-4 text-brand-neutral-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -120,13 +117,13 @@ defmodule HomeWareWeb.ProductCatalogLive do
                 </div>
                 <!-- Brand Filter -->
                 <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-300">
+                  <label class="block text-sm font-semibold text-text-primary">
                     Brand
                   </label>
                   <div class="relative">
                     <select
                       name="brand"
-                      class="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+                      class="w-full px-4 py-3 bg-white border border-brand-neutral-300 rounded-md text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none"
                     >
                       <option value="">All Brands</option>
                       <%= for brand <- @brands do %>
@@ -137,7 +134,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
                     </select>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                       <svg
-                        class="w-4 h-4 text-gray-400"
+                        class="w-4 h-4 text-brand-neutral-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -154,7 +151,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
                 </div>
                 <!-- Min Price Filter -->
                 <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-300">
+                  <label class="block text-sm font-semibold text-text-primary">
                     Min Price
                   </label>
                   <div class="relative">
@@ -163,16 +160,16 @@ defmodule HomeWareWeb.ProductCatalogLive do
                       name="min_price"
                       value={@filters[:min_price] || ""}
                       placeholder="₹0"
-                      class="w-full pl-8 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+                      class="w-full pl-8 pr-4 py-3 bg-white border border-brand-neutral-300 rounded-md text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none"
                     />
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                      <span class="text-gray-400 text-sm">₹</span>
+                      <span class="text-brand-neutral-400 text-sm">₹</span>
                     </div>
                   </div>
                 </div>
                 <!-- Max Price Filter -->
                 <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-300">
+                  <label class="block text-sm font-semibold text-text-primary">
                     Max Price
                   </label>
                   <div class="relative">
@@ -181,18 +178,18 @@ defmodule HomeWareWeb.ProductCatalogLive do
                       name="max_price"
                       value={@filters[:max_price] || ""}
                       placeholder="₹∞"
-                      class="w-full pl-8 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+                      class="w-full pl-8 pr-4 py-3 bg-white border border-brand-neutral-300 rounded-md text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none"
                     />
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                      <span class="text-gray-400 text-sm">₹</span>
+                      <span class="text-brand-neutral-400 text-sm">₹</span>
                     </div>
                   </div>
                 </div>
                 <!-- Action Buttons -->
-                <div class="flex items-center justify-between pt-4 border-t border-gray-700">
+                <div class="flex items-center justify-between pt-4 border-t border-brand-neutral-200">
                   <button
                     type="submit"
-                    class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105"
+                    class="bg-brand-primary hover:bg-brand-primary-hover text-white px-4 py-2 rounded-md font-medium transition-colors duration-200"
                   >
                     <div class="flex items-center space-x-2">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,7 +206,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
                   <button
                     type="button"
                     phx-click="reset_filters"
-                    class="text-gray-400 hover:text-white transition-colors text-sm font-medium"
+                    class="text-brand-neutral-400 hover:text-brand-primary transition-colors text-sm font-medium"
                   >
                     Reset
                   </button>
@@ -217,21 +214,21 @@ defmodule HomeWareWeb.ProductCatalogLive do
               </form>
               <!-- Active Filters Display -->
               <%= if @filters[:category] || @filters[:brand] || @filters[:min_price] || @filters[:max_price] do %>
-                <div class="mt-4 pt-4 border-t border-gray-700">
-                  <span class="text-xs text-gray-400">Active filters:</span>
+                <div class="mt-6 pt-4 border-t border-brand-neutral-200">
+                  <span class="text-xs text-brand-neutral-500 font-medium">Active filters:</span>
                   <div class="flex flex-wrap gap-2 mt-2">
                     <%= if @filters[:category] do %>
-                      <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full border border-purple-500/30">
+                      <span class="px-3 py-1 bg-brand-primary/10 text-brand-primary text-xs rounded-full border border-brand-primary/20">
                         Category
                       </span>
                     <% end %>
                     <%= if @filters[:brand] do %>
-                      <span class="px-2 py-1 bg-pink-500/20 text-pink-300 text-xs rounded-full border border-pink-500/30">
+                      <span class="px-3 py-1 bg-brand-accent/10 text-brand-accent text-xs rounded-full border border-brand-accent/20">
                         Brand
                       </span>
                     <% end %>
                     <%= if @filters[:min_price] || @filters[:max_price] do %>
-                      <span class="px-2 py-1 bg-teal-500/20 text-teal-300 text-xs rounded-full border border-teal-500/30">
+                      <span class="px-3 py-1 bg-brand-neutral-200 text-brand-neutral-700 text-xs rounded-full border border-brand-neutral-300">
                         Price
                       </span>
                     <% end %>
@@ -243,15 +240,15 @@ defmodule HomeWareWeb.ProductCatalogLive do
           <!-- Products Grid -->
           <div class="lg:col-span-3">
             <div class="mb-6 flex items-center justify-between">
-              <p class="text-gray-400 text-sm">
+              <p class="text-text-secondary text-sm">
                 Showing <%= length(@products) %> of <%= @total_count %> products
               </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               <%= for product <- @products do %>
                 <div
-                  class="group bg-gray-800 rounded-xl p-4 hover:bg-gray-700 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+                  class="group bg-white rounded-lg shadow-card border border-brand-neutral-200 overflow-hidden hover:shadow-modal transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
                   data-product-id={product.id}
                   phx-click="navigate_to_product"
                   phx-value-product-id={product.id}
@@ -267,20 +264,20 @@ defmodule HomeWareWeb.ProductCatalogLive do
                   <%= if @page > 1 do %>
                     <a
                       href={~p"/products?page=#{@page - 1}"}
-                      class="px-3 py-2 text-gray-400 hover:text-white transition-colors text-sm"
+                      class="px-4 py-2 text-brand-neutral-400 hover:text-brand-primary transition-colors text-sm font-medium"
                     >
                       Previous
                     </a>
                   <% end %>
 
-                  <span class="px-3 py-2 text-gray-300 text-sm">
+                  <span class="px-4 py-2 text-text-secondary text-sm">
                     Page <%= @page %> of <%= ceil(@total_count / @per_page) %>
                   </span>
 
                   <%= if @page < ceil(@total_count / @per_page) do %>
                     <a
                       href={~p"/products?page=#{@page + 1}"}
-                      class="px-3 py-2 text-gray-400 hover:text-white transition-colors text-sm"
+                      class="px-4 py-2 text-brand-neutral-400 hover:text-brand-primary transition-colors text-sm font-medium"
                     >
                       Next
                     </a>
