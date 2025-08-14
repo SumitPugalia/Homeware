@@ -1,9 +1,9 @@
-<div class="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
-  <div class="max-w-2xl mx-auto px-4 py-12">
+<div class="min-h-screen bg-gradient-to-br from-brand-neutral-50 to-white">
+  <div class="max-w-xl mx-auto px-4 py-8">
     <!-- Header Section -->
-    <div class="mb-12 text-center">
-      <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-teal-400 rounded-full mb-6 shadow-lg shadow-purple-500/25">
-        <svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="mb-8 text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-brand-primary/10 rounded-full mb-4">
+        <svg class="w-8 h-8 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -18,37 +18,32 @@
           />
         </svg>
       </div>
-      <h1 class="text-4xl font-bold text-white mb-3 tracking-tight">Add New Address</h1>
-      <p class="text-gray-400 text-lg">Secure, private, and discreet shipping</p>
+      <h1 class="text-3xl font-bold text-text-primary mb-2">Add New Address</h1>
+      <p class="text-text-secondary">Secure, private, and discreet shipping</p>
     </div>
+    
     <!-- Form Container -->
-    <div class="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-8 shadow-2xl shadow-black/50">
-      <.form for={@changeset} action={~p"/addresses"} class="space-y-8">
+    <div class="bg-white rounded-lg shadow-sm border border-brand-neutral-200 p-6">
+      <.form for={@changeset} action={~p"/addresses"} class="space-y-5">
         <!-- Name Fields -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="relative group">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label for="address_first_name" class="block text-sm font-medium text-text-primary">
+              First Name
+            </label>
             <input
               id="address_first_name"
               type="text"
               name="address[first_name]"
               value={@changeset.changes[:first_name] || ""}
               required
-              class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/40 focus:shadow-[0_0_0_4px_rgba(139,92,246,0.25)] focus:outline-none focus:bg-gray-800/80"
-              placeholder=" "
+              class="w-full px-3 py-2 bg-white border border-brand-neutral-300 rounded-md text-text-primary placeholder-brand-neutral-400 text-sm transition-all duration-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none"
+              placeholder="Enter first name"
             />
-            <label
-              for="address_first_name"
-              class="absolute left-4 top-4 text-gray-400 transition-all duration-300
-                peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
-                peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
-                peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
-            >
-              First Name
-            </label>
             <%= if error = @changeset.errors[:first_name] do %>
               <%= if @changeset.action do %>
-                <div class="text-red-400 text-sm mt-2 flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <div class="text-red-600 text-xs mt-1 flex items-center">
+                  <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fill-rule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -61,29 +56,23 @@
             <% end %>
           </div>
 
-          <div class="relative group">
+          <div class="space-y-1">
+            <label for="address_last_name" class="block text-sm font-medium text-text-primary">
+              Last Name
+            </label>
             <input
               id="address_last_name"
               type="text"
               name="address[last_name]"
               value={@changeset.changes[:last_name] || ""}
               required
-              class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-              placeholder=" "
+              class="w-full px-3 py-2 bg-white border border-brand-neutral-300 rounded-md text-text-primary placeholder-brand-neutral-400 text-sm transition-all duration-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none"
+              placeholder="Enter last name"
             />
-            <label
-              for="address_last_name"
-              class="absolute left-4 top-4 text-gray-400 transition-all duration-300
-                peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
-                peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
-                peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
-            >
-              Last Name
-            </label>
             <%= if error = @changeset.errors[:last_name] do %>
               <%= if @changeset.action do %>
-                <div class="text-red-400 text-sm mt-2 flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <div class="text-red-600 text-xs mt-1 flex items-center">
+                  <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fill-rule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -96,77 +85,83 @@
             <% end %>
           </div>
         </div>
+        
         <!-- Address Type -->
-        <div class="relative">
-          <button
-            type="button"
-            id="address-type-dropdown-button"
-            class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-gray-300 transition-all duration-200 focus:outline-none focus:border-purple-500 text-left flex items-center justify-between cursor-pointer hover:bg-gray-700 hover:border-gray-500"
-            onclick="toggleAddressTypeDropdown()"
-          >
-            <span class="text-gray-300">
-              Shipping Address
-            </span>
-            <svg
-              id="address-type-dropdown-chevron"
-              class="w-4 h-4 text-gray-400 transition-transform duration-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        <div class="space-y-1">
+          <label class="block text-sm font-medium text-text-primary">
+            Address Type
+          </label>
+          <div class="relative">
+            <button
+              type="button"
+              id="address-type-dropdown-button"
+              class="w-full px-3 py-2 bg-white border border-brand-neutral-300 rounded-md text-text-primary transition-all duration-200 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 text-left flex items-center justify-between cursor-pointer hover:bg-brand-neutral-50 hover:border-brand-neutral-400 text-sm"
+              onclick="toggleAddressTypeDropdown()"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
+              <span class="text-text-primary">
+                Shipping Address
+              </span>
+              <svg
+                id="address-type-dropdown-chevron"
+                class="w-4 h-4 text-brand-neutral-400 transition-transform duration-200"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            <div
+              id="address-type-dropdown-menu"
+              class="absolute z-10 w-full mt-1 bg-white border border-brand-neutral-300 rounded-md shadow-modal hidden"
+            >
+              <input
+                type="hidden"
+                name="address[address_type]"
+                value="shipping"
+                id="address-type-input"
               />
-            </svg>
-          </button>
-          <div
-            id="address-type-dropdown-menu"
-            class="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-lg hidden"
-          >
-            <input
-              type="hidden"
-              name="address[address_type]"
-              value="shipping"
-              id="address-type-input"
-            />
-            <div class="py-1">
-              <button
-                type="button"
-                class="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 transition-colors duration-150 flex items-center justify-between"
-                onclick="selectAddressType('shipping')"
-                data-address-type="shipping"
-              >
-                <span>Shipping Address</span>
-                <svg
-                  class="w-4 h-4 text-purple-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <div class="py-1">
+                <button
+                  type="button"
+                  class="w-full px-3 py-2 text-left text-text-primary hover:bg-brand-neutral-50 transition-colors duration-150 flex items-center justify-between text-sm"
+                  onclick="selectAddressType('shipping')"
+                  data-address-type="shipping"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </button>
-              <button
-                type="button"
-                class="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 transition-colors duration-150 flex items-center justify-between"
-                onclick="selectAddressType('billing')"
-                data-address-type="billing"
-              >
-                <span>Billing Address</span>
-              </button>
+                  <span>Shipping Address</span>
+                  <svg
+                    class="w-4 h-4 text-brand-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="w-full px-3 py-2 text-left text-text-primary hover:bg-brand-neutral-50 transition-colors duration-150 flex items-center justify-between text-sm"
+                  onclick="selectAddressType('billing')"
+                  data-address-type="billing"
+                >
+                  <span>Billing Address</span>
+                </button>
+              </div>
             </div>
           </div>
           <%= if error = @changeset.errors[:address_type] do %>
             <%= if @changeset.action do %>
-              <div class="text-red-400 text-xs mt-1"><%= elem(error, 0) %></div>
+              <div class="text-red-600 text-xs mt-1"><%= elem(error, 0) %></div>
             <% end %>
           <% end %>
         </div>
@@ -203,7 +198,7 @@
               const checkmark = btn.querySelector('svg');
               if (btn.dataset.addressType === type) {
                 if (!checkmark) {
-                  btn.innerHTML += '<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+                  btn.innerHTML += '<svg class="w-4 h-4 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
                 }
               } else {
                 if (checkmark) {
@@ -229,29 +224,24 @@
             }
           });
         </script>
+        
         <!-- Company -->
-        <div class="relative group">
+        <div class="space-y-1">
+          <label for="address_company" class="block text-sm font-medium text-text-primary">
+            Company (Optional)
+          </label>
           <input
             id="address_company"
             type="text"
             name="address[company]"
             value={@changeset.changes[:company] || ""}
-            class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-            placeholder=" "
+            class="w-full px-3 py-2 bg-white border border-brand-neutral-300 rounded-md text-text-primary placeholder-brand-neutral-400 text-sm transition-all duration-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none"
+            placeholder="Enter company name"
           />
-          <label
-            for="address_company"
-            class="absolute left-4 top-4 text-gray-400 transition-all duration-300
-              peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
-              peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
-              peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
-          >
-            Company (Optional)
-          </label>
           <%= if error = @changeset.errors[:company] do %>
             <%= if @changeset.action do %>
-              <div class="text-red-400 text-sm mt-2 flex items-center">
-                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <div class="text-red-600 text-xs mt-1 flex items-center">
+                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fill-rule="evenodd"
                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -263,30 +253,25 @@
             <% end %>
           <% end %>
         </div>
+        
         <!-- Address Line 1 -->
-        <div class="relative group">
+        <div class="space-y-1">
+          <label for="address_line_1" class="block text-sm font-medium text-text-primary">
+            Street Address
+          </label>
           <input
             id="address_line_1"
             type="text"
             name="address[address_line_1]"
             value={@changeset.changes[:address_line_1] || ""}
             required
-            class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-            placeholder=" "
+            class="w-full px-3 py-2 bg-white border border-brand-neutral-300 rounded-md text-text-primary placeholder-brand-neutral-400 text-sm transition-all duration-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none"
+            placeholder="Enter street address"
           />
-          <label
-            for="address_line_1"
-            class="absolute left-4 top-4 text-gray-400 transition-all duration-300
-              peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
-              peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
-              peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
-          >
-            Street Address
-          </label>
           <%= if error = @changeset.errors[:address_line_1] do %>
             <%= if @changeset.action do %>
-              <div class="text-red-400 text-sm mt-2 flex items-center">
-                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <div class="text-red-600 text-xs mt-1 flex items-center">
+                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fill-rule="evenodd"
                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -298,29 +283,24 @@
             <% end %>
           <% end %>
         </div>
+        
         <!-- Address Line 2 -->
-        <div class="relative group">
+        <div class="space-y-1">
+          <label for="address_line_2" class="block text-sm font-medium text-text-primary">
+            Apartment, suite, etc. (Optional)
+          </label>
           <input
             id="address_line_2"
             type="text"
             name="address[address_line_2]"
             value={@changeset.changes[:address_line_2] || ""}
-            class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-            placeholder=" "
+            class="w-full px-3 py-2 bg-white border border-brand-neutral-300 rounded-md text-text-primary placeholder-brand-neutral-400 text-sm transition-all duration-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none"
+            placeholder="Enter apartment, suite, etc."
           />
-          <label
-            for="address_line_2"
-            class="absolute left-4 top-4 text-gray-400 transition-all duration-300
-              peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
-              peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
-              peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
-          >
-            Apartment, suite, etc. (Optional)
-          </label>
           <%= if error = @changeset.errors[:address_line_2] do %>
             <%= if @changeset.action do %>
-              <div class="text-red-400 text-sm mt-2 flex items-center">
-                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <div class="text-red-600 text-xs mt-1 flex items-center">
+                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fill-rule="evenodd"
                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -332,31 +312,26 @@
             <% end %>
           <% end %>
         </div>
+        
         <!-- City, State, Postal Code -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="relative group">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="space-y-1">
+            <label for="address_city" class="block text-sm font-medium text-text-primary">
+              City
+            </label>
             <input
               id="address_city"
               type="text"
               name="address[city]"
               value={@changeset.changes[:city] || ""}
               required
-              class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-              placeholder=" "
+              class="w-full px-3 py-2 bg-white border border-brand-neutral-300 rounded-md text-text-primary placeholder-brand-neutral-400 text-sm transition-all duration-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none"
+              placeholder="Enter city"
             />
-            <label
-              for="address_city"
-              class="absolute left-4 top-4 text-gray-400 transition-all duration-300
-                peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
-                peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
-                peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
-            >
-              City
-            </label>
             <%= if error = @changeset.errors[:city] do %>
               <%= if @changeset.action do %>
-                <div class="text-red-400 text-sm mt-2 flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <div class="text-red-600 text-xs mt-1 flex items-center">
+                  <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fill-rule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -369,29 +344,23 @@
             <% end %>
           </div>
 
-          <div class="relative group">
+          <div class="space-y-1">
+            <label for="address_state" class="block text-sm font-medium text-text-primary">
+              State
+            </label>
             <input
               id="address_state"
               type="text"
               name="address[state]"
               value={@changeset.changes[:state] || ""}
               required
-              class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-              placeholder=" "
+              class="w-full px-3 py-2 bg-white border border-brand-neutral-300 rounded-md text-text-primary placeholder-brand-neutral-400 text-sm transition-all duration-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none"
+              placeholder="Enter state"
             />
-            <label
-              for="address_state"
-              class="absolute left-4 top-4 text-gray-400 transition-all duration-300
-                peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
-                peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
-                peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
-            >
-              State
-            </label>
             <%= if error = @changeset.errors[:state] do %>
               <%= if @changeset.action do %>
-                <div class="text-red-400 text-sm mt-2 flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <div class="text-red-600 text-xs mt-1 flex items-center">
+                  <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fill-rule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -404,29 +373,23 @@
             <% end %>
           </div>
 
-          <div class="relative group">
+          <div class="space-y-1">
+            <label for="address_postal_code" class="block text-sm font-medium text-text-primary">
+              Postal Code
+            </label>
             <input
               id="address_postal_code"
               type="text"
               name="address[postal_code]"
               value={@changeset.changes[:postal_code] || ""}
               required
-              class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-              placeholder=" "
+              class="w-full px-3 py-2 bg-white border border-brand-neutral-300 rounded-md text-text-primary placeholder-brand-neutral-400 text-sm transition-all duration-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none"
+              placeholder="Enter postal code"
             />
-            <label
-              for="address_postal_code"
-              class="absolute left-4 top-4 text-gray-400 transition-all duration-300
-                peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
-                peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
-                peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
-            >
-              Postal Code
-            </label>
             <%= if error = @changeset.errors[:postal_code] do %>
               <%= if @changeset.action do %>
-                <div class="text-red-400 text-sm mt-2 flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <div class="text-red-600 text-xs mt-1 flex items-center">
+                  <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fill-rule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -439,30 +402,25 @@
             <% end %>
           </div>
         </div>
+        
         <!-- Country -->
-        <div class="relative group">
+        <div class="space-y-1">
+          <label for="address_country" class="block text-sm font-medium text-text-primary">
+            Country
+          </label>
           <input
             id="address_country"
             type="text"
             name="address[country]"
             value={@changeset.changes[:country] || ""}
             required
-            class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-            placeholder=" "
+            class="w-full px-3 py-2 bg-white border border-brand-neutral-300 rounded-md text-text-primary placeholder-brand-neutral-400 text-sm transition-all duration-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none"
+            placeholder="Enter country"
           />
-          <label
-            for="address_country"
-            class="absolute left-4 top-4 text-gray-400 transition-all duration-300
-              peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
-              peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
-              peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
-          >
-            Country
-          </label>
           <%= if error = @changeset.errors[:country] do %>
             <%= if @changeset.action do %>
-              <div class="text-red-400 text-sm mt-2 flex items-center">
-                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <div class="text-red-600 text-xs mt-1 flex items-center">
+                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fill-rule="evenodd"
                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -474,29 +432,24 @@
             <% end %>
           <% end %>
         </div>
+        
         <!-- Phone -->
-        <div class="relative group">
+        <div class="space-y-1">
+          <label for="address_phone" class="block text-sm font-medium text-text-primary">
+            Phone Number (Optional)
+          </label>
           <input
             id="address_phone"
             type="tel"
             name="address[phone]"
             value={@changeset.changes[:phone] || ""}
-            class="w-full px-6 py-4 bg-gray-800/50 border-2 border-gray-700 rounded-xl text-white placeholder-transparent peer transition-all duration-300 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:outline-none focus:bg-gray-800/70"
-            placeholder=" "
+            class="w-full px-3 py-2 bg-white border border-brand-neutral-300 rounded-md text-text-primary placeholder-brand-neutral-400 text-sm transition-all duration-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none"
+            placeholder="Enter phone number"
           />
-          <label
-            for="address_phone"
-            class="absolute left-4 top-4 text-gray-400 transition-all duration-300
-              peer-focus:text-purple-400 peer-focus:-top-3 peer-focus:left-3 peer-focus:text-xs peer-focus:bg-gray-900 peer-focus:px-2 peer-focus:py-0.5
-              peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:left-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-purple-400 peer-[:not(:placeholder-shown)]:bg-gray-900 peer-[:not(:placeholder-shown)]:px-2 peer-[:not(:placeholder-shown)]:py-0.5
-              peer-placeholder-shown:top-4 peer-placeholder-shown:left-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 select-none"
-          >
-            Phone Number (Optional)
-          </label>
           <%= if error = @changeset.errors[:phone] do %>
             <%= if @changeset.action do %>
-              <div class="text-red-400 text-sm mt-2 flex items-center">
-                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <div class="text-red-600 text-xs mt-1 flex items-center">
+                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fill-rule="evenodd"
                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -508,13 +461,14 @@
             <% end %>
           <% end %>
         </div>
+        
         <!-- Action Buttons -->
-        <div class="flex flex-col sm:flex-row gap-4 pt-6">
+        <div class="flex flex-col sm:flex-row gap-3 pt-6">
           <.button
             type="submit"
-            class="flex-1 bg-gradient-to-r from-purple-500 to-teal-400 text-black px-8 py-4 rounded-xl font-bold text-lg hover:from-purple-600 hover:to-teal-500 transition-all duration-300 shadow-lg hover:shadow-purple-500/25 transform hover:scale-105"
+            class="flex-1 bg-gradient-to-r from-brand-primary to-brand-primary-hover hover:from-brand-primary-hover hover:to-brand-primary text-white px-6 py-3.5 rounded-lg font-semibold text-sm transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center"
           >
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 mr-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -526,8 +480,16 @@
           </.button>
           <.link
             navigate={~p"/addresses"}
-            class="flex-1 bg-gray-800 text-gray-300 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-700 transition-all duration-300 border border-gray-700 hover:border-gray-600 text-center"
+            class="flex-1 bg-white text-text-primary px-6 py-3.5 rounded-lg font-semibold text-sm transition-all duration-300 border-2 border-brand-neutral-300 hover:border-brand-primary hover:bg-brand-primary/5 flex items-center justify-center"
           >
+            <svg class="w-4 h-4 mr-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
             Cancel
           </.link>
         </div>

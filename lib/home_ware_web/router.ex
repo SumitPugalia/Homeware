@@ -52,7 +52,6 @@ defmodule HomeWareWeb.Router do
     get "/users/log_in", UserSessionController, :new
     post "/users/log_in", UserSessionController, :create
     delete "/users/log_out", UserSessionController, :delete
-    live "/chat", ChatLive
   end
 
   # Protected LiveView routes
@@ -67,6 +66,9 @@ defmodule HomeWareWeb.Router do
 
     # Cart and checkout
     live "/checkout", CheckoutLive, :index
+
+    # Customer chat (protected)
+    live "/chat", ChatLive
   end
 
   # Protected routes

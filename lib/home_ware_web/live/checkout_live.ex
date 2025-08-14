@@ -58,396 +58,436 @@ defmodule HomeWareWeb.CheckoutLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="min-h-screen bg-brand-neutral-50">
-      <!-- Progress Indicator -->
-      <div class="max-w-5xl mx-auto pt-8 pb-6">
-        <div class="flex items-center justify-center space-x-6">
-          <%= for {step, label, icon, active} <- [
-            {1, "Cart", "🛒", @step >= 1},
-            {2, "Shipping", "🚚", @step >= 2},
-            {3, "Payment", "💳", @step >= 3},
-            {4, "Review", "📝", @step >= 4}
-          ] do %>
-            <div class="flex items-center">
-              <div class={
-                "w-10 h-10 rounded-full flex items-center justify-center text-base font-bold transition-all duration-200 " <>
-                if active, do: "bg-brand-primary text-white shadow-md", else: "bg-brand-neutral-200 text-brand-neutral-400"
-              }>
-                <%= icon %>
-              </div>
-              <span class={
-                "ml-3 text-sm font-semibold tracking-wide uppercase transition-colors duration-200 " <>
-                if active, do: "text-brand-primary", else: "text-brand-neutral-400"
-              }>
-                <%= label %>
-              </span>
+    <div class="min-h-screen bg-gradient-to-br from-brand-neutral-50 to-white">
+      <!-- Header -->
+      <div class="bg-white shadow-sm border-b border-brand-neutral-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <a href="/" class="text-2xl font-bold text-brand-primary">HomeWare</a>
+              <span class="text-brand-neutral-400">/</span>
+              <span class="text-text-primary font-medium">Checkout</span>
             </div>
-            <%= unless step == 4 do %>
-              <div class={"w-8 h-1 rounded transition-all duration-200 mx-2 #{if active, do: "bg-brand-primary", else: "bg-brand-neutral-200"}"}>
-              </div>
-            <% end %>
-          <% end %>
+            <div class="text-sm text-text-secondary">
+              Secure checkout powered by HomeWare
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 sm:px-6 lg:px-8 pb-8">
-        <!-- LEFT: Customer Details & Payment -->
-        <div class="bg-white rounded-lg shadow-card border border-brand-neutral-200 p-6 space-y-6">
-          <%= if @step == 1 do %>
-            <!-- Cart Review -->
-            <div>
-              <h2 class="text-xl font-bold mb-4 text-text-primary">Review Your Cart</h2>
-              <%= if Enum.empty?(@cart_items) do %>
-                <div class="text-center py-12">
-                  <svg
-                    class="mx-auto h-12 w-12 text-brand-neutral-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
-                    />
-                  </svg>
-                  <h3 class="mt-4 text-lg font-medium text-text-primary">Your cart is empty</h3>
-                  <p class="mt-2 text-text-secondary">Start shopping to add items to your cart.</p>
-                  <div class="mt-6">
-                    <a
-                      href="/products"
-                      class="inline-flex items-center px-6 py-3 bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold rounded-md transition-colors duration-200"
-                    >
+      <!-- Progress Indicator -->
+      <div class="bg-white border-b border-brand-neutral-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div class="flex items-center justify-center space-x-8">
+            <%= for {step, label, icon, active, completed} <- [
+              {1, "Cart", "🛒", @step == 1, @step > 1},
+              {2, "Shipping", "🚚", @step == 2, @step > 2},
+              {3, "Payment", "💳", @step == 3, @step > 3},
+              {4, "Review", "✅", @step == 4, @step > 4}
+            ] do %>
+              <div class="flex items-center">
+                <div class={
+                  "w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold transition-all duration-300 " <>
+                  cond do
+                    completed -> "bg-brand-accent text-white shadow-md"
+                    active -> "bg-brand-primary text-white shadow-lg"
+                    true -> "bg-brand-neutral-100 text-brand-neutral-400"
+                  end
+                }>
+                  <%= if completed do %>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                  <% else %>
+                    <%= icon %>
+                  <% end %>
+                </div>
+                <span class={
+                  "ml-3 text-sm font-semibold tracking-wide uppercase transition-colors duration-300 " <>
+                  cond do
+                    completed -> "text-brand-accent"
+                    active -> "text-brand-primary"
+                    true -> "text-brand-neutral-400"
+                  end
+                }>
+                  <%= label %>
+                </span>
+              </div>
+              <%= unless step == 4 do %>
+                <div class={
+                  "w-12 h-1 rounded-full transition-all duration-300 #{if completed, do: "bg-brand-accent", else: "bg-brand-neutral-200"}"
+                }>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <!-- LEFT: Main Content -->
+          <div class="xl:col-span-2 space-y-8">
+            <%= if @step == 1 do %>
+              <!-- Cart Review -->
+              <div class="bg-white rounded-xl shadow-sm border border-brand-neutral-200 overflow-hidden">
+                <div class="px-6 py-4 bg-gradient-to-r from-brand-primary/5 to-brand-accent/5 border-b border-brand-neutral-200">
+                  <h2 class="text-xl font-bold text-text-primary">Review Your Cart</h2>
+                  <p class="text-text-secondary text-sm mt-1">Review your items before proceeding</p>
+                </div>
+                <%= if Enum.empty?(@cart_items) do %>
+                  <div class="text-center py-16 px-6">
+                    <div class="w-20 h-20 bg-brand-neutral-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg class="w-10 h-10 text-brand-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                      </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-text-primary mb-3">Your cart is empty</h3>
+                    <p class="text-text-secondary mb-8">Start shopping to add items to your cart.</p>
+                    <a href="/products" class="inline-flex items-center px-8 py-3 bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
                       Continue Shopping
                     </a>
                   </div>
-                </div>
-              <% else %>
-                <div class="space-y-4">
-                  <%= for item <- @cart_items do %>
-                    <.cart_item item={item} />
-                  <% end %>
-                </div>
-                <div class="mt-6 flex justify-end">
-                  <button
-                    phx-click="proceed_to_address"
-                    class="bg-brand-primary hover:bg-brand-primary-hover text-white px-6 py-3 rounded-md font-semibold transition-colors duration-200"
-                  >
-                    Continue to Address Selection
-                  </button>
-                </div>
-              <% end %>
-            </div>
-          <% end %>
-
-          <%= if @step == 2 do %>
-            <!-- Address Selection -->
-            <div>
-              <h2 class="text-xl font-bold mb-4 text-text-primary">Select Addresses</h2>
-              <!-- Shipping Address -->
-              <div class="mb-8">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Shipping Address</h3>
-                <div class="grid grid-cols-1 gap-3">
-                  <%= for address <- @addresses do %>
-                    <div
-                      class={
-                        if @selected_shipping_address_id == address.id,
-                          do:
-                            "border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 border-brand-primary bg-brand-primary/5",
-                          else:
-                            "border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 border-brand-neutral-300 bg-white hover:border-brand-neutral-400 hover:bg-brand-neutral-50"
-                      }
-                      phx-click="select_shipping_address"
-                      phx-value-address-id={address.id}
-                    >
-                      <div class="flex items-start justify-between">
-                        <div class="flex-1">
-                          <p class="font-semibold text-text-primary text-sm">
-                            <%= address.first_name %> <%= address.last_name %>
-                          </p>
-                          <p class="text-xs text-text-secondary mt-1">
-                            <%= address.address_line_1 %>
-                          </p>
-                          <%= if address.address_line_2 && address.address_line_2 != "" do %>
-                            <p class="text-xs text-text-secondary"><%= address.address_line_2 %></p>
-                          <% end %>
-                          <p class="text-xs text-text-secondary">
-                            <%= address.city %>, <%= address.state %> <%= address.postal_code %>
-                          </p>
-                          <p class="text-xs text-text-secondary"><%= address.phone %></p>
-                        </div>
-                        <div class="ml-3">
-                          <%= if @selected_shipping_address_id == address.id do %>
-                            <svg
-                              class="h-5 w-5 text-brand-primary"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clip-rule="evenodd"
-                              />
-                            </svg>
-                          <% end %>
-                        </div>
-                      </div>
-                    </div>
-                  <% end %>
-                </div>
-                <div class="mt-4">
-                  <a
-                    href="/addresses/new"
-                    class="text-brand-primary hover:text-brand-primary-hover font-medium text-sm"
-                  >
-                    + Add New Address
-                  </a>
-                </div>
-              </div>
-              <!-- Billing Address -->
-              <div class="mb-8">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Billing Address</h3>
-                <div class="flex items-center mb-4">
-                  <input
-                    type="checkbox"
-                    id="same_as_shipping"
-                    phx-click="toggle_billing_same_as_shipping"
-                    class="accent-brand-primary w-4 h-4 rounded focus:ring-2 focus:ring-brand-primary/20"
-                  />
-                  <label for="same_as_shipping" class="ml-3 block text-sm text-text-primary">
-                    Same as shipping address
-                  </label>
-                </div>
-
-                <%= if @selected_shipping_address_id && @selected_billing_address_id != @selected_shipping_address_id do %>
-                  <div class="grid grid-cols-1 gap-3">
-                    <%= for address <- @addresses do %>
-                      <div
-                        class={
-                          if @selected_billing_address_id == address.id,
-                            do:
-                              "border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 border-brand-accent bg-brand-accent/5",
-                            else:
-                              "border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 border-brand-neutral-300 bg-white hover:border-brand-neutral-400 hover:bg-brand-neutral-50"
-                        }
-                        phx-click="select_billing_address"
-                        phx-value-address-id={address.id}
-                      >
-                        <div class="flex items-start justify-between">
-                          <div class="flex-1">
-                            <p class="font-semibold text-text-primary text-sm">
-                              <%= address.first_name %> <%= address.last_name %>
-                            </p>
-                            <p class="text-xs text-text-secondary mt-1">
-                              <%= address.address_line_1 %>
-                            </p>
-                            <%= if address.address_line_2 && address.address_line_2 != "" do %>
-                              <p class="text-xs text-text-secondary"><%= address.address_line_2 %></p>
-                            <% end %>
-                            <p class="text-xs text-text-secondary">
-                              <%= address.city %>, <%= address.state %> <%= address.postal_code %>
-                            </p>
-                            <p class="text-xs text-text-secondary"><%= address.phone %></p>
-                          </div>
-                          <div class="ml-3">
-                            <%= if @selected_billing_address_id == address.id do %>
-                              <svg
-                                class="h-5 w-5 text-brand-accent"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                              >
-                                <path
-                                  fill-rule="evenodd"
-                                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                  clip-rule="evenodd"
-                                />
-                              </svg>
-                            <% end %>
-                          </div>
-                        </div>
+                <% else %>
+                  <div class="divide-y divide-brand-neutral-200">
+                    <%= for item <- @cart_items do %>
+                      <div class="p-6">
+                        <.cart_item item={item} />
                       </div>
                     <% end %>
                   </div>
+                  <div class="px-6 py-4 bg-brand-neutral-50 border-t border-brand-neutral-200">
+                    <button phx-click="proceed_to_address" class="w-full bg-brand-primary hover:bg-brand-primary-hover text-white py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-sm hover:shadow-md">
+                      Continue to Address Selection
+                    </button>
+                  </div>
                 <% end %>
               </div>
+            <% end %>
 
-              <div class="flex justify-between">
-                <button
-                  type="button"
-                  phx-click="back_to_cart"
-                  class="bg-brand-neutral-200 text-text-primary px-4 py-2 rounded-md hover:bg-brand-neutral-300 transition-colors text-sm font-medium"
-                >
-                  Back to Cart
-                </button>
-                <button
-                  phx-click="proceed_to_payment"
-                  disabled={!@selected_shipping_address_id}
-                  class="bg-brand-primary hover:bg-brand-primary-hover text-white px-6 py-2 rounded-md font-semibold transition-colors disabled:bg-brand-neutral-200 disabled:text-brand-neutral-400 disabled:cursor-not-allowed text-sm"
-                >
-                  Continue to Payment
-                </button>
-              </div>
-            </div>
-          <% end %>
-
-          <%= if @step == 3 do %>
-            <!-- Payment Information -->
-            <div>
-              <h2 class="text-xl font-bold mb-4 text-text-primary">Payment Method</h2>
-              <div class="mb-6">
-                <div class="flex items-center p-4 bg-brand-neutral-50 border-2 border-brand-primary/20 rounded-lg">
-                  <svg
-                    class="w-5 h-5 text-brand-primary mr-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                    />
-                  </svg>
-                  <span class="text-text-primary font-semibold text-sm">Cash on Delivery</span>
+            <%= if @step == 2 do %>
+              <!-- Address Selection -->
+              <div class="space-y-8">
+                <!-- Shipping Address -->
+                <div class="bg-white rounded-xl shadow-sm border border-brand-neutral-200 overflow-hidden">
+                  <div class="px-6 py-4 bg-gradient-to-r from-brand-primary/5 to-brand-accent/5 border-b border-brand-neutral-200">
+                    <h2 class="text-xl font-bold text-text-primary">Shipping Address</h2>
+                    <p class="text-text-secondary text-sm mt-1">Where should we deliver your order?</p>
+                  </div>
+                  <div class="p-6">
+                    <div class="grid grid-cols-1 gap-4">
+                      <%= for address <- @addresses do %>
+                        <div
+                          class={
+                            if @selected_shipping_address_id == address.id,
+                              do: "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-primary bg-brand-primary/5 shadow-sm",
+                              else: "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-neutral-200 bg-white hover:border-brand-neutral-300 hover:shadow-sm"
+                          }
+                          phx-click="select_shipping_address"
+                          phx-value-address-id={address.id}
+                        >
+                          <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                              <div class="flex items-center space-x-3 mb-2">
+                                <div class="w-8 h-8 bg-brand-primary/10 rounded-full flex items-center justify-center">
+                                  <svg class="w-4 h-4 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  </svg>
+                                </div>
+                                <p class="font-semibold text-text-primary">
+                                  <%= address.first_name %> <%= address.last_name %>
+                                </p>
+                              </div>
+                              <p class="text-text-secondary text-sm"><%= address.address_line_1 %></p>
+                              <%= if address.address_line_2 && address.address_line_2 != "" do %>
+                                <p class="text-text-secondary text-sm"><%= address.address_line_2 %></p>
+                              <% end %>
+                              <p class="text-text-secondary text-sm">
+                                <%= address.city %>, <%= address.state %> <%= address.postal_code %>
+                              </p>
+                              <p class="text-text-secondary text-sm"><%= address.phone %></p>
+                            </div>
+                            <div class="ml-4">
+                              <%= if @selected_shipping_address_id == address.id do %>
+                                <div class="w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center">
+                                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                  </svg>
+                                </div>
+                              <% end %>
+                            </div>
+                          </div>
+                        </div>
+                      <% end %>
+                    </div>
+                    <div class="mt-6">
+                      <a href="/addresses/new" class="inline-flex items-center text-brand-primary hover:text-brand-primary-hover font-medium text-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Add New Address
+                      </a>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <form phx-submit="save_payment" class="space-y-6">
-                <div>
-                  <label class="block text-text-primary mb-2 text-sm font-medium">
-                    Special handling or delivery notes
-                  </label>
-                  <textarea
-                    name="notes"
-                    phx-keyup="update_notes"
-                    rows="3"
-                    class="w-full rounded-md bg-white border border-brand-neutral-300 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 text-text-primary px-4 py-3 text-sm transition-all duration-200 outline-none"
-                    placeholder="Any special instructions for delivery..."
-                  ></textarea>
+                <!-- Billing Address -->
+                <div class="bg-white rounded-xl shadow-sm border border-brand-neutral-200 overflow-hidden">
+                  <div class="px-6 py-4 bg-gradient-to-r from-brand-accent/5 to-brand-primary/5 border-b border-brand-neutral-200">
+                    <h2 class="text-xl font-bold text-text-primary">Billing Address</h2>
+                    <p class="text-text-secondary text-sm mt-1">Where should we send your invoice?</p>
+                  </div>
+                  <div class="p-6">
+                    <div class="flex items-center mb-6 p-4 bg-brand-neutral-50 rounded-lg border border-brand-neutral-200">
+                      <input
+                        type="checkbox"
+                        id="same_as_shipping"
+                        phx-click="toggle_billing_same_as_shipping"
+                        class="accent-brand-primary w-5 h-5 rounded focus:ring-2 focus:ring-brand-primary/20"
+                      />
+                      <label for="same_as_shipping" class="ml-3 block text-text-primary font-medium">
+                        Same as shipping address
+                      </label>
+                    </div>
+
+                    <%= if @selected_shipping_address_id && @selected_billing_address_id != @selected_shipping_address_id do %>
+                      <div class="grid grid-cols-1 gap-4">
+                        <%= for address <- @addresses do %>
+                          <div
+                            class={
+                              if @selected_billing_address_id == address.id,
+                                do: "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-accent bg-brand-accent/5 shadow-sm",
+                                else: "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-neutral-200 bg-white hover:border-brand-neutral-300 hover:shadow-sm"
+                            }
+                            phx-click="select_billing_address"
+                            phx-value-address-id={address.id}
+                          >
+                            <div class="flex items-start justify-between">
+                              <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                  <div class="w-8 h-8 bg-brand-accent/10 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                  </div>
+                                  <p class="font-semibold text-text-primary">
+                                    <%= address.first_name %> <%= address.last_name %>
+                                  </p>
+                                </div>
+                                <p class="text-text-secondary text-sm"><%= address.address_line_1 %></p>
+                                <%= if address.address_line_2 && address.address_line_2 != "" do %>
+                                  <p class="text-text-secondary text-sm"><%= address.address_line_2 %></p>
+                                <% end %>
+                                <p class="text-text-secondary text-sm">
+                                  <%= address.city %>, <%= address.state %> <%= address.postal_code %>
+                                </p>
+                                <p class="text-text-secondary text-sm"><%= address.phone %></p>
+                              </div>
+                              <div class="ml-4">
+                                <%= if @selected_billing_address_id == address.id do %>
+                                  <div class="w-6 h-6 bg-brand-accent rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                  </div>
+                                <% end %>
+                              </div>
+                            </div>
+                          </div>
+                        <% end %>
+                      </div>
+                    <% end %>
+                  </div>
                 </div>
 
-                <div class="flex justify-between">
+                <!-- Navigation -->
+                <div class="flex justify-between items-center">
                   <button
                     type="button"
-                    phx-click="back_to_address"
-                    class="bg-brand-neutral-200 text-text-primary px-4 py-2 rounded-md hover:bg-brand-neutral-300 transition-colors text-sm font-medium"
+                    phx-click="back_to_cart"
+                    class="inline-flex items-center px-6 py-3 bg-brand-neutral-100 text-text-primary rounded-lg hover:bg-brand-neutral-200 transition-colors font-medium"
                   >
-                    Back
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Back to Cart
+                  </button>
+                  <button
+                    phx-click="proceed_to_payment"
+                    disabled={!@selected_shipping_address_id}
+                    class="inline-flex items-center px-8 py-3 bg-brand-primary hover:bg-brand-primary-hover text-white rounded-lg font-semibold transition-colors disabled:bg-brand-neutral-200 disabled:text-brand-neutral-400 disabled:cursor-not-allowed"
+                  >
+                    Continue to Payment
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
                   </button>
                 </div>
-              </form>
-            </div>
-          <% end %>
-        </div>
-        <!-- RIGHT: Order Summary -->
-        <div class="bg-white rounded-lg shadow-card border border-brand-neutral-200 p-6 space-y-6">
-          <h2 class="text-xl font-bold mb-4 text-text-primary">Order Summary</h2>
-          <!-- Promo Code -->
-          <div class="flex items-center mt-4">
-            <input
-              type="text"
-              placeholder="Promo code"
-              class="flex-1 rounded-md bg-white border border-brand-neutral-300 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 text-text-primary px-4 py-2 text-sm transition-all duration-200 outline-none"
-            />
-            <button class="ml-3 px-4 py-2 rounded-md bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold transition-colors text-sm">
-              Apply
-            </button>
-          </div>
-          <!-- Totals -->
-          <div class="mt-6 space-y-3 text-base">
-            <div class="flex justify-between">
-              <span class="text-text-secondary">Subtotal</span>
-              <span data-testid="subtotal" class="text-text-primary">
-                ₹<%= Number.Delimit.number_to_delimited(@total, precision: 2) %>
-              </span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-text-secondary">Shipping</span>
-              <span data-testid="shipping" class="text-text-primary">
-                ₹<%= Number.Delimit.number_to_delimited(@shipping, precision: 2) %>
-              </span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-text-secondary">Tax</span>
-              <span data-testid="tax" class="text-text-primary">
-                ₹<%= Number.Delimit.number_to_delimited(@tax, precision: 2) %>
-              </span>
-            </div>
-            <div class="border-t border-brand-neutral-200 pt-3">
-              <div class="flex justify-between font-bold text-lg">
-                <span class="text-brand-primary">Total</span>
-                <span data-testid="grand-total" class="text-brand-primary">
-                  ₹<%= Number.Delimit.number_to_delimited(@grand_total, precision: 2) %>
-                </span>
               </div>
-            </div>
+            <% end %>
+
+            <%= if @step == 3 do %>
+              <!-- Payment Information -->
+              <div class="bg-white rounded-xl shadow-sm border border-brand-neutral-200 overflow-hidden">
+                <div class="px-6 py-4 bg-gradient-to-r from-brand-primary/5 to-brand-accent/5 border-b border-brand-neutral-200">
+                  <h2 class="text-xl font-bold text-text-primary">Payment Method</h2>
+                  <p class="text-text-secondary text-sm mt-1">Choose how you'd like to pay</p>
+                </div>
+                <div class="p-6 space-y-6">
+                  <div class="p-4 bg-brand-neutral-50 rounded-lg border-2 border-brand-primary/20">
+                    <div class="flex items-center">
+                      <div class="w-10 h-10 bg-brand-primary/10 rounded-full flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <span class="text-text-primary font-semibold">Cash on Delivery</span>
+                        <p class="text-text-secondary text-sm">Pay when you receive your order</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <form phx-submit="save_payment" class="space-y-6">
+                    <div>
+                      <label class="block text-text-primary mb-3 text-sm font-semibold">
+                        Special handling or delivery notes
+                      </label>
+                      <textarea
+                        name="notes"
+                        phx-keyup="update_notes"
+                        rows="4"
+                        class="w-full rounded-lg bg-white border border-brand-neutral-300 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 text-text-primary px-4 py-3 text-sm transition-all duration-200 outline-none resize-none placeholder-brand-neutral-400"
+                        placeholder="Any special instructions for delivery..."
+                      ></textarea>
+                    </div>
+
+                    <div class="flex justify-between">
+                      <button
+                        type="button"
+                        phx-click="back_to_address"
+                        class="inline-flex items-center px-6 py-3 bg-brand-neutral-100 text-text-primary rounded-lg hover:bg-brand-neutral-200 transition-colors font-medium"
+                      >
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        Back
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            <% end %>
           </div>
-          <!-- Estimated Delivery -->
-          <div class="mt-4 text-brand-accent text-sm">
-            <span>Estimated delivery: 3-5 business days</span>
-          </div>
-          <!-- CTA -->
-          <button
-            phx-click="complete_order"
-            disabled={is_nil(@notes) || @notes == ""}
-            class={"w-full mt-6 py-4 rounded-lg font-bold text-lg transition-all focus:outline-none focus:ring-2 focus:ring-brand-primary/20 #{if is_nil(@notes) || @notes == "", do: "bg-brand-neutral-200 text-brand-neutral-400 cursor-not-allowed", else: "bg-brand-primary hover:bg-brand-primary-hover text-white shadow-md hover:shadow-lg"}"}
-          >
-            <span>Complete My Order</span>
-          </button>
-          <!-- Trust Badges -->
-          <div class="flex items-center justify-center space-x-6 mt-6 pt-6 border-t border-brand-neutral-200">
-            <div class="flex items-center space-x-2">
-              <svg
-                class="w-5 h-5 text-brand-accent"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-2 2-2 2-2-.896-2-2z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 19c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z"
-                />
-              </svg>
-              <span class="text-xs text-text-secondary">Secure Payment</span>
-            </div>
-            <div class="flex items-center space-x-2">
-              <svg
-                class="w-5 h-5 text-brand-primary"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
-              </svg>
-              <span class="text-xs text-text-secondary">18+ Only</span>
-            </div>
-            <div class="flex items-center space-x-2">
-              <svg
-                class="w-5 h-5 text-brand-accent"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 4h16v16H4z"
-                />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8h8v8H8z" />
-              </svg>
-              <span class="text-xs text-text-secondary">Discreet Shipping</span>
+
+          <!-- RIGHT: Order Summary -->
+          <div class="xl:col-span-1">
+            <div class="bg-white rounded-xl shadow-sm border border-brand-neutral-200 sticky top-8">
+              <div class="px-6 py-4 bg-gradient-to-r from-brand-primary/5 to-brand-accent/5 border-b border-brand-neutral-200">
+                <h2 class="text-xl font-bold text-text-primary">Order Summary</h2>
+                <p class="text-text-secondary text-sm mt-1">Review your order details</p>
+              </div>
+
+              <div class="p-6 space-y-6">
+                <!-- Promo Code -->
+                <div class="space-y-3">
+                  <label class="block text-sm font-semibold text-text-primary">Promo Code</label>
+                  <div class="flex space-x-3">
+                    <input
+                      type="text"
+                      placeholder="Enter code"
+                      class="flex-1 rounded-lg bg-white border border-brand-neutral-300 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 text-text-primary px-4 py-3 text-sm transition-all duration-200 outline-none placeholder-brand-neutral-400"
+                    />
+                    <button class="px-6 py-3 bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold rounded-lg transition-colors text-sm whitespace-nowrap">
+                      Apply
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Totals -->
+                <div class="space-y-4">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-text-secondary">Subtotal</span>
+                    <span data-testid="subtotal" class="text-text-primary font-medium">
+                      ₹<%= Number.Delimit.number_to_delimited(@total, precision: 2) %>
+                    </span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-text-secondary">Shipping</span>
+                    <span data-testid="shipping" class="text-text-primary font-medium">
+                      ₹<%= Number.Delimit.number_to_delimited(@shipping, precision: 2) %>
+                    </span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-text-secondary">Tax</span>
+                    <span data-testid="tax" class="text-text-primary font-medium">
+                      ₹<%= Number.Delimit.number_to_delimited(@tax, precision: 2) %>
+                    </span>
+                  </div>
+                  <div class="border-t border-brand-neutral-200 pt-4">
+                    <div class="flex justify-between text-lg font-bold">
+                      <span class="text-brand-primary">Total</span>
+                      <span data-testid="grand-total" class="text-brand-primary">
+                        ₹<%= Number.Delimit.number_to_delimited(@grand_total, precision: 2) %>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Estimated Delivery -->
+                <div class="p-4 bg-brand-accent/10 rounded-lg border border-brand-accent/20">
+                  <div class="flex items-center space-x-3">
+                    <svg class="w-5 h-5 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+                    </svg>
+                    <div>
+                      <p class="text-brand-accent font-semibold text-sm">Estimated delivery</p>
+                      <p class="text-text-secondary text-sm">3-5 business days</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CTA -->
+                <button
+                  phx-click="complete_order"
+                  disabled={is_nil(@notes) || @notes == ""}
+                  class={"w-full py-4 rounded-lg font-bold text-lg transition-all focus:outline-none focus:ring-2 focus:ring-brand-primary/20 #{if is_nil(@notes) || @notes == "", do: "bg-brand-neutral-200 text-brand-neutral-400 cursor-not-allowed", else: "bg-brand-primary hover:bg-brand-primary-hover text-white shadow-sm hover:shadow-md"}"}
+                >
+                  <span>Complete My Order</span>
+                </button>
+
+                <!-- Trust Badges -->
+                <div class="grid grid-cols-3 gap-4 pt-6 border-t border-brand-neutral-200">
+                  <div class="text-center">
+                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <p class="text-xs text-text-secondary">Secure</p>
+                  </div>
+                  <div class="text-center">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+                      </svg>
+                    </div>
+                    <p class="text-xs text-text-secondary">Fast</p>
+                  </div>
+                  <div class="text-center">
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8h8v8H8z" />
+                      </svg>
+                    </div>
+                    <p class="text-xs text-text-secondary">Discreet</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
