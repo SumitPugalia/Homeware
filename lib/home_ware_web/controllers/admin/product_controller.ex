@@ -9,7 +9,13 @@ defmodule HomeWareWeb.Admin.ProductController do
 
   @per_page 12
 
-  @brands ["Elf Bar", "Other"]
+  @brands [
+    "HomeWare Premium",
+    "Elite Living",
+    "Modern Essentials",
+    "Lifestyle Pro",
+    "Quality Home"
+  ]
 
   defp upload_impl, do: Application.get_env(:home_ware, :upload_impl, HomeWare.UploadService)
 
@@ -98,10 +104,15 @@ defmodule HomeWareWeb.Admin.ProductController do
     end
   end
 
+  def show(conn, %{"id" => id}) do
+    product = Products.get_product!(id) |> HomeWare.Repo.preload(:category)
+    render(conn, "show.html", product: product, current_path: conn.request_path)
+  end
+
   def edit(conn, %{"id" => id}) do
-    product = Products.get_product_with_variants!(id)
+    product = Products.get_product!(id)
     changeset = Products.change_product(product)
-    categories = Categories.list_categories()
+    categories = HomeWare.Categories.list_categories()
     brands = @brands
     form = to_form(changeset)
 
@@ -117,29 +128,34 @@ defmodule HomeWareWeb.Admin.ProductController do
   def update(conn, %{"id" => id, "product" => product_params}) do
     product = Products.get_product!(id)
 
-    with {:ok, updated_params} <- handle_file_uploads(conn, product_params),
-         transformed_params = transform_product_params(updated_params),
-         {:ok, _product} <- Products.update_product(product, transformed_params) do
-      conn
-      |> put_flash(:info, "Product updated!")
-      |> redirect(to: ~p"/admin/products")
-    else
-      {:error, %Ecto.Changeset{} = changeset} ->
-        categories = Categories.list_categories()
-        brands = @brands
-        form = to_form(changeset)
+    # Handle file uploads
+    case handle_file_uploads(conn, product_params) do
+      {:ok, updated_params} ->
+        # Transform the parameters to match the database structure
+        transformed_params = transform_product_params(updated_params)
 
-        render(conn, "edit.html",
-          product: product,
-          form: form,
-          categories: categories,
-          brands: brands,
-          current_path: conn.request_path
-        )
+        case Products.update_product(product, transformed_params) do
+          {:ok, product} ->
+            conn
+            |> put_flash(:info, "Product updated!")
+            |> redirect(to: ~p"/admin/products/#{product}")
+
+          {:error, changeset} ->
+            categories = HomeWare.Categories.list_categories()
+            brands = @brands
+            form = to_form(changeset)
+
+            render(conn, "edit.html",
+              product: product,
+              form: form,
+              categories: categories,
+              brands: brands,
+              current_path: conn.request_path
+            )
+        end
 
       {:error, reason} ->
-        Logger.error("Error uploading files: #{inspect(reason)}")
-        categories = Categories.list_categories()
+        categories = HomeWare.Categories.list_categories()
         brands = @brands
         changeset = Products.change_product(product)
         form = to_form(changeset)
@@ -158,25 +174,16 @@ defmodule HomeWareWeb.Admin.ProductController do
 
   def delete(conn, %{"id" => id}) do
     product = Products.get_product!(id)
+    {:ok, _product} = Products.delete_product(product)
 
-    case Products.delete_product(product) do
-      {:ok, _product} ->
-        conn |> put_flash(:info, "Product deleted!") |> redirect(to: ~p"/admin/products")
-
-      {:error, _changeset} ->
-        conn
-        |> put_flash(:error, "Failed to delete product.")
-        |> redirect(to: ~p"/admin/products")
-    end
+    conn
+    |> put_flash(:info, "Product deleted!")
+    |> redirect(to: ~p"/admin/products")
   end
 
   def confirm_delete(conn, %{"id" => id}) do
     product = Products.get_product!(id)
-
-    render(conn, "confirm_delete.html",
-      product: product,
-      current_path: conn.request_path
-    )
+    render(conn, "confirm_delete.html", product: product, current_path: conn.request_path)
   end
 
   def toggle_active(conn, %{"id" => id}) do

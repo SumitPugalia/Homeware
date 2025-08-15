@@ -3,7 +3,12 @@
     <!-- Header Section -->
     <div class="mb-8 text-center">
       <div class="inline-flex items-center justify-center w-16 h-16 bg-brand-primary/10 rounded-full mb-4">
-        <svg class="w-8 h-8 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          class="w-8 h-8 text-brand-primary"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -21,7 +26,6 @@
       <h1 class="text-3xl font-bold text-text-primary mb-2">Add New Address</h1>
       <p class="text-text-secondary">Secure, private, and discreet shipping</p>
     </div>
-    
     <!-- Form Container -->
     <div class="bg-white rounded-lg shadow-sm border border-brand-neutral-200 p-6">
       <.form for={@changeset} action={~p"/addresses"} class="space-y-5">
@@ -85,7 +89,6 @@
             <% end %>
           </div>
         </div>
-        
         <!-- Address Type -->
         <div class="space-y-1">
           <label class="block text-sm font-medium text-text-primary">
@@ -224,7 +227,6 @@
             }
           });
         </script>
-        
         <!-- Company -->
         <div class="space-y-1">
           <label for="address_company" class="block text-sm font-medium text-text-primary">
@@ -253,7 +255,6 @@
             <% end %>
           <% end %>
         </div>
-        
         <!-- Address Line 1 -->
         <div class="space-y-1">
           <label for="address_line_1" class="block text-sm font-medium text-text-primary">
@@ -283,7 +284,6 @@
             <% end %>
           <% end %>
         </div>
-        
         <!-- Address Line 2 -->
         <div class="space-y-1">
           <label for="address_line_2" class="block text-sm font-medium text-text-primary">
@@ -312,7 +312,6 @@
             <% end %>
           <% end %>
         </div>
-        
         <!-- City, State, Postal Code -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="space-y-1">
@@ -402,7 +401,6 @@
             <% end %>
           </div>
         </div>
-        
         <!-- Country -->
         <div class="space-y-1">
           <label for="address_country" class="block text-sm font-medium text-text-primary">
@@ -432,7 +430,6 @@
             <% end %>
           <% end %>
         </div>
-        
         <!-- Phone -->
         <div class="space-y-1">
           <label for="address_phone" class="block text-sm font-medium text-text-primary">
@@ -461,7 +458,6 @@
             <% end %>
           <% end %>
         </div>
-        
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-3 pt-6">
           <.button

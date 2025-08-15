@@ -107,21 +107,30 @@ defmodule HomeWareWeb.ChatLive do
               </div>
               <a href="/" class="text-text-secondary hover:text-brand-primary transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </a>
             </div>
           </div>
         </div>
       </div>
-
       <!-- Chat Container -->
       <div class="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 overflow-hidden">
         <!-- Support Info Card -->
         <div class="bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-4 mb-4 flex-shrink-0">
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 bg-brand-primary/10 rounded-full flex items-center justify-center">
-              <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                class="w-5 h-5 text-brand-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -132,7 +141,9 @@ defmodule HomeWareWeb.ChatLive do
             </div>
             <div class="flex-1">
               <h2 class="text-base font-semibold text-text-primary">Customer Support</h2>
-              <p class="text-text-secondary text-xs">We're here to help you with any questions or concerns</p>
+              <p class="text-text-secondary text-xs">
+                We're here to help you with any questions or concerns
+              </p>
             </div>
             <div class="flex items-center space-x-2 text-brand-accent">
               <div class="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></div>
@@ -140,7 +151,6 @@ defmodule HomeWareWeb.ChatLive do
             </div>
           </div>
         </div>
-
         <!-- Messages Container -->
         <div class="flex-1 bg-white rounded-xl shadow-sm border border-brand-neutral-200 overflow-hidden flex flex-col min-h-0">
           <!-- Messages Area -->
@@ -168,7 +178,9 @@ defmodule HomeWareWeb.ChatLive do
                       />
                     </svg>
                   </div>
-                  <h3 class="text-lg font-semibold text-text-primary mb-2">Welcome to Customer Support!</h3>
+                  <h3 class="text-lg font-semibold text-text-primary mb-2">
+                    Welcome to Customer Support!
+                  </h3>
                   <p class="text-text-secondary text-xs leading-relaxed">
                     Hi <%= @current_user.first_name || "there" %>! 👋 How can we help you today?
                     Feel free to ask any questions about your orders, products, or anything else.
@@ -218,11 +230,15 @@ defmodule HomeWareWeb.ChatLive do
                         <%= String.first(@current_user.first_name || "U") %>
                       <% else %>
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                          />
                         </svg>
                       <% end %>
                     </div>
-
                     <!-- Message Bubble -->
                     <div class={
                       [
@@ -253,10 +269,13 @@ defmodule HomeWareWeb.ChatLive do
               </div>
             <% end %>
           </div>
-
           <!-- Message Input -->
           <div class="bg-white border-t border-brand-neutral-200 p-3 flex-shrink-0">
-            <form phx-submit="send_message" phx-change="update_message" class="flex items-end space-x-2">
+            <form
+              phx-submit="send_message"
+              phx-change="update_message"
+              class="flex items-end space-x-2"
+            >
               <div class="flex-1 relative">
                 <input
                   type="text"

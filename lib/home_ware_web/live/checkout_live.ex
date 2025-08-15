@@ -74,7 +74,6 @@ defmodule HomeWareWeb.CheckoutLive do
           </div>
         </div>
       </div>
-
       <!-- Progress Indicator -->
       <div class="bg-white border-b border-brand-neutral-200">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -96,7 +95,12 @@ defmodule HomeWareWeb.CheckoutLive do
                 }>
                   <%= if completed do %>
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                   <% else %>
                     <%= icon %>
@@ -138,13 +142,26 @@ defmodule HomeWareWeb.CheckoutLive do
                 <%= if Enum.empty?(@cart_items) do %>
                   <div class="text-center py-16 px-6">
                     <div class="w-20 h-20 bg-brand-neutral-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg class="w-10 h-10 text-brand-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                      <svg
+                        class="w-10 h-10 text-brand-neutral-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                        />
                       </svg>
                     </div>
                     <h3 class="text-xl font-semibold text-text-primary mb-3">Your cart is empty</h3>
                     <p class="text-text-secondary mb-8">Start shopping to add items to your cart.</p>
-                    <a href="/products" class="inline-flex items-center px-8 py-3 bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
+                    <a
+                      href="/products"
+                      class="inline-flex items-center px-8 py-3 bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                    >
                       Continue Shopping
                     </a>
                   </div>
@@ -157,7 +174,10 @@ defmodule HomeWareWeb.CheckoutLive do
                     <% end %>
                   </div>
                   <div class="px-6 py-4 bg-brand-neutral-50 border-t border-brand-neutral-200">
-                    <button phx-click="proceed_to_address" class="w-full bg-brand-primary hover:bg-brand-primary-hover text-white py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-sm hover:shadow-md">
+                    <button
+                      phx-click="proceed_to_address"
+                      class="w-full bg-brand-primary hover:bg-brand-primary-hover text-white py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                    >
                       Continue to Address Selection
                     </button>
                   </div>
@@ -172,7 +192,9 @@ defmodule HomeWareWeb.CheckoutLive do
                 <div class="bg-white rounded-xl shadow-sm border border-brand-neutral-200 overflow-hidden">
                   <div class="px-6 py-4 bg-gradient-to-r from-brand-primary/5 to-brand-accent/5 border-b border-brand-neutral-200">
                     <h2 class="text-xl font-bold text-text-primary">Shipping Address</h2>
-                    <p class="text-text-secondary text-sm mt-1">Where should we deliver your order?</p>
+                    <p class="text-text-secondary text-sm mt-1">
+                      Where should we deliver your order?
+                    </p>
                   </div>
                   <div class="p-6">
                     <div class="grid grid-cols-1 gap-4">
@@ -180,8 +202,10 @@ defmodule HomeWareWeb.CheckoutLive do
                         <div
                           class={
                             if @selected_shipping_address_id == address.id,
-                              do: "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-primary bg-brand-primary/5 shadow-sm",
-                              else: "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-neutral-200 bg-white hover:border-brand-neutral-300 hover:shadow-sm"
+                              do:
+                                "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-primary bg-brand-primary/5 shadow-sm",
+                              else:
+                                "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-neutral-200 bg-white hover:border-brand-neutral-300 hover:shadow-sm"
                           }
                           phx-click="select_shipping_address"
                           phx-value-address-id={address.id}
@@ -190,9 +214,24 @@ defmodule HomeWareWeb.CheckoutLive do
                             <div class="flex-1">
                               <div class="flex items-center space-x-3 mb-2">
                                 <div class="w-8 h-8 bg-brand-primary/10 rounded-full flex items-center justify-center">
-                                  <svg class="w-4 h-4 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  <svg
+                                    class="w-4 h-4 text-brand-primary"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                    />
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
                                   </svg>
                                 </div>
                                 <p class="font-semibold text-text-primary">
@@ -201,7 +240,9 @@ defmodule HomeWareWeb.CheckoutLive do
                               </div>
                               <p class="text-text-secondary text-sm"><%= address.address_line_1 %></p>
                               <%= if address.address_line_2 && address.address_line_2 != "" do %>
-                                <p class="text-text-secondary text-sm"><%= address.address_line_2 %></p>
+                                <p class="text-text-secondary text-sm">
+                                  <%= address.address_line_2 %>
+                                </p>
                               <% end %>
                               <p class="text-text-secondary text-sm">
                                 <%= address.city %>, <%= address.state %> <%= address.postal_code %>
@@ -211,8 +252,16 @@ defmodule HomeWareWeb.CheckoutLive do
                             <div class="ml-4">
                               <%= if @selected_shipping_address_id == address.id do %>
                                 <div class="w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center">
-                                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                  <svg
+                                    class="w-4 h-4 text-white"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                      clip-rule="evenodd"
+                                    />
                                   </svg>
                                 </div>
                               <% end %>
@@ -222,16 +271,28 @@ defmodule HomeWareWeb.CheckoutLive do
                       <% end %>
                     </div>
                     <div class="mt-6">
-                      <a href="/addresses/new" class="inline-flex items-center text-brand-primary hover:text-brand-primary-hover font-medium text-sm">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      <a
+                        href="/addresses/new"
+                        class="inline-flex items-center text-brand-primary hover:text-brand-primary-hover font-medium text-sm"
+                      >
+                        <svg
+                          class="w-4 h-4 mr-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                          />
                         </svg>
                         Add New Address
                       </a>
                     </div>
                   </div>
                 </div>
-
                 <!-- Billing Address -->
                 <div class="bg-white rounded-xl shadow-sm border border-brand-neutral-200 overflow-hidden">
                   <div class="px-6 py-4 bg-gradient-to-r from-brand-accent/5 to-brand-primary/5 border-b border-brand-neutral-200">
@@ -257,8 +318,10 @@ defmodule HomeWareWeb.CheckoutLive do
                           <div
                             class={
                               if @selected_billing_address_id == address.id,
-                                do: "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-accent bg-brand-accent/5 shadow-sm",
-                                else: "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-neutral-200 bg-white hover:border-brand-neutral-300 hover:shadow-sm"
+                                do:
+                                  "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-accent bg-brand-accent/5 shadow-sm",
+                                else:
+                                  "border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 border-brand-neutral-200 bg-white hover:border-brand-neutral-300 hover:shadow-sm"
                             }
                             phx-click="select_billing_address"
                             phx-value-address-id={address.id}
@@ -267,17 +330,31 @@ defmodule HomeWareWeb.CheckoutLive do
                               <div class="flex-1">
                                 <div class="flex items-center space-x-3 mb-2">
                                   <div class="w-8 h-8 bg-brand-accent/10 rounded-full flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    <svg
+                                      class="w-4 h-4 text-brand-accent"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                      />
                                     </svg>
                                   </div>
                                   <p class="font-semibold text-text-primary">
                                     <%= address.first_name %> <%= address.last_name %>
                                   </p>
                                 </div>
-                                <p class="text-text-secondary text-sm"><%= address.address_line_1 %></p>
+                                <p class="text-text-secondary text-sm">
+                                  <%= address.address_line_1 %>
+                                </p>
                                 <%= if address.address_line_2 && address.address_line_2 != "" do %>
-                                  <p class="text-text-secondary text-sm"><%= address.address_line_2 %></p>
+                                  <p class="text-text-secondary text-sm">
+                                    <%= address.address_line_2 %>
+                                  </p>
                                 <% end %>
                                 <p class="text-text-secondary text-sm">
                                   <%= address.city %>, <%= address.state %> <%= address.postal_code %>
@@ -287,8 +364,16 @@ defmodule HomeWareWeb.CheckoutLive do
                               <div class="ml-4">
                                 <%= if @selected_billing_address_id == address.id do %>
                                   <div class="w-6 h-6 bg-brand-accent rounded-full flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    <svg
+                                      class="w-4 h-4 text-white"
+                                      fill="currentColor"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path
+                                        fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                        clip-rule="evenodd"
+                                      />
                                     </svg>
                                   </div>
                                 <% end %>
@@ -300,7 +385,6 @@ defmodule HomeWareWeb.CheckoutLive do
                     <% end %>
                   </div>
                 </div>
-
                 <!-- Navigation -->
                 <div class="flex justify-between items-center">
                   <button
@@ -309,7 +393,12 @@ defmodule HomeWareWeb.CheckoutLive do
                     class="inline-flex items-center px-6 py-3 bg-brand-neutral-100 text-text-primary rounded-lg hover:bg-brand-neutral-200 transition-colors font-medium"
                   >
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 19l-7-7 7-7"
+                      />
                     </svg>
                     Back to Cart
                   </button>
@@ -320,7 +409,12 @@ defmodule HomeWareWeb.CheckoutLive do
                   >
                     Continue to Payment
                     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -338,8 +432,18 @@ defmodule HomeWareWeb.CheckoutLive do
                   <div class="p-4 bg-brand-neutral-50 rounded-lg border-2 border-brand-primary/20">
                     <div class="flex items-center">
                       <div class="w-10 h-10 bg-brand-primary/10 rounded-full flex items-center justify-center mr-4">
-                        <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        <svg
+                          class="w-5 h-5 text-brand-primary"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                          />
                         </svg>
                       </div>
                       <div>
@@ -369,8 +473,18 @@ defmodule HomeWareWeb.CheckoutLive do
                         phx-click="back_to_address"
                         class="inline-flex items-center px-6 py-3 bg-brand-neutral-100 text-text-primary rounded-lg hover:bg-brand-neutral-200 transition-colors font-medium"
                       >
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        <svg
+                          class="w-4 h-4 mr-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 19l-7-7 7-7"
+                          />
                         </svg>
                         Back
                       </button>
@@ -380,7 +494,6 @@ defmodule HomeWareWeb.CheckoutLive do
               </div>
             <% end %>
           </div>
-
           <!-- RIGHT: Order Summary -->
           <div class="xl:col-span-1">
             <div class="bg-white rounded-xl shadow-sm border border-brand-neutral-200 sticky top-8">
@@ -404,7 +517,6 @@ defmodule HomeWareWeb.CheckoutLive do
                     </button>
                   </div>
                 </div>
-
                 <!-- Totals -->
                 <div class="space-y-4">
                   <div class="flex justify-between text-sm">
@@ -434,13 +546,29 @@ defmodule HomeWareWeb.CheckoutLive do
                     </div>
                   </div>
                 </div>
-
                 <!-- Estimated Delivery -->
                 <div class="p-4 bg-brand-accent/10 rounded-lg border border-brand-accent/20">
                   <div class="flex items-center space-x-3">
-                    <svg class="w-5 h-5 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
-                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+                    <svg
+                      class="w-5 h-5 text-brand-accent"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8v4l3 3"
+                      />
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        fill="none"
+                      />
                     </svg>
                     <div>
                       <p class="text-brand-accent font-semibold text-sm">Estimated delivery</p>
@@ -448,7 +576,6 @@ defmodule HomeWareWeb.CheckoutLive do
                     </div>
                   </div>
                 </div>
-
                 <!-- CTA -->
                 <button
                   phx-click="complete_order"
@@ -457,31 +584,72 @@ defmodule HomeWareWeb.CheckoutLive do
                 >
                   <span>Complete My Order</span>
                 </button>
-
                 <!-- Trust Badges -->
                 <div class="grid grid-cols-3 gap-4 pt-6 border-t border-brand-neutral-200">
                   <div class="text-center">
                     <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      <svg
+                        class="w-4 h-4 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                        />
                       </svg>
                     </div>
                     <p class="text-xs text-text-secondary">Secure</p>
                   </div>
                   <div class="text-center">
                     <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3" />
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+                      <svg
+                        class="w-4 h-4 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 8v4l3 3"
+                        />
+                        <circle
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          fill="none"
+                        />
                       </svg>
                     </div>
                     <p class="text-xs text-text-secondary">Fast</p>
                   </div>
                   <div class="text-center">
                     <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8h8v8H8z" />
+                      <svg
+                        class="w-4 h-4 text-purple-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 4h16v16H4z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M8 8h8v8H8z"
+                        />
                       </svg>
                     </div>
                     <p class="text-xs text-text-secondary">Discreet</p>

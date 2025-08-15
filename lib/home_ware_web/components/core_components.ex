@@ -908,4 +908,141 @@ defmodule HomeWareWeb.CoreComponents do
     </div>
     """
   end
+
+  @doc """
+  Renders a modern dropdown component using pure CSS.
+
+  ## Examples
+
+      <.modern_dropdown
+        name="category"
+        label="Category"
+        options={[{"All Categories", ""}, {"Electronics", "electronics"}]}
+        value={@selected_category}
+        placeholder="Select a category"
+      />
+
+  """
+  attr :name, :string, required: true
+  attr :label, :string, required: true
+  attr :options, :list, required: true
+  attr :value, :any, default: nil
+  attr :placeholder, :string, default: "Select an option"
+  attr :required, :boolean, default: false
+  attr :disabled, :boolean, default: false
+  attr :class, :string, default: ""
+  attr :id, :string, default: nil
+
+  def modern_dropdown(assigns) do
+    ~H"""
+    <div class="space-y-2">
+      <label class="block text-sm font-semibold text-text-primary">
+        <%= @label %>
+        <%= if @required do %>
+          <span class="text-brand-accent">*</span>
+        <% end %>
+      </label>
+      <div class="relative">
+        <select
+          name={@name}
+          id={@id}
+          required={@required}
+          disabled={@disabled}
+          class={[
+            "w-full px-4 py-3 bg-white border border-brand-neutral-300 rounded-lg text-text-primary text-sm transition-all duration-200",
+            "focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none",
+            "hover:border-brand-neutral-400 cursor-pointer appearance-none",
+            "bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M19%209l-7%207-7-7%22/%3E%3C/svg%3E')]",
+            "bg-no-repeat bg-right-3 bg-[length:16px_16px] pr-10",
+            @disabled && "bg-brand-neutral-50 text-brand-neutral-400 cursor-not-allowed",
+            @class
+          ]}
+        >
+          <option value="" disabled selected={is_nil(@value)}>
+            <%= @placeholder %>
+          </option>
+          <%= for {label, value} <- @options do %>
+            <option value={value} selected={@value == value} class="py-2">
+              <%= label %>
+            </option>
+          <% end %>
+        </select>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders a modern searchable dropdown component.
+
+  ## Examples
+
+      <.searchable_dropdown
+        name="category"
+        label="Category"
+        options={[{"All Categories", ""}, {"Electronics", "electronics"}]}
+        value={@selected_category}
+        placeholder="Search categories..."
+      />
+
+  """
+  attr :name, :string, required: true
+  attr :label, :string, required: true
+  attr :options, :list, required: true
+  attr :value, :any, default: nil
+  attr :placeholder, :string, default: "Search options..."
+  attr :required, :boolean, default: false
+  attr :disabled, :boolean, default: false
+  attr :class, :string, default: ""
+  attr :id, :string, default: nil
+
+  def searchable_dropdown(assigns) do
+    ~H"""
+    <div class="space-y-2">
+      <label class="block text-sm font-semibold text-text-primary">
+        <%= @label %>
+        <%= if @required do %>
+          <span class="text-brand-accent">*</span>
+        <% end %>
+      </label>
+      <div class="relative">
+        <input
+          type="text"
+          placeholder={@placeholder}
+          class={[
+            "w-full px-4 py-3 bg-white border border-brand-neutral-300 rounded-lg text-text-primary text-sm transition-all duration-200",
+            "focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none",
+            "hover:border-brand-neutral-400",
+            @disabled && "bg-brand-neutral-50 text-brand-neutral-400 cursor-not-allowed",
+            @class
+          ]}
+          disabled={@disabled}
+        />
+        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+          <svg
+            class="w-4 h-4 text-brand-neutral-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </div>
+        <!-- Hidden select for form submission -->
+        <select name={@name} class="sr-only" required={@required} disabled={@disabled}>
+          <%= for {label, value} <- @options do %>
+            <option value={value} selected={@value == value}>
+              <%= label %>
+            </option>
+          <% end %>
+        </select>
+      </div>
+    </div>
+    """
+  end
 end
