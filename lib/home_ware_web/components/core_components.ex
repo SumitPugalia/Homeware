@@ -1006,7 +1006,12 @@ defmodule HomeWareWeb.CoreComponents do
           <span class="text-red-500">*</span>
         <% end %>
       </label>
-      <div class="relative" x-data="{ open: false, selected: '' }" id={"#{@name}-dropdown"} phx-hook="ModernDropdownHooks">
+      <div
+        class="relative"
+        x-data="{ open: false, selected: '' }"
+        id={"#{@name}-dropdown"}
+        phx-hook="ModernDropdownHooks"
+      >
         <button
           type="button"
           id={@id}
@@ -1031,12 +1036,18 @@ defmodule HomeWareWeb.CoreComponents do
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+            </path>
           </svg>
         </button>
-
         <!-- Hidden select for form submission -->
-        <select name={@name} class="sr-only" required={@required} disabled={@disabled} phx-change={@phx_change}>
+        <select
+          name={@name}
+          class="sr-only"
+          required={@required}
+          disabled={@disabled}
+          phx-change={@phx_change}
+        >
           <%= for {label, value} <- @options do %>
             <option value={value} selected={@value == value}><%= label %></option>
           <% end %>
@@ -1072,5 +1083,4 @@ defmodule HomeWareWeb.CoreComponents do
     </div>
     """
   end
-
 end
