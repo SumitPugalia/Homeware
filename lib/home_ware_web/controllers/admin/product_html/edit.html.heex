@@ -93,7 +93,7 @@
                 required
                 class="bg-white border-brand-neutral-300 text-text-primary focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all duration-200"
               />
-              <.modern_dropdown
+              <.dropdown
                 name="category_id"
                 label="Category"
                 options={Enum.map(@categories, &{&1.name, &1.id})}

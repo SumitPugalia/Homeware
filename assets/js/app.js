@@ -59,11 +59,42 @@ const ChatHooks = {
   }
 }
 
+// Modern dropdown hooks for LiveView integration
+const ModernDropdownHooks = {
+  mounted() {
+    // Set initial value
+    const select = this.el.querySelector('select');
+    if (select) {
+      const selectedOption = select.querySelector('option[selected]');
+      if (selectedOption) {
+        const alpineComponent = this.el._x_dataStack[0];
+        if (alpineComponent) {
+          alpineComponent.selected = selectedOption.textContent.trim();
+        }
+      }
+    }
+    
+    // Listen for dropdown change events from Alpine.js
+    this.el.addEventListener('dropdown-change', (event) => {
+      const { value, label } = event.detail;
+      
+      // Update the hidden select element
+      if (select) {
+        select.value = value;
+        
+        // Trigger change event for LiveView
+        const changeEvent = new Event('change', { bubbles: true });
+        select.dispatchEvent(changeEvent);
+      }
+    });
+  }
+}
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: ChatHooks
+  hooks: { ...ChatHooks, ...ModernDropdownHooks }
 })
 
 liveSocket.connect()

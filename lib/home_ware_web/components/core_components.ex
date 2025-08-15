@@ -352,7 +352,7 @@ defmodule HomeWareWeb.CoreComponents do
       <select
         id={@id}
         name={@name}
-        class="mt-2 block w-full rounded-md border border-brand-neutral-300 bg-white shadow-sm focus:border-brand-primary focus:ring-brand-primary/20 focus:ring-2 sm:text-sm"
+        class="mt-2 block w-full rounded-lg border border-gray-200 bg-white shadow-sm focus:border-brand-primary focus:ring-brand-primary/20 focus:ring-2 text-sm px-4 py-3 transition-colors duration-200 hover:border-gray-300 appearance-none"
         multiple={@multiple}
         {@rest}
       >
@@ -910,11 +910,11 @@ defmodule HomeWareWeb.CoreComponents do
   end
 
   @doc """
-  Renders a modern dropdown component using pure CSS.
+  Renders a modern dropdown component similar to Doctorline project.
 
   ## Examples
 
-      <.modern_dropdown
+      <.dropdown
         name="category"
         label="Category"
         options={[{"All Categories", ""}, {"Electronics", "electronics"}]}
@@ -932,57 +932,57 @@ defmodule HomeWareWeb.CoreComponents do
   attr :disabled, :boolean, default: false
   attr :class, :string, default: ""
   attr :id, :string, default: nil
+  attr :phx_change, :string, default: nil
 
-  def modern_dropdown(assigns) do
+  def dropdown(assigns) do
     ~H"""
     <div class="space-y-2">
-      <label class="block text-sm font-semibold text-text-primary">
+      <label class="block text-sm font-medium text-gray-700 mb-2">
         <%= @label %>
         <%= if @required do %>
-          <span class="text-brand-accent">*</span>
+          <span class="text-red-500">*</span>
         <% end %>
       </label>
-      <div class="relative">
-        <select
-          name={@name}
-          id={@id}
-          required={@required}
-          disabled={@disabled}
-          class={[
-            "w-full px-4 py-3 bg-white border border-brand-neutral-300 rounded-lg text-text-primary text-sm transition-all duration-200",
-            "focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none",
-            "hover:border-brand-neutral-400 cursor-pointer appearance-none",
-            "bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M19%209l-7%207-7-7%22/%3E%3C/svg%3E')]",
-            "bg-no-repeat bg-right-3 bg-[length:16px_16px] pr-10",
-            @disabled && "bg-brand-neutral-50 text-brand-neutral-400 cursor-not-allowed",
-            @class
-          ]}
-        >
-          <option value="" disabled selected={is_nil(@value)}>
-            <%= @placeholder %>
+      <select
+        name={@name}
+        id={@id}
+        required={@required}
+        disabled={@disabled}
+        phx-change={@phx_change}
+        class={[
+          "w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-brand-primary",
+          "bg-white text-gray-900 text-sm transition-colors duration-200 shadow-sm",
+          "hover:border-gray-300 cursor-pointer appearance-none",
+          "bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M19%209l-7%207-7-7%22/%3E%3C/svg%3E')]",
+          "bg-no-repeat bg-right-3 bg-[length:16px_16px] pr-10",
+          @disabled && "bg-gray-50 text-gray-400 cursor-not-allowed",
+          @class
+        ]}
+      >
+        <option value="" disabled selected={is_nil(@value)}>
+          <%= @placeholder %>
+        </option>
+        <%= for {label, value} <- @options do %>
+          <option value={value} selected={@value == value} class="py-2">
+            <%= label %>
           </option>
-          <%= for {label, value} <- @options do %>
-            <option value={value} selected={@value == value} class="py-2">
-              <%= label %>
-            </option>
-          <% end %>
-        </select>
-      </div>
+        <% end %>
+      </select>
     </div>
     """
   end
 
   @doc """
-  Renders a modern searchable dropdown component.
+  Renders a modern dropdown component with smooth animations and better UX.
 
   ## Examples
 
-      <.searchable_dropdown
-        name="category"
-        label="Category"
-        options={[{"All Categories", ""}, {"Electronics", "electronics"}]}
-        value={@selected_category}
-        placeholder="Search categories..."
+      <.modern_dropdown
+        name="brand"
+        label="Brand"
+        options={[{"Select a brand", ""}, {"HomeWare Premium", "HomeWare Premium"}]}
+        value={@selected_brand}
+        placeholder="Select a brand"
       />
 
   """
@@ -990,59 +990,87 @@ defmodule HomeWareWeb.CoreComponents do
   attr :label, :string, required: true
   attr :options, :list, required: true
   attr :value, :any, default: nil
-  attr :placeholder, :string, default: "Search options..."
+  attr :placeholder, :string, default: "Select an option"
   attr :required, :boolean, default: false
   attr :disabled, :boolean, default: false
   attr :class, :string, default: ""
   attr :id, :string, default: nil
+  attr :phx_change, :string, default: nil
 
-  def searchable_dropdown(assigns) do
+  def modern_dropdown(assigns) do
     ~H"""
     <div class="space-y-2">
-      <label class="block text-sm font-semibold text-text-primary">
+      <label class="block text-sm font-medium text-gray-700 mb-2">
         <%= @label %>
         <%= if @required do %>
-          <span class="text-brand-accent">*</span>
+          <span class="text-red-500">*</span>
         <% end %>
       </label>
-      <div class="relative">
-        <input
-          type="text"
-          placeholder={@placeholder}
+      <div class="relative" x-data="{ open: false, selected: '' }" id={"#{@name}-dropdown"} phx-hook="ModernDropdownHooks">
+        <button
+          type="button"
+          id={@id}
+          name={@name}
           class={[
-            "w-full px-4 py-3 bg-white border border-brand-neutral-300 rounded-lg text-text-primary text-sm transition-all duration-200",
-            "focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none",
-            "hover:border-brand-neutral-400",
-            @disabled && "bg-brand-neutral-50 text-brand-neutral-400 cursor-not-allowed",
+            "w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-left text-gray-900 text-sm transition-all duration-200",
+            "hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 cursor-pointer shadow-sm",
+            "flex items-center justify-between",
+            @disabled && "bg-gray-50 text-gray-400 cursor-not-allowed",
             @class
           ]}
-          disabled={@disabled}
-        />
-        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+          x-on:click="open = !open"
+          x-on:click.away="open = false"
+          aria-haspopup="listbox"
+          x-bind:aria-expanded="open"
+        >
+          <span x-text="selected" class="block truncate"></span>
           <svg
-            class="w-4 h-4 text-brand-neutral-400"
+            class="w-4 h-4 text-gray-400 transition-transform duration-200"
+            x-bind:class="{ 'rotate-180': open }"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
-        </div>
+        </button>
+
         <!-- Hidden select for form submission -->
-        <select name={@name} class="sr-only" required={@required} disabled={@disabled}>
+        <select name={@name} class="sr-only" required={@required} disabled={@disabled} phx-change={@phx_change}>
           <%= for {label, value} <- @options do %>
-            <option value={value} selected={@value == value}>
-              <%= label %>
-            </option>
+            <option value={value} selected={@value == value}><%= label %></option>
           <% end %>
         </select>
+
+        <div
+          x-show="open"
+          x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0 transform translate-y-2 scale-95"
+          x-transition:enter-end="opacity-100 transform translate-y-0 scale-100"
+          x-transition:leave="transition ease-in duration-150"
+          x-transition:leave-start="opacity-100 transform translate-y-0 scale-100"
+          x-transition:leave-end="opacity-0 transform translate-y-2 scale-95"
+          class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+          role="listbox"
+          style="display: none;"
+        >
+          <div class="py-1">
+            <%= for {label, value} <- @options do %>
+              <button
+                type="button"
+                class="w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-all duration-150 hover:translate-x-1"
+                x-on:click="selected = $el.textContent.trim(); open = false; $dispatch('dropdown-change', { value: $el.dataset.value, label: $el.textContent.trim() })"
+                role="option"
+                data-value={value}
+              >
+                <%= label %>
+              </button>
+            <% end %>
+          </div>
+        </div>
       </div>
     </div>
     """
   end
+
 end

@@ -81,49 +81,37 @@ defmodule HomeWareWeb.ProductCatalogLive do
 
               <form id="filter-form" phx-change="filter" class="space-y-6">
                 <!-- Category Filter -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-semibold text-text-primary">
-                    Category
-                  </label>
-                  <.modern_dropdown
-                    name="category"
-                    label=""
-                    options={[{"All Categories", ""} | Enum.map(@categories, &{&1.name, &1.id})]}
-                    value={@filters[:category]}
-                    placeholder="All Categories"
-                  />
-                </div>
+                <.modern_dropdown
+                  name="category"
+                  label="Category"
+                  options={[{"All Categories", ""} | Enum.map(@categories, &{&1.name, &1.id})]}
+                  value={@filters[:category]}
+                  placeholder="All Categories"
+                  phx_change="filter"
+                />
                 <!-- Brand Filter -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-semibold text-text-primary">
-                    Brand
-                  </label>
-                  <.modern_dropdown
-                    name="brand"
-                    label=""
-                    options={[{"All Brands", ""} | Enum.map(@brands, &{&1, &1})]}
-                    value={@filters[:brand]}
-                    placeholder="All Brands"
-                  />
-                </div>
+                <.modern_dropdown
+                  name="brand"
+                  label="Brand"
+                  options={[{"All Brands", ""} | Enum.map(@brands, &{&1, &1})]}
+                  value={@filters[:brand]}
+                  placeholder="All Brands"
+                  phx_change="filter"
+                />
                 <!-- New Products Filter -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-semibold text-text-primary">
-                    Product Type
-                  </label>
-                  <.modern_dropdown
-                    name="new_products"
-                    label=""
-                    options={[
-                      {"All Products", ""},
-                      {"New Arrivals", "new"},
-                      {"Featured", "featured"},
-                      {"Bestsellers", "bestsellers"}
-                    ]}
-                    value={@filters[:new_products]}
-                    placeholder="All Products"
-                  />
-                </div>
+                <.modern_dropdown
+                  name="new_products"
+                  label="Product Type"
+                  options={[
+                    {"All Products", ""},
+                    {"New Arrivals", "new"},
+                    {"Featured", "featured"},
+                    {"Bestsellers", "bestsellers"}
+                  ]}
+                  value={@filters[:new_products]}
+                  placeholder="All Products"
+                  phx_change="filter"
+                />
                 <!-- Min Price Filter -->
                 <div class="space-y-2">
                   <label class="block text-sm font-semibold text-text-primary">
@@ -194,10 +182,9 @@ defmodule HomeWareWeb.ProductCatalogLive do
             <!-- Sort Options -->
             <div class="flex justify-between items-center mb-6">
               <div class="flex items-center space-x-4">
-                <label class="text-sm font-medium text-text-primary">Sort by:</label>
                 <.modern_dropdown
                   name="sort"
-                  label=""
+                  label="Sort by"
                   options={[
                     {"Newest First", "newest"},
                     {"Oldest First", "oldest"},
@@ -208,6 +195,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
                   ]}
                   value="newest"
                   placeholder="Newest First"
+                  phx_change="filter"
                 />
               </div>
               <div class="text-sm text-text-secondary">
