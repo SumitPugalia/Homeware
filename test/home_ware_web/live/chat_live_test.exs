@@ -25,12 +25,13 @@ defmodule HomeWareWeb.ChatLiveTest do
       chat_room = insert(:chat_room, %{customer_id: user.id})
 
       # Create a message directly in the database
-      _message = insert(:chat_message, %{
-        chat_room_id: chat_room.id,
-        sender_type: "customer",
-        sender_id: user.id,
-        body: "Test message from database"
-      })
+      _message =
+        insert(:chat_message, %{
+          chat_room_id: chat_room.id,
+          sender_type: "customer",
+          sender_id: user.id,
+          body: "Test message from database"
+        })
 
       {:ok, lv, _html} = live(conn, "/chat")
 

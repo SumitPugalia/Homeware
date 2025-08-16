@@ -51,54 +51,54 @@ defmodule HomeWareWeb.ProductDetailLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="min-h-screen bg-gray-900 text-white">
-      <div class="container mx-auto px-4 py-6">
+    <div class="min-h-screen bg-brand-neutral-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Breadcrumb -->
-        <nav class="mb-6">
-          <ol class="flex items-center space-x-1 text-xs text-gray-400">
+        <nav class="mb-8">
+          <ol class="flex items-center space-x-2 text-sm text-text-secondary">
             <li>
-              <a href="/" class="hover:text-purple-400 transition-colors">Home</a>
+              <a href="/" class="hover:text-brand-primary transition-colors">Home</a>
             </li>
-            <li class="flex items-center space-x-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <li class="flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                 </path>
               </svg>
-              <a href="/products" class="hover:text-purple-400 transition-colors">Products</a>
+              <a href="/products" class="hover:text-brand-primary transition-colors">Products</a>
             </li>
-            <li class="flex items-center space-x-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <li class="flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                 </path>
               </svg>
-              <span class="text-white"><%= @product.name %></span>
+              <span class="text-text-primary font-medium"><%= @product.name %></span>
             </li>
           </ol>
         </nav>
         <!-- Product Details -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           <!-- Product Images -->
           <div class="space-y-4">
-            <div class="relative overflow-hidden rounded-xl bg-gray-800">
+            <div class="relative overflow-hidden rounded-lg bg-white shadow-card border border-brand-neutral-200">
               <img
                 src={@product.featured_image}
                 class="w-full h-80 lg:h-96 object-cover"
                 alt={@product.name}
               />
               <%= if @product.is_featured do %>
-                <div class="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                <div class="absolute top-4 right-4 bg-brand-accent text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
                   Featured
                 </div>
               <% end %>
               <!-- Availability Badge -->
               <div class="absolute top-4 left-4">
-                <span class={"px-3 py-1 rounded-full text-xs font-bold shadow-lg #{HomeWare.Products.Product.availability_color(@product)}"}>
+                <span class={"px-3 py-1 rounded-full text-xs font-bold shadow-sm #{HomeWare.Products.Product.availability_color(@product)}"}>
                   <%= HomeWare.Products.Product.availability_status(@product) %>
                 </span>
               </div>
               <!-- Out of Stock Overlay -->
               <%= if !@product.available? do %>
-                <div class="absolute inset-0 bg-black/60 flex items-center justify-center rounded-xl">
+                <div class="absolute inset-0 bg-brand-neutral-900/50 flex items-center justify-center">
                   <div class="text-center">
                     <svg
                       class="w-12 h-12 text-white mx-auto mb-3"
@@ -121,35 +121,35 @@ defmodule HomeWareWeb.ProductDetailLive do
             </div>
           </div>
           <!-- Product Info -->
-          <div class="space-y-6">
+          <div class="space-y-8">
             <div>
-              <h1 class="text-3xl font-bold text-white mb-3"><%= @product.name %></h1>
-              <p class="text-gray-400 text-base leading-relaxed mb-4">
+              <h1 class="text-3xl font-bold text-text-primary mb-4"><%= @product.name %></h1>
+              <p class="text-text-secondary text-base leading-relaxed">
                 <%= @product.description %>
               </p>
             </div>
             <!-- Price Section -->
-            <div class="space-y-3">
+            <div class="space-y-4">
               <%= if @variants != [] do %>
-                <div class="mb-4">
-                  <label class="block text-gray-300 font-semibold mb-2 text-sm">
+                <div class="mb-6">
+                  <label class="block text-text-primary font-semibold mb-3 text-sm">
                     Select Variant:
                   </label>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <%= for variant <- @variants do %>
                       <button
                         phx-click="select_variant"
                         phx-value-variant={variant.id}
                         phx-value-product-id={@product.id}
-                        class={"relative p-3 rounded-lg border transition-all duration-300 text-left #{if @selected_variant_id == variant.id, do: "border-purple-500 bg-purple-500/10", else: "border-gray-600 bg-gray-700 hover:border-gray-500 hover:bg-gray-600"} #{unless variant.available?, do: "opacity-50 cursor-not-allowed"} #{unless variant.available?, do: "disabled"}"}
+                        class={"relative p-4 rounded-lg border transition-all duration-200 text-left #{if @selected_variant_id == variant.id, do: "border-brand-primary bg-brand-primary/5", else: "border-brand-neutral-300 bg-white hover:border-brand-neutral-400 hover:bg-brand-neutral-50"} #{unless variant.available?, do: "opacity-50 cursor-not-allowed"} #{unless variant.available?, do: "disabled"}"}
                       >
-                        <div class="flex items-center justify-between mb-1">
-                          <span class="font-semibold text-white text-sm">
+                        <div class="flex items-center justify-between mb-2">
+                          <span class="font-semibold text-text-primary text-sm">
                             <%= variant.option_name %>
                           </span>
                           <%= if @selected_variant_id == variant.id do %>
                             <svg
-                              class="w-4 h-4 text-purple-400"
+                              class="w-4 h-4 text-brand-primary"
                               fill="currentColor"
                               viewBox="0 0 20 20"
                             >
@@ -161,14 +161,14 @@ defmodule HomeWareWeb.ProductDetailLive do
                             </svg>
                           <% end %>
                         </div>
-                        <div class="text-xs text-gray-400 mb-1">SKU: <%= variant.sku %></div>
+                        <div class="text-xs text-text-secondary mb-2">SKU: <%= variant.sku %></div>
                         <%= if variant.price_override do %>
-                          <div class="text-purple-400 font-semibold text-sm">
+                          <div class="text-brand-primary font-semibold text-sm">
                             <%= Formatters.format_currency(variant.price_override) %>
                           </div>
                         <% end %>
                         <%= unless variant.available? do %>
-                          <div class="absolute top-1 right-1 bg-red-600 text-white text-xs font-bold px-1 py-0.5 rounded">
+                          <div class="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
                             Out of Stock
                           </div>
                         <% end %>
@@ -177,18 +177,19 @@ defmodule HomeWareWeb.ProductDetailLive do
                   </div>
                 </div>
               <% end %>
-              <div class="flex items-center space-x-3">
-                <span class="text-gray-400 line-through text-lg">
+
+              <div class="flex items-center space-x-4">
+                <span class="text-brand-neutral-400 line-through text-lg">
                   <%= Formatters.format_currency(
                     display_price(@product, @variants, @selected_variant_id, :original)
                   ) %>
                 </span>
-                <span class="text-3xl font-bold text-purple-400">
+                <span class="text-3xl font-bold text-brand-primary">
                   <%= Formatters.format_currency(
                     display_price(@product, @variants, @selected_variant_id, :selling)
                   ) %>
                 </span>
-                <span class="bg-red-500/20 text-red-400 px-2 py-1 rounded-full text-xs font-semibold border border-red-500/30">
+                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold border border-red-200">
                   <%= calculate_discount(
                     display_price(@product, @variants, @selected_variant_id, :original),
                     display_price(@product, @variants, @selected_variant_id, :selling)
@@ -197,30 +198,31 @@ defmodule HomeWareWeb.ProductDetailLive do
               </div>
             </div>
             <!-- Product Details -->
-            <div class="space-y-3">
-              <div class="grid grid-cols-2 gap-3">
-                <div class="bg-gray-800 p-3 rounded-lg">
-                  <span class="text-gray-400 text-xs">Brand</span>
-                  <p class="text-white font-semibold text-sm"><%= @product.brand %></p>
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white p-4 rounded-lg shadow-card border border-brand-neutral-200">
+                  <span class="text-text-secondary text-xs font-medium">Brand</span>
+                  <p class="text-text-primary font-semibold text-sm mt-1"><%= @product.brand %></p>
                 </div>
-                <div class="bg-gray-800 p-3 rounded-lg">
-                  <span class="text-gray-400 text-xs">Category</span>
-                  <p class="text-white font-semibold text-sm">
+                <div class="bg-white p-4 rounded-lg shadow-card border border-brand-neutral-200">
+                  <span class="text-text-secondary text-xs font-medium">Category</span>
+                  <p class="text-text-primary font-semibold text-sm mt-1">
                     <%= get_category_name(@product.category_id) %>
                   </p>
                 </div>
               </div>
             </div>
             <!-- Quantity and Add to Cart -->
-            <div class="space-y-4">
-              <div class="flex items-center space-x-3">
-                <label class="text-gray-300 font-semibold text-sm">Quantity:</label>
-                <div class="flex items-center space-x-2 bg-gray-800 rounded-lg p-1">
+            <div class="space-y-6">
+              <div class="flex items-center space-x-4">
+                <label class="text-text-primary font-semibold text-sm">Quantity:</label>
+                <div class="flex items-center space-x-2 bg-white border border-brand-neutral-300 rounded-lg p-1">
                   <button
                     phx-click="decrease_quantity"
-                    class="w-6 h-6 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded transition-colors"
+                    class="w-8 h-8 flex items-center justify-center bg-brand-neutral-100 hover:bg-brand-neutral-200 rounded transition-colors"
+                    aria-label="Decrease quantity"
                   >
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -230,14 +232,15 @@ defmodule HomeWareWeb.ProductDetailLive do
                       </path>
                     </svg>
                   </button>
-                  <span class="w-8 text-center font-semibold text-white text-sm">
+                  <span class="w-12 text-center font-semibold text-text-primary text-sm">
                     <%= @quantity %>
                   </span>
                   <button
                     phx-click="increase_quantity"
-                    class="w-6 h-6 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded transition-colors"
+                    class="w-8 h-8 flex items-center justify-center bg-brand-neutral-100 hover:bg-brand-neutral-200 rounded transition-colors"
+                    aria-label="Increase quantity"
                   >
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -250,7 +253,7 @@ defmodule HomeWareWeb.ProductDetailLive do
                 </div>
               </div>
 
-              <div class="flex items-center space-x-3">
+              <div class="flex items-center space-x-4">
                 <% selected_variant = Enum.find(@variants, &(&1.id == @selected_variant_id)) %>
 
                 <%= if @variants && is_list(@variants) && length(@variants) > 0 do %>
@@ -260,7 +263,7 @@ defmodule HomeWareWeb.ProductDetailLive do
                       phx-value-product-id={@product.id}
                       phx-value-variant-id={@selected_variant_id}
                       phx-value-quantity={@quantity}
-                      class="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-bold text-base hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+                      class="flex-1 bg-brand-primary hover:bg-brand-primary-hover text-white px-6 py-3 rounded-lg font-semibold text-base transition-colors duration-200 shadow-sm hover:shadow-md"
                     >
                       <div class="flex items-center justify-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -278,7 +281,7 @@ defmodule HomeWareWeb.ProductDetailLive do
                   <% else %>
                     <button
                       disabled
-                      class="flex-1 bg-gray-500 text-gray-300 px-6 py-3 rounded-lg font-bold text-base cursor-not-allowed"
+                      class="flex-1 bg-brand-neutral-200 text-brand-neutral-400 px-6 py-3 rounded-lg font-semibold text-base cursor-not-allowed"
                     >
                       <div class="flex items-center justify-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -300,7 +303,7 @@ defmodule HomeWareWeb.ProductDetailLive do
                       phx-click="add_to_cart"
                       phx-value-product-id={@product.id}
                       phx-value-quantity={@quantity}
-                      class="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-bold text-base hover:from-purple-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+                      class="flex-1 bg-brand-primary hover:bg-brand-primary-hover text-white px-6 py-3 rounded-lg font-semibold text-base transition-colors duration-200 shadow-sm hover:shadow-md"
                     >
                       <div class="flex items-center justify-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -318,7 +321,7 @@ defmodule HomeWareWeb.ProductDetailLive do
                   <% else %>
                     <button
                       disabled
-                      class="flex-1 bg-gray-500 text-gray-300 px-6 py-3 rounded-lg font-bold text-base cursor-not-allowed"
+                      class="flex-1 bg-brand-neutral-200 text-brand-neutral-400 px-6 py-3 rounded-lg font-semibold text-base cursor-not-allowed"
                     >
                       <div class="flex items-center justify-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -335,14 +338,16 @@ defmodule HomeWareWeb.ProductDetailLive do
                     </button>
                   <% end %>
                 <% end %>
+
                 <button
                   phx-click={if @is_in_wishlist, do: "remove_from_wishlist", else: "add_to_wishlist"}
                   phx-value-product-id={@product.id}
-                  class={"w-10 h-10 flex items-center justify-center rounded-lg transition-colors border #{if @is_in_wishlist, do: "bg-pink-600 hover:bg-pink-700 border-pink-500", else: "bg-gray-800 hover:bg-gray-700 border-gray-700"}"}
+                  class={"w-12 h-12 flex items-center justify-center rounded-lg transition-colors border #{if @is_in_wishlist, do: "bg-brand-accent hover:bg-brand-accent/80 border-brand-accent", else: "bg-white hover:bg-brand-neutral-50 border-brand-neutral-300"}"}
                   title={if @is_in_wishlist, do: "Remove from wishlist", else: "Add to wishlist"}
+                  aria-label={if @is_in_wishlist, do: "Remove from wishlist", else: "Add to wishlist"}
                 >
                   <svg
-                    class={"w-5 h-5 #{if @is_in_wishlist, do: "text-white", else: "text-gray-400"}"}
+                    class={"w-5 h-5 #{if @is_in_wishlist, do: "text-white", else: "text-brand-neutral-400"}"}
                     fill={if @is_in_wishlist, do: "currentColor", else: "none"}
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -359,9 +364,9 @@ defmodule HomeWareWeb.ProductDetailLive do
               </div>
             </div>
             <!-- Additional Info -->
-            <div class="space-y-3">
-              <div class="flex items-center space-x-4 text-xs text-gray-400">
-                <div class="flex items-center space-x-1">
+            <div class="space-y-4">
+              <div class="flex items-center space-x-6 text-xs text-text-secondary">
+                <div class="flex items-center space-x-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
@@ -373,7 +378,7 @@ defmodule HomeWareWeb.ProductDetailLive do
                   </svg>
                   <span>Free Shipping</span>
                 </div>
-                <div class="flex items-center space-x-1">
+                <div class="flex items-center space-x-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
@@ -385,7 +390,7 @@ defmodule HomeWareWeb.ProductDetailLive do
                   </svg>
                   <span>30 Day Returns</span>
                 </div>
-                <div class="flex items-center space-x-1">
+                <div class="flex items-center space-x-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
@@ -404,8 +409,8 @@ defmodule HomeWareWeb.ProductDetailLive do
         <!-- Related Products -->
         <%= if length(@related_products) > 0 do %>
           <div class="mb-12">
-            <h2 class="text-2xl font-bold text-white mb-6">Related Products</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <h2 class="text-2xl font-bold text-text-primary mb-8">Related Products</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <%= for product <- @related_products do %>
                 <.product_card product={product} />
               <% end %>

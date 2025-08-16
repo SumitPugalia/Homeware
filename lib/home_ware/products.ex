@@ -64,6 +64,7 @@ defmodule HomeWare.Products do
     |> apply_category_filter(filters[:category_id])
     |> apply_brand_filter(filters[:brand])
     |> apply_price_filters(filters[:min_price], filters[:max_price])
+    |> apply_new_products_filter(filters[:new_products])
     |> preload(:category)
     |> preload(variants: ^from(v in HomeWare.Products.ProductVariant, where: v.is_active == true))
     |> order_by([p], desc: p.inserted_at)
@@ -97,9 +98,29 @@ defmodule HomeWare.Products do
   defp apply_brand_filter(query, ""), do: query
 
   defp apply_brand_filter(query, brand) do
-    search_pattern = "%#{brand}%"
-    query |> where([p], ilike(p.brand, ^search_pattern))
+    query |> where([p], p.brand == ^brand)
   end
+
+  defp apply_new_products_filter(query, nil), do: query
+  defp apply_new_products_filter(query, ""), do: query
+
+  defp apply_new_products_filter(query, "new") do
+    # Products added in the last 30 days
+    thirty_days_ago = Date.add(Date.utc_today(), -30)
+    query |> where([p], p.inserted_at >= ^thirty_days_ago)
+  end
+
+  defp apply_new_products_filter(query, "featured") do
+    query |> where([p], p.is_featured == true)
+  end
+
+  defp apply_new_products_filter(query, "bestsellers") do
+    # For now, we'll consider products with high inventory as bestsellers
+    # In a real app, this would be based on sales data
+    query |> where([p], p.inventory_quantity > 10)
+  end
+
+  defp apply_new_products_filter(query, _), do: query
 
   defp apply_price_filters(query, nil, nil), do: query
 

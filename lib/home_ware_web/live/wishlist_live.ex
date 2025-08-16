@@ -27,26 +27,26 @@ defmodule HomeWareWeb.WishlistLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="min-h-screen bg-gray-900 text-white py-8">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="min-h-screen bg-brand-neutral-50 py-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="px-4 py-6 sm:px-0">
-          <div class="flex items-center justify-between mb-6">
-            <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">
+          <div class="flex items-center justify-between mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-text-primary mb-4">
               My
-              <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span class="text-brand-primary">
                 Wishlist
               </span>
             </h1>
-            <span class="text-sm text-gray-400">
+            <span class="text-sm text-text-secondary font-medium">
               <%= @wishlist_count %> item<%= if @wishlist_count != 1, do: "s", else: "" %>
             </span>
           </div>
 
           <%= if Enum.empty?(@wishlist_items) do %>
-            <div class="text-center py-12">
-              <div class="w-24 h-24 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div class="text-center py-16">
+              <div class="w-24 h-24 bg-brand-neutral-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg
-                  class="w-12 h-12 text-gray-400"
+                  class="w-12 h-12 text-brand-neutral-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -60,13 +60,13 @@ defmodule HomeWareWeb.WishlistLive do
                   </path>
                 </svg>
               </div>
-              <h3 class="text-lg font-medium text-white mb-2">Your wishlist is empty</h3>
-              <p class="text-gray-400 mb-6">
+              <h3 class="text-xl font-semibold text-text-primary mb-3">Your wishlist is empty</h3>
+              <p class="text-text-secondary mb-8">
                 Start adding products to your wishlist to save them for later.
               </p>
               <a
                 href="/products"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                class="inline-flex items-center px-6 py-3 bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold rounded-md transition-colors duration-200 shadow-sm hover:shadow-md"
               >
                 Browse Products
               </a>

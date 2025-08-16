@@ -70,41 +70,35 @@
                 field={@form[:name]}
                 label="Product Name"
                 required
-                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                class="bg-white border-brand-neutral-300 text-text-primary focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all duration-200"
               />
-              <.input
-                field={@form[:brand]}
+              <.modern_dropdown
+                name="brand"
                 label="Brand"
-                type="select"
                 options={[{"Select a brand", ""} | Enum.map(@brands, &{&1, &1})]}
+                value={@form[:brand].value}
+                placeholder="Select a brand"
                 required
-                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               />
               <.input
                 field={@form[:model]}
                 label="Model"
                 required
-                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                class="bg-white border-brand-neutral-300 text-text-primary focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all duration-200"
               />
               <.input
                 field={@form[:product_type]}
                 label="Product Type"
                 required
-                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                class="bg-white border-brand-neutral-300 text-text-primary focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all duration-200"
               />
-              <.input
-                field={@form[:product_category]}
-                label="Product Category"
-                required
-                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-              />
-              <.input
-                field={@form[:category_id]}
+              <.modern_dropdown
+                name="category_id"
                 label="Category"
-                type="select"
                 options={Enum.map(@categories, &{&1.name, &1.id})}
+                value={@form[:category_id].value}
+                placeholder="Select a category"
                 required
-                class="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               />
             </div>
             <.input

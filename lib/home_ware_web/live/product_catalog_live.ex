@@ -30,6 +30,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
       |> maybe_add_filter(:brand, params["brand"])
       |> maybe_add_filter(:min_price, params["min_price"])
       |> maybe_add_filter(:max_price, params["max_price"])
+      |> maybe_add_filter(:new_products, params["new_products"])
 
     # Get filtered products
     products = get_filtered_products(filters)
@@ -62,99 +63,58 @@ defmodule HomeWareWeb.ProductCatalogLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="min-h-screen bg-gray-900 text-white py-8">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <!-- Header -->
+    <div class="min-h-screen bg-brand-neutral-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
         <div class="mb-8">
-          <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">
-            Product
-            <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Catalog
-            </span>
-          </h1>
-          <p class="text-gray-400">
-            Discover our curated collection of premium lifestyle products
+          <h1 class="text-3xl font-bold text-text-primary mb-2">Product Catalog</h1>
+          <p class="text-text-secondary">
+            Discover our collection of premium home and lifestyle products
           </p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <!-- Filters Sidebar -->
           <div class="lg:col-span-1">
-            <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 sticky top-24">
-              <h2 class="text-xl font-bold text-white mb-6">Filters</h2>
+            <div class="bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-6 sticky top-8">
+              <h2 class="text-xl font-bold text-text-primary mb-6">Filters</h2>
 
-              <form id="filter-form" phx-change="filter" class="space-y-4">
+              <form id="filter-form" phx-change="filter" class="space-y-6">
                 <!-- Category Filter -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-300">
-                    Category
-                  </label>
-                  <div class="relative">
-                    <select
-                      name="category"
-                      class="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
-                    >
-                      <option value="">All Categories</option>
-                      <%= for category <- @categories do %>
-                        <option value={category.id} selected={@filters[:category] == category.id}>
-                          <%= category.name %>
-                        </option>
-                      <% end %>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <svg
-                        class="w-4 h-4 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
+                <.modern_dropdown
+                  name="category"
+                  label="Category"
+                  options={[{"All Categories", ""} | Enum.map(@categories, &{&1.name, &1.id})]}
+                  value={@filters[:category]}
+                  placeholder="All Categories"
+                  phx_change="filter"
+                />
                 <!-- Brand Filter -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-300">
-                    Brand
-                  </label>
-                  <div class="relative">
-                    <select
-                      name="brand"
-                      class="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
-                    >
-                      <option value="">All Brands</option>
-                      <%= for brand <- @brands do %>
-                        <option value={brand} selected={@filters[:brand] == brand}>
-                          <%= brand %>
-                        </option>
-                      <% end %>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <svg
-                        class="w-4 h-4 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
+                <.modern_dropdown
+                  name="brand"
+                  label="Brand"
+                  options={[{"All Brands", ""} | Enum.map(@brands, &{&1, &1})]}
+                  value={@filters[:brand]}
+                  placeholder="All Brands"
+                  phx_change="filter"
+                />
+                <!-- New Products Filter -->
+                <.modern_dropdown
+                  name="new_products"
+                  label="Product Type"
+                  options={[
+                    {"All Products", ""},
+                    {"New Arrivals", "new"},
+                    {"Featured", "featured"},
+                    {"Bestsellers", "bestsellers"}
+                  ]}
+                  value={@filters[:new_products]}
+                  placeholder="All Products"
+                  phx_change="filter"
+                />
                 <!-- Min Price Filter -->
                 <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-300">
+                  <label class="block text-sm font-semibold text-text-primary">
                     Min Price
                   </label>
                   <div class="relative">
@@ -163,16 +123,16 @@ defmodule HomeWareWeb.ProductCatalogLive do
                       name="min_price"
                       value={@filters[:min_price] || ""}
                       placeholder="₹0"
-                      class="w-full pl-8 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+                      class="w-full pl-8 pr-4 py-3 bg-white border border-brand-neutral-300 rounded-lg text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none"
                     />
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                      <span class="text-gray-400 text-sm">₹</span>
+                      <span class="text-brand-neutral-400 text-sm">₹</span>
                     </div>
                   </div>
                 </div>
                 <!-- Max Price Filter -->
                 <div class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-300">
+                  <label class="block text-sm font-semibold text-text-primary">
                     Max Price
                   </label>
                   <div class="relative">
@@ -181,18 +141,18 @@ defmodule HomeWareWeb.ProductCatalogLive do
                       name="max_price"
                       value={@filters[:max_price] || ""}
                       placeholder="₹∞"
-                      class="w-full pl-8 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none"
+                      class="w-full pl-8 pr-4 py-3 bg-white border border-brand-neutral-300 rounded-lg text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none"
                     />
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                      <span class="text-gray-400 text-sm">₹</span>
+                      <span class="text-brand-neutral-400 text-sm">₹</span>
                     </div>
                   </div>
                 </div>
                 <!-- Action Buttons -->
-                <div class="flex items-center justify-between pt-4 border-t border-gray-700">
+                <div class="flex items-center justify-between pt-4 border-t border-brand-neutral-200">
                   <button
                     type="submit"
-                    class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105"
+                    class="bg-brand-primary hover:bg-brand-primary-hover text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
                   >
                     <div class="flex items-center space-x-2">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,83 +169,67 @@ defmodule HomeWareWeb.ProductCatalogLive do
                   <button
                     type="button"
                     phx-click="reset_filters"
-                    class="text-gray-400 hover:text-white transition-colors text-sm font-medium"
+                    class="text-brand-neutral-400 hover:text-brand-primary transition-colors text-sm font-medium"
                   >
                     Reset
                   </button>
                 </div>
               </form>
-              <!-- Active Filters Display -->
-              <%= if @filters[:category] || @filters[:brand] || @filters[:min_price] || @filters[:max_price] do %>
-                <div class="mt-4 pt-4 border-t border-gray-700">
-                  <span class="text-xs text-gray-400">Active filters:</span>
-                  <div class="flex flex-wrap gap-2 mt-2">
-                    <%= if @filters[:category] do %>
-                      <span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full border border-purple-500/30">
-                        Category
-                      </span>
-                    <% end %>
-                    <%= if @filters[:brand] do %>
-                      <span class="px-2 py-1 bg-pink-500/20 text-pink-300 text-xs rounded-full border border-pink-500/30">
-                        Brand
-                      </span>
-                    <% end %>
-                    <%= if @filters[:min_price] || @filters[:max_price] do %>
-                      <span class="px-2 py-1 bg-teal-500/20 text-teal-300 text-xs rounded-full border border-teal-500/30">
-                        Price
-                      </span>
-                    <% end %>
-                  </div>
-                </div>
-              <% end %>
             </div>
           </div>
-          <!-- Products Grid -->
+          <!-- Product Grid -->
           <div class="lg:col-span-3">
-            <div class="mb-6 flex items-center justify-between">
-              <p class="text-gray-400 text-sm">
-                Showing <%= length(@products) %> of <%= @total_count %> products
-              </p>
+            <!-- Sort Options -->
+            <div class="flex justify-between items-center mb-6">
+              <div class="flex items-center space-x-4">
+                <.modern_dropdown
+                  name="sort"
+                  label="Sort by"
+                  options={[
+                    {"Newest First", "newest"},
+                    {"Oldest First", "oldest"},
+                    {"Price: Low to High", "price_low"},
+                    {"Price: High to Low", "price_high"},
+                    {"Name: A to Z", "name_asc"},
+                    {"Name: Z to A", "name_desc"}
+                  ]}
+                  value="newest"
+                  placeholder="Newest First"
+                  phx_change="filter"
+                />
+              </div>
+              <div class="text-sm text-text-secondary">
+                <%= @total_count %> products found
+              </div>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              <%= for product <- @products do %>
-                <div
-                  class="group bg-gray-800 rounded-xl p-4 hover:bg-gray-700 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
-                  data-product-id={product.id}
-                  phx-click="navigate_to_product"
-                  phx-value-product-id={product.id}
-                >
-                  <.product_card product={product} />
+            <!-- Products Grid -->
+            <%= if Enum.empty?(@products) do %>
+              <div class="text-center py-12">
+                <div class="w-16 h-16 bg-brand-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg
+                    class="w-8 h-8 text-brand-neutral-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                    />
+                  </svg>
                 </div>
-              <% end %>
-            </div>
-
-            <%= if @total_count > 0 do %>
-              <div class="mt-8 flex justify-center">
-                <nav class="flex items-center space-x-2">
-                  <%= if @page > 1 do %>
-                    <a
-                      href={~p"/products?page=#{@page - 1}"}
-                      class="px-3 py-2 text-gray-400 hover:text-white transition-colors text-sm"
-                    >
-                      Previous
-                    </a>
-                  <% end %>
-
-                  <span class="px-3 py-2 text-gray-300 text-sm">
-                    Page <%= @page %> of <%= ceil(@total_count / @per_page) %>
-                  </span>
-
-                  <%= if @page < ceil(@total_count / @per_page) do %>
-                    <a
-                      href={~p"/products?page=#{@page + 1}"}
-                      class="px-3 py-2 text-gray-400 hover:text-white transition-colors text-sm"
-                    >
-                      Next
-                    </a>
-                  <% end %>
-                </nav>
+                <h3 class="text-lg font-semibold text-text-primary mb-2">No products found</h3>
+                <p class="text-text-secondary">
+                  Try adjusting your filters to find what you're looking for.
+                </p>
+              </div>
+            <% else %>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <%= for product <- @products do %>
+                  <%= product_card(%{product: product, current_user: @current_user}) %>
+                <% end %>
               </div>
             <% end %>
           </div>
@@ -313,7 +257,8 @@ defmodule HomeWareWeb.ProductCatalogLive do
           "category" => category,
           "brand" => brand,
           "min_price" => min_price,
-          "max_price" => max_price
+          "max_price" => max_price,
+          "new_products" => new_products
         },
         socket
       ) do
@@ -323,6 +268,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
       |> maybe_add_filter(:brand, brand)
       |> maybe_add_filter(:min_price, min_price)
       |> maybe_add_filter(:max_price, max_price)
+      |> maybe_add_filter(:new_products, new_products)
 
     products = get_filtered_products(filters)
     brands = get_brands()
@@ -345,6 +291,7 @@ defmodule HomeWareWeb.ProductCatalogLive do
       |> maybe_add_filter(:brand, params["brand"])
       |> maybe_add_filter(:min_price, params["min_price"])
       |> maybe_add_filter(:max_price, params["max_price"])
+      |> maybe_add_filter(:new_products, params["new_products"])
 
     products = get_filtered_products(filters)
     brands = get_brands()
@@ -508,7 +455,8 @@ defmodule HomeWareWeb.ProductCatalogLive do
       category_id: filters[:category],
       brand: filters[:brand],
       min_price: parse_price(filters[:min_price]),
-      max_price: parse_price(filters[:max_price])
+      max_price: parse_price(filters[:max_price]),
+      new_products: filters[:new_products]
     }
 
     # Use the Products context to ensure availability is set

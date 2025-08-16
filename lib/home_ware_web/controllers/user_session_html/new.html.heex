@@ -1,16 +1,16 @@
-<div class="min-h-screen bg-gray-900 text-white flex items-center justify-center py-8">
-  <div class="w-full max-w-md mx-auto px-4">
-    <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
-      <div class="text-center mb-6">
-        <h2 class="text-2xl font-bold text-white mb-2">Sign In</h2>
-        <p class="text-gray-400 text-sm">Access your account and preferences</p>
+<div class="min-h-screen bg-brand-neutral-50 flex items-center justify-center py-8 px-4">
+  <div class="w-full max-w-md mx-auto">
+    <div class="bg-white rounded-lg shadow-card border border-brand-neutral-200 p-8">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-text-primary mb-2">Welcome Back</h2>
+        <p class="text-text-secondary">Sign in to your account to continue</p>
       </div>
 
       <%= if @error_message do %>
-        <div class="mb-4 p-3 bg-red-900/20 border border-red-500/30 text-red-300 rounded-lg">
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
           <div class="flex items-center space-x-2">
             <svg
-              class="w-4 h-4 text-red-400"
+              class="w-5 h-5 text-red-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -22,15 +22,15 @@
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <span class="text-sm"><%= @error_message %></span>
+            <span class="text-sm font-medium"><%= @error_message %></span>
           </div>
         </div>
       <% end %>
 
-      <.form for={%{}} action={~p"/users/log_in"} method="post" class="space-y-4">
+      <.form for={%{}} action={~p"/users/log_in"} method="post" class="space-y-6">
         <!-- Email -->
-        <div class="space-y-1">
-          <label class="block text-sm font-medium text-gray-300">
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-text-primary">
             Email Address
           </label>
           <div class="relative">
@@ -39,11 +39,11 @@
               name="user[email]"
               placeholder="Enter your email address"
               required
-              class="w-full pl-10 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none placeholder-gray-400"
+              class="w-full pl-12 pr-4 py-3 bg-white border border-brand-neutral-300 rounded-md text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none placeholder-brand-neutral-400"
             />
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
               <svg
-                class="w-4 h-4 text-gray-400"
+                class="w-5 h-5 text-brand-neutral-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -59,8 +59,8 @@
           </div>
         </div>
         <!-- Password -->
-        <div class="space-y-1">
-          <label class="block text-sm font-medium text-gray-300">
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-text-primary">
             Password
           </label>
           <div class="relative">
@@ -69,11 +69,11 @@
               name="user[password]"
               placeholder="Enter your password"
               required
-              class="w-full pl-10 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none placeholder-gray-400"
+              class="w-full pl-12 pr-4 py-3 bg-white border border-brand-neutral-300 rounded-md text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none placeholder-brand-neutral-400"
             />
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
               <svg
-                class="w-4 h-4 text-gray-400"
+                class="w-5 h-5 text-brand-neutral-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -91,10 +91,10 @@
         <!-- Submit Button -->
         <button
           type="submit"
-          class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2.5 rounded-lg font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105"
+          class="w-full bg-brand-primary hover:bg-brand-primary-hover text-white py-3 rounded-md font-semibold transition-colors duration-200 shadow-sm hover:shadow-md"
         >
           <div class="flex items-center justify-center space-x-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -107,12 +107,12 @@
         </button>
       </.form>
       <!-- Sign Up Link -->
-      <div class="text-center mt-6">
-        <p class="text-gray-400 text-sm">
+      <div class="text-center mt-8 pt-6 border-t border-brand-neutral-200">
+        <p class="text-text-secondary text-sm">
           Don't have an account?
           <a
             href="/users/register"
-            class="text-purple-400 font-medium hover:text-purple-300 transition-colors ml-1"
+            class="text-brand-primary font-semibold hover:text-brand-primary-hover transition-colors ml-1"
           >
             Sign up here
           </a>

@@ -1,22 +1,22 @@
-<div class="min-h-screen bg-gray-900 text-white py-8">
-  <div class="max-w-2xl mx-auto px-4">
+<div class="min-h-screen bg-brand-neutral-50 py-8 px-4">
+  <div class="max-w-2xl mx-auto">
     <div class="text-center mb-8">
-      <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-        Join Vibe Needs
+      <h1 class="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+        Join HomeWare
       </h1>
-      <p class="text-gray-300">
-        Create your account and start your journey with the ultimate lifestyle destination
+      <p class="text-text-secondary text-lg">
+        Create your account and start your journey with quality home and lifestyle products
       </p>
     </div>
 
-    <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
-      <div class="text-center mb-6">
-        <h2 class="text-2xl font-bold text-white mb-2">Create Your Account</h2>
-        <p class="text-gray-400 text-sm">Join our community of lifestyle enthusiasts</p>
+    <div class="bg-white rounded-lg shadow-card border border-brand-neutral-200 p-8">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-text-primary mb-2">Create Your Account</h2>
+        <p class="text-text-secondary">Join our community and start shopping</p>
       </div>
 
       <%= if @changeset && @changeset.action do %>
-        <div class="mb-4 p-3 bg-red-900/20 border border-red-500/30 text-red-300 rounded-lg">
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
           <ul class="list-disc pl-5 space-y-1 text-sm">
             <%= for {attr, {msg, _}} <- @changeset.errors do %>
               <li><%= Phoenix.Naming.humanize(attr) %> <%= msg %></li>
@@ -25,11 +25,11 @@
         </div>
       <% end %>
 
-      <.form for={@changeset} action={~p"/users/register"} method="post" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <.form for={@changeset} action={~p"/users/register"} method="post" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- First Name -->
-          <div class="space-y-1">
-            <label class="block text-sm font-medium text-gray-300">
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-text-primary">
               First Name
             </label>
             <div class="relative">
@@ -39,11 +39,11 @@
                 value={@changeset.changes[:first_name] || ""}
                 placeholder="Enter your first name"
                 required
-                class="w-full pl-10 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none placeholder-gray-400"
+                class="w-full pl-12 pr-4 py-3 bg-white border border-brand-neutral-300 rounded-md text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none placeholder-brand-neutral-400"
               />
-              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                 <svg
-                  class="w-4 h-4 text-gray-400"
+                  class="w-5 h-5 text-brand-neutral-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -59,15 +59,15 @@
             </div>
             <%= if error = @changeset.errors[:first_name] do %>
               <%= if @changeset.action do %>
-                <div class="text-red-400 text-xs mt-1">
+                <div class="text-red-600 text-xs mt-1">
                   <%= elem(error, 0) %>
                 </div>
               <% end %>
             <% end %>
           </div>
           <!-- Last Name -->
-          <div class="space-y-1">
-            <label class="block text-sm font-medium text-gray-300">
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-text-primary">
               Last Name
             </label>
             <div class="relative">
@@ -77,11 +77,11 @@
                 value={@changeset.changes[:last_name] || ""}
                 placeholder="Enter your last name"
                 required
-                class="w-full pl-10 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none placeholder-gray-400"
+                class="w-full pl-12 pr-4 py-3 bg-white border border-brand-neutral-300 rounded-md text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none placeholder-brand-neutral-400"
               />
-              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                 <svg
-                  class="w-4 h-4 text-gray-400"
+                  class="w-5 h-5 text-brand-neutral-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -97,7 +97,7 @@
             </div>
             <%= if error = @changeset.errors[:last_name] do %>
               <%= if @changeset.action do %>
-                <div class="text-red-400 text-xs mt-1">
+                <div class="text-red-600 text-xs mt-1">
                   <%= elem(error, 0) %>
                 </div>
               <% end %>
@@ -105,8 +105,8 @@
           </div>
         </div>
         <!-- Email -->
-        <div class="space-y-1">
-          <label class="block text-sm font-medium text-gray-300">
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-text-primary">
             Email Address
           </label>
           <div class="relative">
@@ -116,11 +116,11 @@
               value={@changeset.changes[:email] || ""}
               placeholder="Enter your email address"
               required
-              class="w-full pl-10 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none placeholder-gray-400"
+              class="w-full pl-12 pr-4 py-3 bg-white border border-brand-neutral-300 rounded-md text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none placeholder-brand-neutral-400"
             />
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
               <svg
-                class="w-4 h-4 text-gray-400"
+                class="w-5 h-5 text-brand-neutral-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -136,16 +136,16 @@
           </div>
           <%= if error = @changeset.errors[:email] do %>
             <%= if @changeset.action do %>
-              <div class="text-red-400 text-xs mt-1">
+              <div class="text-red-600 text-xs mt-1">
                 <%= elem(error, 0) %>
               </div>
             <% end %>
           <% end %>
         </div>
         <!-- Phone -->
-        <div class="space-y-1">
-          <label class="block text-sm font-medium text-gray-300">
-            Phone Number (Optional)
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-text-primary">
+            Phone Number <span class="text-text-secondary font-normal">(Optional)</span>
           </label>
           <div class="relative">
             <input
@@ -153,11 +153,11 @@
               name="user[phone]"
               value={@changeset.changes[:phone] || ""}
               placeholder="Enter your phone number"
-              class="w-full pl-10 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none placeholder-gray-400"
+              class="w-full pl-12 pr-4 py-3 bg-white border border-brand-neutral-300 rounded-md text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none placeholder-brand-neutral-400"
             />
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
               <svg
-                class="w-4 h-4 text-gray-400"
+                class="w-5 h-5 text-brand-neutral-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -173,15 +173,15 @@
           </div>
           <%= if error = @changeset.errors[:phone] do %>
             <%= if @changeset.action do %>
-              <div class="text-red-400 text-xs mt-1">
+              <div class="text-red-600 text-xs mt-1">
                 <%= elem(error, 0) %>
               </div>
             <% end %>
           <% end %>
         </div>
         <!-- Password -->
-        <div class="space-y-1">
-          <label class="block text-sm font-medium text-gray-300">
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-text-primary">
             Password
           </label>
           <div class="relative">
@@ -190,11 +190,11 @@
               name="user[password]"
               placeholder="Create a strong password"
               required
-              class="w-full pl-10 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm transition-all duration-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:outline-none placeholder-gray-400"
+              class="w-full pl-12 pr-4 py-3 bg-white border border-brand-neutral-300 rounded-md text-text-primary text-sm transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 focus:outline-none placeholder-brand-neutral-400"
             />
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
               <svg
-                class="w-4 h-4 text-gray-400"
+                class="w-5 h-5 text-brand-neutral-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -210,7 +210,7 @@
           </div>
           <%= if error = @changeset.errors[:password] do %>
             <%= if @changeset.action do %>
-              <div class="text-red-400 text-xs mt-1">
+              <div class="text-red-600 text-xs mt-1">
                 <%= elem(error, 0) %>
               </div>
             <% end %>
@@ -219,10 +219,10 @@
         <!-- Submit Button -->
         <button
           type="submit"
-          class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2.5 rounded-lg font-medium hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105"
+          class="w-full bg-brand-primary hover:bg-brand-primary-hover text-white py-3 rounded-md font-semibold transition-colors duration-200 shadow-sm hover:shadow-md"
         >
           <div class="flex items-center justify-center space-x-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -235,12 +235,12 @@
         </button>
       </.form>
       <!-- Login Link -->
-      <div class="text-center mt-6">
-        <p class="text-gray-400 text-sm">
+      <div class="text-center mt-8 pt-6 border-t border-brand-neutral-200">
+        <p class="text-text-secondary text-sm">
           Already have an account?
           <a
             href="/users/log_in"
-            class="text-purple-400 font-medium hover:text-purple-300 transition-colors ml-1"
+            class="text-brand-primary font-semibold hover:text-brand-primary-hover transition-colors ml-1"
           >
             Sign in here
           </a>

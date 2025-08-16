@@ -54,7 +54,11 @@ defmodule HomeWareWeb.CoreComponents do
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
-      <div id={"#{@id}-bg"} class="bg-zinc-50/90 fixed inset-0 transition-opacity" aria-hidden="true" />
+      <div
+        id={"#{@id}-bg"}
+        class="bg-brand-neutral-900/50 fixed inset-0 transition-opacity"
+        aria-hidden="true"
+      />
       <div
         class="fixed inset-0 overflow-y-auto"
         aria-labelledby={"#{@id}-title"}
@@ -63,26 +67,26 @@ defmodule HomeWareWeb.CoreComponents do
         aria-modal="true"
         tabindex="0"
       >
-        <div class="flex min-h-full items-center justify-center">
-          <div class="w-full max-w-14xl-3xl p-4 sm:p-6 lg:py-8">
+        <div class="flex min-h-full items-center justify-center p-4">
+          <div class="w-full max-w-2xl">
             <.focus_wrap
               id={"#{@id}-container"}
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-14 shadow-lg ring-1 transition"
+              class="relative hidden rounded-lg bg-white shadow-modal border border-brand-neutral-200 transition"
             >
-              <div class="absolute top-6 right-5">
+              <div class="absolute top-4 right-4">
                 <button
                   phx-click={JS.exec("data-cancel", to: "##{@id}")}
                   type="button"
-                  class="-m-3 flex-none p-3 opacity-20 hover:opacity-40"
+                  class="p-2 text-brand-neutral-400 hover:text-brand-neutral-600 hover:bg-brand-neutral-50 rounded-md transition-colors"
                   aria-label={gettext("close")}
                 >
                   <.icon name="hero-x-mark-solid" class="h-5 w-5" />
                 </button>
               </div>
-              <div id={"#{@id}-content"}>
+              <div id={"#{@id}-content"} class="p-6">
                 <%= render_slot(@inner_block) %>
               </div>
             </.focus_wrap>
@@ -119,20 +123,28 @@ defmodule HomeWareWeb.CoreComponents do
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
       class={[
-        "fixed top-2 right-2 mr-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
-        @kind == :info && "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
-        @kind == :error && "bg-rose-50 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
+        "fixed top-4 right-4 mr-2 w-80 sm:w-96 z-50 rounded-lg p-4 shadow-modal border",
+        @kind == :info && "bg-green-50 text-green-800 border-green-200",
+        @kind == :error && "bg-red-50 text-red-800 border-red-200"
       ]}
       {@rest}
     >
-      <p :if={@title} class="flex items-center gap-1.5 text-sm font-semibold leading-6">
-        <.icon :if={@kind == :info} name="hero-information-circle-mini" class="h-4 w-4" />
-        <.icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="h-4 w-4" />
+      <p :if={@title} class="flex items-center gap-2 text-sm font-semibold leading-6">
+        <.icon
+          :if={@kind == :info}
+          name="hero-information-circle-mini"
+          class="h-4 w-4 text-green-600"
+        />
+        <.icon :if={@kind == :error} name="hero-exclamation-circle-mini" class="h-4 w-4 text-red-600" />
         <%= @title %>
       </p>
       <p class="mt-2 text-sm leading-5"><%= msg %></p>
-      <button type="button" class="group absolute top-1 right-1 p-2" aria-label={gettext("close")}>
-        <.icon name="hero-x-mark-solid" class="h-5 w-5 opacity-40 group-hover:opacity-70" />
+      <button
+        type="button"
+        class="group absolute top-2 right-2 p-1 rounded-md hover:bg-white/50 transition-colors"
+        aria-label={gettext("close")}
+      >
+        <.icon name="hero-x-mark-solid" class="h-4 w-4 opacity-60 group-hover:opacity-100" />
       </button>
     </div>
     """
@@ -206,9 +218,9 @@ defmodule HomeWareWeb.CoreComponents do
   def simple_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="mt-10 space-y-8 bg-white">
+      <div class="mt-10 space-y-8 bg-white rounded-lg p-6 shadow-card border border-brand-neutral-200">
         <%= render_slot(@inner_block, f) %>
-        <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
+        <div :for={action <- @actions} class="mt-6 flex items-center justify-between gap-6">
           <%= render_slot(action, f) %>
         </div>
       </div>
@@ -235,8 +247,9 @@ defmodule HomeWareWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
-        "text-sm font-semibold leading-6 text-white active:text-white/80",
+        "phx-submit-loading:opacity-75 rounded-md bg-brand-primary hover:bg-brand-primary-hover py-2.5 px-4",
+        "text-sm font-semibold leading-6 text-white active:text-white/80 transition-colors duration-200",
+        "focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:ring-offset-2",
         @class
       ]}
       {@rest}
@@ -314,7 +327,7 @@ defmodule HomeWareWeb.CoreComponents do
 
     ~H"""
     <div phx-feedback-for={@name}>
-      <label class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
+      <label class="flex items-center gap-3 text-sm leading-6 text-text-secondary">
         <input type="hidden" name={@name} value="false" />
         <input
           type="checkbox"
@@ -322,7 +335,7 @@ defmodule HomeWareWeb.CoreComponents do
           name={@name}
           value="true"
           checked={@checked}
-          class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
+          class="rounded border-brand-neutral-300 text-brand-primary focus:ring-brand-primary/20 focus:ring-2"
           {@rest}
         />
         <%= @label %>
@@ -339,7 +352,7 @@ defmodule HomeWareWeb.CoreComponents do
       <select
         id={@id}
         name={@name}
-        class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
+        class="mt-2 block w-full rounded-lg border border-gray-200 bg-white shadow-sm focus:border-brand-primary focus:ring-brand-primary/20 focus:ring-2 text-sm px-4 py-3 transition-colors duration-200 hover:border-gray-300 appearance-none"
         multiple={@multiple}
         {@rest}
       >
@@ -359,10 +372,10 @@ defmodule HomeWareWeb.CoreComponents do
         id={@id}
         name={@name}
         class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
-          "min-h-[6rem] phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          "mt-2 block w-full rounded-md text-text-primary focus:ring-2 focus:ring-brand-primary/20 sm:text-sm sm:leading-6",
+          "min-h-[6rem] phx-no-feedback:border-brand-neutral-300 phx-no-feedback:focus:border-brand-primary",
+          @errors == [] && "border-brand-neutral-300 focus:border-brand-primary",
+          @errors != [] && "border-red-400 focus:border-red-400"
         ]}
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
@@ -382,10 +395,10 @@ defmodule HomeWareWeb.CoreComponents do
         id={@id}
         value={Phoenix.HTML.Form.normalize_value(@type, @value)}
         class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6",
-          "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
+          "mt-2 block w-full rounded-md text-text-primary focus:ring-2 focus:ring-brand-primary/20 sm:text-sm sm:leading-6",
+          "phx-no-feedback:border-brand-neutral-300 phx-no-feedback:focus:border-brand-primary",
+          @errors == [] && "border-brand-neutral-300 focus:border-brand-primary",
+          @errors != [] && "border-red-400 focus:border-red-400"
         ]}
         {@rest}
       />
@@ -402,7 +415,7 @@ defmodule HomeWareWeb.CoreComponents do
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label for={@for} class="block text-sm font-semibold leading-6 text-text-primary">
       <%= render_slot(@inner_block) %>
     </label>
     """
@@ -415,7 +428,7 @@ defmodule HomeWareWeb.CoreComponents do
 
   def error(assigns) do
     ~H"""
-    <p class="mt-3 flex gap-3 text-sm leading-6 text-rose-600 phx-no-feedback:hidden">
+    <p class="mt-3 flex gap-3 text-sm leading-6 text-red-600 phx-no-feedback:hidden">
       <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
       <%= render_slot(@inner_block) %>
     </p>
@@ -435,10 +448,10 @@ defmodule HomeWareWeb.CoreComponents do
     ~H"""
     <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
       <div>
-        <h1 class="text-lg font-semibold leading-8 text-zinc-800">
+        <h1 class="text-2xl font-bold leading-8 text-text-primary">
           <%= render_slot(@inner_block) %>
         </h1>
-        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
+        <p :if={@subtitle != []} class="mt-2 text-base leading-6 text-text-secondary">
           <%= render_slot(@subtitle) %>
         </p>
       </div>
@@ -892,6 +905,181 @@ defmodule HomeWareWeb.CoreComponents do
           </span>
         <% end %>
       </nav>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders a modern dropdown component similar to Doctorline project.
+
+  ## Examples
+
+      <.dropdown
+        name="category"
+        label="Category"
+        options={[{"All Categories", ""}, {"Electronics", "electronics"}]}
+        value={@selected_category}
+        placeholder="Select a category"
+      />
+
+  """
+  attr :name, :string, required: true
+  attr :label, :string, required: true
+  attr :options, :list, required: true
+  attr :value, :any, default: nil
+  attr :placeholder, :string, default: "Select an option"
+  attr :required, :boolean, default: false
+  attr :disabled, :boolean, default: false
+  attr :class, :string, default: ""
+  attr :id, :string, default: nil
+  attr :phx_change, :string, default: nil
+
+  def dropdown(assigns) do
+    ~H"""
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        <%= @label %>
+        <%= if @required do %>
+          <span class="text-red-500">*</span>
+        <% end %>
+      </label>
+      <select
+        name={@name}
+        id={@id}
+        required={@required}
+        disabled={@disabled}
+        phx-change={@phx_change}
+        class={[
+          "w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-brand-primary",
+          "bg-white text-gray-900 text-sm transition-colors duration-200 shadow-sm",
+          "hover:border-gray-300 cursor-pointer appearance-none",
+          "bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M19%209l-7%207-7-7%22/%3E%3C/svg%3E')]",
+          "bg-no-repeat bg-right-3 bg-[length:16px_16px] pr-10",
+          @disabled && "bg-gray-50 text-gray-400 cursor-not-allowed",
+          @class
+        ]}
+      >
+        <option value="" disabled selected={is_nil(@value)}>
+          <%= @placeholder %>
+        </option>
+        <%= for {label, value} <- @options do %>
+          <option value={value} selected={@value == value} class="py-2">
+            <%= label %>
+          </option>
+        <% end %>
+      </select>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders a modern dropdown component with smooth animations and better UX.
+
+  ## Examples
+
+      <.modern_dropdown
+        name="brand"
+        label="Brand"
+        options={[{"Select a brand", ""}, {"HomeWare Premium", "HomeWare Premium"}]}
+        value={@selected_brand}
+        placeholder="Select a brand"
+      />
+
+  """
+  attr :name, :string, required: true
+  attr :label, :string, required: true
+  attr :options, :list, required: true
+  attr :value, :any, default: nil
+  attr :placeholder, :string, default: "Select an option"
+  attr :required, :boolean, default: false
+  attr :disabled, :boolean, default: false
+  attr :class, :string, default: ""
+  attr :id, :string, default: nil
+  attr :phx_change, :string, default: nil
+
+  def modern_dropdown(assigns) do
+    ~H"""
+    <div class="space-y-2">
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        <%= @label %>
+        <%= if @required do %>
+          <span class="text-red-500">*</span>
+        <% end %>
+      </label>
+      <div
+        class="relative"
+        x-data="{ open: false, selected: '' }"
+        id={"#{@name}-dropdown"}
+        phx-hook="ModernDropdownHooks"
+      >
+        <button
+          type="button"
+          id={@id}
+          name={@name}
+          class={[
+            "w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-left text-gray-900 text-sm transition-all duration-200",
+            "hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 cursor-pointer shadow-sm",
+            "flex items-center justify-between",
+            @disabled && "bg-gray-50 text-gray-400 cursor-not-allowed",
+            @class
+          ]}
+          x-on:click="open = !open"
+          x-on:click.away="open = false"
+          aria-haspopup="listbox"
+          x-bind:aria-expanded="open"
+        >
+          <span x-text="selected" class="block truncate"></span>
+          <svg
+            class="w-4 h-4 text-gray-400 transition-transform duration-200"
+            x-bind:class="{ 'rotate-180': open }"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+            </path>
+          </svg>
+        </button>
+        <!-- Hidden select for form submission -->
+        <select
+          name={@name}
+          class="sr-only"
+          required={@required}
+          disabled={@disabled}
+          phx-change={@phx_change}
+        >
+          <%= for {label, value} <- @options do %>
+            <option value={value} selected={@value == value}><%= label %></option>
+          <% end %>
+        </select>
+
+        <div
+          x-show="open"
+          x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0 transform translate-y-2 scale-95"
+          x-transition:enter-end="opacity-100 transform translate-y-0 scale-100"
+          x-transition:leave="transition ease-in duration-150"
+          x-transition:leave-start="opacity-100 transform translate-y-0 scale-100"
+          x-transition:leave-end="opacity-0 transform translate-y-2 scale-95"
+          class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+          role="listbox"
+          style="display: none;"
+        >
+          <div class="py-1">
+            <%= for {label, value} <- @options do %>
+              <button
+                type="button"
+                class="w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-all duration-150 hover:translate-x-1"
+                x-on:click="selected = $el.textContent.trim(); open = false; $dispatch('dropdown-change', { value: $el.dataset.value, label: $el.textContent.trim() })"
+                role="option"
+                data-value={value}
+              >
+                <%= label %>
+              </button>
+            <% end %>
+          </div>
+        </div>
+      </div>
     </div>
     """
   end

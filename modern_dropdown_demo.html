@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Dropdown Component</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom animations and styles */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-8px) scale(0.95);
+            }
+        }
+
+        .dropdown-enter {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+
+        .dropdown-exit {
+            animation: fadeOut 0.15s ease-in forwards;
+        }
+
+        /* Custom focus styles */
+        .dropdown-trigger:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* Smooth transitions */
+        .dropdown-item {
+            transition: all 0.15s ease-in-out;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8fafc;
+            transform: translateX(2px);
+        }
+
+        .dropdown-item:active {
+            background-color: #e2e8f0;
+            transform: translateX(1px);
+        }
+
+        /* Mobile touch improvements */
+        @media (max-width: 768px) {
+            .dropdown-item {
+                min-height: 44px;
+                padding: 12px 16px;
+            }
+            
+            .dropdown-trigger {
+                min-height: 44px;
+            }
+        }
+
+        /* Custom scrollbar for dropdown */
+        .dropdown-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .dropdown-menu::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+        }
+
+        .dropdown-menu::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .dropdown-menu::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Modern Dropdown Component</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Basic Dropdown -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-gray-800">Basic Dropdown</h2>
+                <div class="relative">
+                    <button
+                        class="dropdown-trigger w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-left text-gray-900 text-sm transition-all duration-200 hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 flex items-center justify-between cursor-pointer shadow-sm"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-labelledby="basic-dropdown-label"
+                        data-dropdown="basic"
+                    >
+                        <span id="basic-dropdown-label">Select an option</span>
+                        <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div
+                        class="dropdown-menu absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto hidden"
+                        role="listbox"
+                        aria-labelledby="basic-dropdown-label"
+                    >
+                        <div class="py-1">
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none" role="option" data-value="option1">
+                                Option 1
+                            </button>
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none" role="option" data-value="option2">
+                                Option 2
+                            </button>
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none" role="option" data-value="option3">
+                                Option 3
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Searchable Dropdown -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-gray-800">Searchable Dropdown</h2>
+                <div class="relative">
+                    <button
+                        class="dropdown-trigger w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-left text-gray-900 text-sm transition-all duration-200 hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 flex items-center justify-between cursor-pointer shadow-sm"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-labelledby="searchable-dropdown-label"
+                        data-dropdown="searchable"
+                    >
+                        <span id="searchable-dropdown-label">Search countries...</span>
+                        <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div
+                        class="dropdown-menu absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-hidden hidden"
+                        role="listbox"
+                        aria-labelledby="searchable-dropdown-label"
+                    >
+                        <div class="p-2 border-b border-gray-100">
+                            <input
+                                type="text"
+                                class="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
+                                placeholder="Type to search..."
+                                data-search-input
+                            >
+                        </div>
+                        <div class="py-1 max-h-48 overflow-auto">
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none" role="option" data-value="usa" data-search-text="United States">
+                                🇺🇸 United States
+                            </button>
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none" role="option" data-value="uk" data-search-text="United Kingdom">
+                                🇬🇧 United Kingdom
+                            </button>
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none" role="option" data-value="canada" data-search-text="Canada">
+                                🇨🇦 Canada
+                            </button>
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none" role="option" data-value="australia" data-search-text="Australia">
+                                🇦🇺 Australia
+                            </button>
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none" role="option" data-value="germany" data-search-text="Germany">
+                                🇩🇪 Germany
+                            </button>
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none" role="option" data-value="france" data-search-text="France">
+                                🇫🇷 France
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multi-Select Dropdown -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-gray-800">Multi-Select Dropdown</h2>
+                <div class="relative">
+                    <button
+                        class="dropdown-trigger w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-left text-gray-900 text-sm transition-all duration-200 hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 flex items-center justify-between cursor-pointer shadow-sm"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-labelledby="multiselect-dropdown-label"
+                        data-dropdown="multiselect"
+                    >
+                        <span id="multiselect-dropdown-label">Select categories</span>
+                        <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div
+                        class="dropdown-menu absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto hidden"
+                        role="listbox"
+                        aria-labelledby="multiselect-dropdown-label"
+                        aria-multiselectable="true"
+                    >
+                        <div class="py-1">
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none flex items-center" role="option" data-value="tech" aria-selected="false">
+                                <svg class="w-4 h-4 mr-3 text-transparent" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                Technology
+                            </button>
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none flex items-center" role="option" data-value="design" aria-selected="false">
+                                <svg class="w-4 h-4 mr-3 text-transparent" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                Design
+                            </button>
+                            <button class="dropdown-item w-full px-4 py-3 text-left text-gray-900 text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none flex items-center" role="option" data-value="marketing" aria-selected="false">
+                                <svg class="w-4 h-4 mr-3 text-transparent" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                Marketing
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Instructions -->
+        <div class="mt-12 p-6 bg-white rounded-lg shadow-sm border border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Usage Instructions</h2>
+            <div class="space-y-3 text-sm text-gray-600">
+                <p><strong>Keyboard Navigation:</strong> Use Tab to focus, Enter/Space to open/close, Arrow keys to navigate, Escape to close</p>
+                <p><strong>Mobile:</strong> Touch-friendly with proper touch targets (44px minimum)</p>
+                <p><strong>Accessibility:</strong> Full ARIA support, screen reader compatible</p>
+                <p><strong>Features:</strong> Click outside to close, smooth animations, search functionality</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ModernDropdown {
+            constructor() {
+                this.dropdowns = new Map();
+                this.activeDropdown = null;
+                this.init();
+            }
+
+            init() {
+                // Initialize all dropdowns
+                document.querySelectorAll('[data-dropdown]').forEach(trigger => {
+                    const dropdown = new DropdownInstance(trigger, this);
+                    this.dropdowns.set(trigger, dropdown);
+                });
+
+                // Global click handler for closing dropdowns
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('[data-dropdown]')) {
+                        this.closeAll();
+                    }
+                });
+
+                // Global keyboard handler
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.closeAll();
+                    }
+                });
+            }
+
+            closeAll() {
+                this.dropdowns.forEach(dropdown => dropdown.close());
+                this.activeDropdown = null;
+            }
+
+            setActive(dropdown) {
+                if (this.activeDropdown && this.activeDropdown !== dropdown) {
+                    this.activeDropdown.close();
+                }
+                this.activeDropdown = dropdown;
+            }
+        }
+
+        class DropdownInstance {
+            constructor(trigger, manager) {
+                this.trigger = trigger;
+                this.manager = manager;
+                this.menu = trigger.nextElementSibling;
+                this.isOpen = false;
+                this.selectedValues = new Set();
+                this.init();
+            }
+
+            init() {
+                // Click handler
+                this.trigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.toggle();
+                });
+
+                // Keyboard handlers
+                this.trigger.addEventListener('keydown', (e) => {
+                    switch (e.key) {
+                        case 'Enter':
+                        case ' ':
+                            e.preventDefault();
+                            this.toggle();
+                            break;
+                        case 'ArrowDown':
+                            e.preventDefault();
+                            this.open();
+                            this.focusFirstItem();
+                            break;
+                    }
+                });
+
+                // Menu item handlers
+                this.menu.querySelectorAll('[role="option"]').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.handleItemClick(item);
+                    });
+
+                    item.addEventListener('keydown', (e) => {
+                        this.handleItemKeydown(e, item);
+                    });
+                });
+
+                // Search functionality
+                const searchInput = this.menu.querySelector('[data-search-input]');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        this.handleSearch(e.target.value);
+                    });
+                }
+            }
+
+            toggle() {
+                if (this.isOpen) {
+                    this.close();
+                } else {
+                    this.open();
+                }
+            }
+
+            open() {
+                if (this.isOpen) return;
+                
+                this.manager.setActive(this);
+                this.isOpen = true;
+                this.trigger.setAttribute('aria-expanded', 'true');
+                this.trigger.querySelector('svg').style.transform = 'rotate(180deg)';
+                
+                this.menu.classList.remove('hidden');
+                this.menu.classList.add('dropdown-enter');
+                
+                // Focus management
+                setTimeout(() => {
+                    const searchInput = this.menu.querySelector('[data-search-input]');
+                    if (searchInput) {
+                        searchInput.focus();
+                    }
+                }, 200);
+            }
+
+            close() {
+                if (!this.isOpen) return;
+                
+                this.isOpen = false;
+                this.trigger.setAttribute('aria-expanded', 'false');
+                this.trigger.querySelector('svg').style.transform = 'rotate(0deg)';
+                
+                this.menu.classList.add('dropdown-exit');
+                
+                setTimeout(() => {
+                    this.menu.classList.add('hidden');
+                    this.menu.classList.remove('dropdown-enter', 'dropdown-exit');
+                }, 150);
+            }
+
+            handleItemClick(item) {
+                const value = item.dataset.value;
+                const text = item.textContent.trim();
+                
+                if (this.trigger.dataset.dropdown === 'multiselect') {
+                    // Multi-select logic
+                    const isSelected = item.getAttribute('aria-selected') === 'true';
+                    if (isSelected) {
+                        this.selectedValues.delete(value);
+                        item.setAttribute('aria-selected', 'false');
+                        item.querySelector('svg').classList.remove('text-blue-500');
+                    } else {
+                        this.selectedValues.add(value);
+                        item.setAttribute('aria-selected', 'true');
+                        item.querySelector('svg').classList.add('text-blue-500');
+                    }
+                    
+                    // Update trigger text
+                    const label = this.trigger.querySelector('span');
+                    if (this.selectedValues.size === 0) {
+                        label.textContent = 'Select categories';
+                    } else if (this.selectedValues.size === 1) {
+                        label.textContent = text;
+                    } else {
+                        label.textContent = `${this.selectedValues.size} categories selected`;
+                    }
+                } else {
+                    // Single select logic
+                    this.trigger.querySelector('span').textContent = text;
+                    this.close();
+                }
+            }
+
+            handleItemKeydown(e, item) {
+                const items = Array.from(this.menu.querySelectorAll('[role="option"]'));
+                const currentIndex = items.indexOf(item);
+                
+                switch (e.key) {
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        const nextIndex = (currentIndex + 1) % items.length;
+                        items[nextIndex].focus();
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        const prevIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
+                        items[prevIndex].focus();
+                        break;
+                    case 'Enter':
+                    case ' ':
+                        e.preventDefault();
+                        this.handleItemClick(item);
+                        break;
+                    case 'Escape':
+                        e.preventDefault();
+                        this.close();
+                        this.trigger.focus();
+                        break;
+                }
+            }
+
+            handleSearch(query) {
+                const items = this.menu.querySelectorAll('[role="option"]');
+                const searchText = query.toLowerCase();
+                
+                items.forEach(item => {
+                    const searchTextAttr = item.dataset.searchText || item.textContent;
+                    const matches = searchTextAttr.toLowerCase().includes(searchText);
+                    item.style.display = matches ? 'block' : 'none';
+                });
+            }
+
+            focusFirstItem() {
+                const firstItem = this.menu.querySelector('[role="option"]');
+                if (firstItem) {
+                    firstItem.focus();
+                }
+            }
+        }
+
+        // Initialize the dropdown system
+        document.addEventListener('DOMContentLoaded', () => {
+            new ModernDropdown();
+        });
+    </script>
+</body>
+</html> 

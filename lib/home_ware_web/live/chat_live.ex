@@ -90,13 +90,47 @@ defmodule HomeWareWeb.ChatLive do
 
   def render(assigns) do
     ~H"""
-    <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
-      <div class="w-full max-w-4xl h-[85vh] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
-        <!-- Chat Header -->
-        <div class="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4 flex items-center justify-between">
+    <div class="h-screen bg-gradient-to-br from-brand-neutral-50 to-white flex flex-col">
+      <!-- Chat Header -->
+      <div class="bg-white border-b border-brand-neutral-200 shadow-sm flex-shrink-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex items-center justify-between h-16">
+            <div class="flex items-center space-x-4">
+              <a href="/" class="text-2xl font-bold text-brand-primary">HomeWare</a>
+              <span class="text-brand-neutral-400">/</span>
+              <span class="text-text-primary font-medium">Customer Support</span>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></div>
+                <span class="text-brand-accent text-sm font-medium">Online</span>
+              </div>
+              <a href="/" class="text-text-secondary hover:text-brand-primary transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Chat Container -->
+      <div class="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 overflow-hidden">
+        <!-- Support Info Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-brand-neutral-200 p-4 mb-4 flex-shrink-0">
           <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-10 h-10 bg-brand-primary/10 rounded-full flex items-center justify-center">
+              <svg
+                class="w-5 h-5 text-brand-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -105,158 +139,176 @@ defmodule HomeWareWeb.ChatLive do
                 />
               </svg>
             </div>
-            <div>
-              <h2 class="text-xl font-bold text-white">Customer Support</h2>
-              <p class="text-purple-100 text-sm">We're here to help you</p>
+            <div class="flex-1">
+              <h2 class="text-base font-semibold text-text-primary">Customer Support</h2>
+              <p class="text-text-secondary text-xs">
+                We're here to help you with any questions or concerns
+              </p>
             </div>
-          </div>
-          <div class="flex items-center space-x-2">
-            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-            <span class="text-purple-100 text-sm font-medium">Online</span>
+            <div class="flex items-center space-x-2 text-brand-accent">
+              <div class="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></div>
+              <span class="text-xs font-medium">Available 24/7</span>
+            </div>
           </div>
         </div>
         <!-- Messages Container -->
-        <div
-          class="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800 p-6 space-y-4"
-          id="chat-messages"
-          phx-hook="ChatScroll"
-        >
-          <%= if Enum.empty?(@messages) do %>
-            <!-- Welcome Message -->
-            <div class="flex justify-center">
-              <div class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 max-w-md text-center shadow-lg">
-                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    class="w-8 h-8 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                    />
-                  </svg>
+        <div class="flex-1 bg-white rounded-xl shadow-sm border border-brand-neutral-200 overflow-hidden flex flex-col min-h-0">
+          <!-- Messages Area -->
+          <div
+            class="flex-1 overflow-y-auto p-4 space-y-2 bg-brand-neutral-50/30"
+            id="chat-messages"
+            phx-hook="ChatScroll"
+          >
+            <%= if Enum.empty?(@messages) do %>
+              <!-- Welcome Message -->
+              <div class="flex justify-center">
+                <div class="bg-white rounded-lg p-6 max-w-sm text-center shadow-sm border border-brand-neutral-200">
+                  <div class="w-12 h-12 bg-brand-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg
+                      class="w-6 h-6 text-brand-primary"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-semibold text-text-primary mb-2">
+                    Welcome to Customer Support!
+                  </h3>
+                  <p class="text-text-secondary text-xs leading-relaxed">
+                    Hi <%= @current_user.first_name || "there" %>! 👋 How can we help you today?
+                    Feel free to ask any questions about your orders, products, or anything else.
+                  </p>
                 </div>
-                <h3 class="text-lg font-bold text-white mb-2">Welcome to Customer Support!</h3>
-                <p class="text-purple-100 text-sm leading-relaxed">
-                  Hi <%= @current_user.first_name || "there" %>! 👋 How can we help you today?
-                  Feel free to ask any questions about your orders, products, or anything else.
-                </p>
               </div>
-            </div>
-          <% end %>
+            <% end %>
 
-          <%= for msg <- @messages do %>
-            <div class={
-              [
-                "flex w-full",
-                if(msg.sender_type == "customer", do: "justify-end", else: "justify-start")
-              ]
-              |> Enum.join(" ")
-            }>
+            <%= for msg <- @messages do %>
               <div class={
                 [
-                  "max-w-[70%] lg:max-w-[60%]",
-                  if(msg.sender_type == "customer", do: "order-2", else: "order-1")
+                  "flex w-full",
+                  if(msg.sender_type == "customer", do: "justify-end", else: "justify-start")
                 ]
                 |> Enum.join(" ")
               }>
-                <!-- Avatar -->
                 <div class={
                   [
-                    "flex items-end space-x-2",
-                    if(msg.sender_type == "customer",
-                      do: "flex-row-reverse space-x-reverse",
-                      else: ""
-                    )
+                    "max-w-[80%] lg:max-w-[70%]",
+                    if(msg.sender_type == "customer", do: "order-2", else: "order-1")
                   ]
                   |> Enum.join(" ")
                 }>
+                  <!-- Message Container -->
                   <div class={
                     [
-                      "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
+                      "flex items-end space-x-2",
                       if(msg.sender_type == "customer",
-                        do: "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
-                        else: "bg-gradient-to-r from-gray-500 to-gray-600 text-white"
+                        do: "flex-row-reverse space-x-reverse",
+                        else: ""
                       )
                     ]
                     |> Enum.join(" ")
                   }>
-                    <%= if msg.sender_type == "customer" do %>
-                      <%= String.first(@current_user.first_name || "U") %>
-                    <% else %>
-                      S
-                    <% end %>
-                  </div>
-                  <!-- Message Bubble -->
-                  <div class={
-                    [
-                      "rounded-2xl px-4 py-3 shadow-sm",
-                      if(msg.sender_type == "customer",
-                        do: "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
-                        else:
-                          "bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600"
-                      )
-                    ]
-                    |> Enum.join(" ")
-                  }>
-                    <p class="text-sm leading-relaxed break-words"><%= msg.body %></p>
-                    <p class={
+                    <!-- Avatar -->
+                    <div class={
                       [
-                        "text-xs mt-1",
+                        "w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0",
                         if(msg.sender_type == "customer",
-                          do: "text-purple-100",
-                          else: "text-gray-500 dark:text-gray-400"
+                          do: "bg-brand-primary text-white",
+                          else: "bg-brand-neutral-200 text-brand-neutral-700"
                         )
                       ]
                       |> Enum.join(" ")
                     }>
-                      <%= Calendar.strftime(msg.inserted_at, "%I:%M %p") %>
-                    </p>
+                      <%= if msg.sender_type == "customer" do %>
+                        <%= String.first(@current_user.first_name || "U") %>
+                      <% else %>
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                          />
+                        </svg>
+                      <% end %>
+                    </div>
+                    <!-- Message Bubble -->
+                    <div class={
+                      [
+                        "rounded-lg px-3 py-2 shadow-sm",
+                        if(msg.sender_type == "customer",
+                          do: "bg-brand-primary text-white",
+                          else: "bg-white text-text-primary border border-brand-neutral-200"
+                        )
+                      ]
+                      |> Enum.join(" ")
+                    }>
+                      <p class="text-xs leading-relaxed break-words"><%= msg.body %></p>
+                      <p class={
+                        [
+                          "text-xs mt-1",
+                          if(msg.sender_type == "customer",
+                            do: "text-brand-primary/80",
+                            else: "text-text-secondary"
+                          )
+                        ]
+                        |> Enum.join(" ")
+                      }>
+                        <%= Calendar.strftime(msg.inserted_at, "%I:%M %p") %>
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          <% end %>
-        </div>
-        <!-- Message Input -->
-        <div class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-4">
-          <form phx-submit="send_message" phx-change="update_message" class="flex items-end space-x-3">
-            <div class="flex-1 relative">
-              <input
-                type="text"
-                name="message"
-                value={@message}
-                placeholder="Type your message here..."
-                class="w-full px-4 py-3 pr-12 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 resize-none"
-                autocomplete="off"
-                maxlength="500"
-                id="message-input"
-                phx-hook="AutoResize"
-              />
-              <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs">
-                <%= String.length(@message || "") %>/500
-              </div>
-            </div>
-            <button
-              type="submit"
-              disabled={!@message || String.trim(@message) == ""}
-              class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-500 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-200 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center space-x-2"
+            <% end %>
+          </div>
+          <!-- Message Input -->
+          <div class="bg-white border-t border-brand-neutral-200 p-3 flex-shrink-0">
+            <form
+              phx-submit="send_message"
+              phx-change="update_message"
+              class="flex items-end space-x-2"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              <div class="flex-1 relative">
+                <input
+                  type="text"
+                  name="message"
+                  value={@message}
+                  placeholder="Type your message here..."
+                  class="w-full px-3 py-2 pr-12 bg-brand-neutral-50 border border-brand-neutral-300 rounded-lg text-text-primary placeholder-brand-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all duration-200 resize-none text-sm"
+                  autocomplete="off"
+                  maxlength="500"
+                  id="message-input"
+                  phx-hook="AutoResize"
                 />
-              </svg>
-              <span>Send</span>
-            </button>
-          </form>
+                <div class="absolute right-2 top-1/2 transform -translate-y-1/2 text-brand-neutral-400 text-xs">
+                  <%= String.length(@message || "") %>/500
+                </div>
+              </div>
+              <button
+                type="submit"
+                disabled={!@message || String.trim(@message) == ""}
+                class="bg-brand-primary hover:bg-brand-primary-hover disabled:bg-brand-neutral-200 disabled:text-brand-neutral-400 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-sm hover:shadow-md flex items-center space-x-2 text-sm"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                  />
+                </svg>
+                <span>Send</span>
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -268,7 +320,7 @@ defmodule HomeWareWeb.ChatLive do
         if (textarea) {
           textarea.addEventListener('input', function() {
             this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            this.style.height = Math.min(this.scrollHeight, 80) + 'px';
           });
         }
       });
